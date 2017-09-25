@@ -1,5 +1,5 @@
 const LocalStrategy = require('passport-local').Strategy;
-const User = require('../conndb/models/user');
+const mUser = require('../conndb/models/user');
 const uuidv4 = require('uuid/v4');
 const uuidv5 = require('uuid/v5');
 
@@ -8,7 +8,7 @@ module.exports = function(passport) {
 		done(null, user.id);
 	});
 	passport.deserializeUser(function(id, done) {
-		User.findById(id, function(err, user) {
+		mUser.findById(id, function(err, user) {
 			done(err, user);
 		});
 	});
@@ -18,16 +18,18 @@ module.exports = function(passport) {
 			passReqToCallback : true
 		},
 		function(req, email, password, done) {
-			User.findOne({ 'email' : email }, function(err, user) {
+			mUser.findOne({ 'email' : email }, function(err, user) {
 				if (err) return done(err);
 				if (user) {
 					return done(null, false, {'message': 'emailexist'});
 				} else {
-					var newUser = new User();
+					var newUser = new mUser();
+					var uuid = uuidv4();
 					newUser.name = req.body.name;
 					newUser.email = email;
-					newUser.password = newUser.generateHash(password);
-					newUser.criteria = uuidv5(email, uuidv4());
+					newUser.password = newUser.generatePassword(password);
+					newUser.criteria = uuid;
+					newUser.synchash = uuidv5(email, uuid);
 					newUser.save(function(err) {
 						if (err) throw err;
 						return done(null, newUser);
@@ -42,7 +44,7 @@ module.exports = function(passport) {
 			passReqToCallback : true
 		},
 		function(req, email, password, done) {
-			User.findOne({ 'email' : email }, function(err, user) {
+			mUser.findOne({ 'email' : email }, function(err, user) {
 				if (err) return done(err);
 				if (!user) {
 					return done(null, false, {'message': 'noaccount'});

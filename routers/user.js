@@ -1,4 +1,4 @@
-var DEBUG = false;
+var DEBUG = false; 
 module.exports = (express, passport) => {
 	var router      = express.Router();
 	router.use((req, res, next) => {
@@ -8,25 +8,24 @@ module.exports = (express, passport) => {
 	    next();
 	});
 	router.get('/', (req, res) => {
-		if (DEBUG) console.log(routes)
+		if (DEBUG) console.log(routes);
 	    res.jsonp({
 	        name: 'hair.pin user API',
 	        version: '1.0',
 	    });
-
 	});
 	router.post('/signup', (req, res, next ) => {
 		passport.authenticate('signup', function(err, user, info) {
 			if (err) { return next(err) }
 			if (!user) { return res.jsonp( { service: 'signup', success: false, message: info.message }) }
-			return res.jsonp({service: 'signup', success: true});
+			return res.jsonp({service: 'signup', success: true,synchash:user.synchash,criteria:user.criteria});
 		})(req, res, next)
 	});
 	router.post('/login', (req, res, next ) => {
 		passport.authenticate('login', function(err, user, info) {
 			if (err) { return next(err) }
 			if (!user) { return res.jsonp( { service: 'login', success: false, message: info.message }) }
-			return res.jsonp({service: 'login', success: true});
+			return res.jsonp({service: 'login', success: true,synchash:user.synchash,criteria:user.criteria});
 		})(req, res, next);
 	});
 
