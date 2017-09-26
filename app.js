@@ -6,8 +6,9 @@ const app			= express();
 const path			= require('path');
 const mongoose		= require('mongoose');
 const passport		= require('passport');
-const session		= require('express-session');
+// const session		= require('express-session');
 const bodyParser	= require('body-parser');
+const multer		= require('multer');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -28,27 +29,28 @@ mongoose.connect(envs.mongoserver + envs.database, {useMongoClient: true});
 mongoose.Promise = global.Promise;
 
 
-require('./config/passport')(passport);
+require('./controllers/user_specific/passport')(passport);
+
 app.use(passport.initialize());
-app.use(passport.session());
+// app.use(passport.session());
 
-app.use(session({
-	secret: envs.secretOrKey,
-	resave: false,
-	saveUninitialized: true
-}));
+// app.use(session({
+// 	secret: envs.secretOrKey,
+// 	resave: false,
+// 	saveUninitialized: true
+// }));
 
-// Get the Routes for our API
-var apiRouter = require('./routers/api')(express);
-var userRouter = require('./routers/user')(express, passport);
+
+var apiRouter = require('./controllers/api')(express);
+var userRouter = require('./controllers/user')(express, passport, multer);
 
 app.use('/api', apiRouter);
 app.use('/user', userRouter);
+
 // non api route for our views
 app.get('/', (req, res) => {
     res.render('index');
 });
-
 
 
 app.disable('x-powered-by');

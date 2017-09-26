@@ -1,5 +1,5 @@
 const LocalStrategy = require('passport-local').Strategy;
-const mUser = require('../conndb/models/user');
+const mUser = require('../../models/user');
 const uuidv4 = require('uuid/v4');
 const uuidv5 = require('uuid/v5');
 
@@ -24,10 +24,35 @@ module.exports = function(passport) {
 					return done(null, false, {'message': 'emailexist'});
 				} else {
 					var newUser = new mUser();
-					newUser.name = req.body.name;
+					newUser.nickname = req.body.name;
 					newUser.email = email;
 					newUser.password = newUser.genPw(password);
 					newUser.signhash = uuidv5(email, uuidv4());
+					newUser.save(function(err) {
+						if (err) throw err;
+						return done(null, newUser);
+					});
+				}
+			});
+		})
+	);
+	passport.use('modify', new LocalStrategy({
+			usernameField : 'email',
+			passwordField : 'password',
+			passReqToCallback : true
+		},
+		function(req, email, password, done) {
+			mUser.findOne({ 'email' : email }, function(err, user) {
+				if (err) return done(err);
+				if (!user) {
+					return done(null, false, {'message': 'noaccount'});
+				}
+				if (!user.validPw(password)) {
+					return done(null, false, {'message': 'invalidpw'});
+				} else {
+					var newUser = user;
+					newUser.nickname = req.body.name;
+					newUser.password = newUser.genPw(password);
 					newUser.save(function(err) {
 						if (err) throw err;
 						return done(null, newUser);
