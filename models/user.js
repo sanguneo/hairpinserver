@@ -8,6 +8,7 @@ const sUser = mongoose.Schema({
 	email		: {type: String, required: true, unique: true},
 	password	: {type: String, required: true},
 
+	regDate		: {type: Date, required: true, default: Date.now},
 	intro		: {type: String, required: false},
 	profileReg	: {type: Date, required: false},
 

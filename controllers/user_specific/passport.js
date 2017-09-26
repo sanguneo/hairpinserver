@@ -50,12 +50,14 @@ module.exports = function(passport) {
 				if (!user.validPw(password)) {
 					return done(null, false, {'message': 'invalidpw'});
 				} else {
-					var newUser = user;
-					newUser.nickname = req.body.name;
-					newUser.password = newUser.genPw(password);
-					newUser.save(function(err) {
+					user.nickname = req.body.name;
+					user.password = user.genPw(password);
+					if (req.file) {
+						user.profileReg = new Date();
+					}
+					user.save(function(err) {
 						if (err) throw err;
-						return done(null, newUser);
+						return done(null, user);
 					});
 				}
 			});
