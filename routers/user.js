@@ -18,14 +18,14 @@ module.exports = (express, passport) => {
 		passport.authenticate('signup', function(err, user, info) {
 			if (err) { return next(err) }
 			if (!user) { return res.jsonp( { service: 'signup', success: false, message: info.message }) }
-			return res.jsonp({service: 'signup', success: true,synchash:user.synchash,criteria:user.criteria});
+			return res.jsonp({service: 'signup', success: true,signhash:user.signhash});
 		})(req, res, next)
 	});
 	router.post('/login', (req, res, next ) => {
 		passport.authenticate('login', function(err, user, info) {
 			if (err) { return next(err) }
 			if (!user) { return res.jsonp( { service: 'login', success: false, message: info.message }) }
-			return res.jsonp({service: 'login', success: true,synchash:user.synchash,criteria:user.criteria});
+			return res.jsonp({service: 'login', success: true,signhash:user.signhash});
 		})(req, res, next);
 	});
 

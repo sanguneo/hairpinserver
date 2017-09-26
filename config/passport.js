@@ -13,7 +13,7 @@ module.exports = function(passport) {
 		});
 	});
 	passport.use('signup', new LocalStrategy({
-			usernameField : 'email',
+			usernameField : 'email', // id 필드로 email 을 사용한다.
 			passwordField : 'password',
 			passReqToCallback : true
 		},
@@ -24,12 +24,10 @@ module.exports = function(passport) {
 					return done(null, false, {'message': 'emailexist'});
 				} else {
 					var newUser = new mUser();
-					var uuid = uuidv4();
 					newUser.name = req.body.name;
 					newUser.email = email;
-					newUser.password = newUser.generatePassword(password);
-					newUser.criteria = uuid;
-					newUser.synchash = uuidv5(email, uuid);
+					newUser.password = newUser.genPw(password);
+					newUser.signhash = uuidv5(email, uuidv4());
 					newUser.save(function(err) {
 						if (err) throw err;
 						return done(null, newUser);
@@ -49,7 +47,7 @@ module.exports = function(passport) {
 				if (!user) {
 					return done(null, false, {'message': 'noaccount'});
 				}
-				if (!user.validPassword(password)) {
+				if (!user.validPw(password)) {
 					return done(null, false, {'message': 'invalidpw'});
 				}
 				return done(null, user);
