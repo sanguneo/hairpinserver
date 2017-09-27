@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt-nodejs');
-
+const {sFollow} = require('./follow');
 const sUser = mongoose.Schema({
 	signhash	: {type: String, required: true, unique: true},
 
@@ -12,10 +12,9 @@ const sUser = mongoose.Schema({
 	intro		: {type: String, required: false},
 	profileReg	: {type: Date, required: false},
 
-	follower	: [String],
-	following	: [String]
+	follower	: [sFollow],
+	following	: [sFollow]
 });
-
 
 sUser.index({email:1, signhash:1});
 

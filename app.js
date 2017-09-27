@@ -32,17 +32,11 @@ mongoose.Promise = global.Promise;
 require('./controllers/user_specific/passport')(passport);
 
 app.use(passport.initialize());
-// app.use(passport.session());
-
-// app.use(session({
 // 	secret: envs.secretOrKey,
-// 	resave: false,
-// 	saveUninitialized: true
-// }));
 
 
 var apiRouter = require('./controllers/api')(express);
-var userRouter = require('./controllers/user')(express, passport, multer);
+var userRouter = require('./controllers/user')(express, passport, mongoose);
 
 app.use('/api', apiRouter);
 app.use('/user', userRouter);

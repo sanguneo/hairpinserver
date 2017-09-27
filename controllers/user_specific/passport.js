@@ -4,14 +4,6 @@ const uuidv4 = require('uuid/v4');
 const uuidv5 = require('uuid/v5');
 
 module.exports = function(passport) {
-	passport.serializeUser(function(user, done) {
-		done(null, user.id);
-	});
-	passport.deserializeUser(function(id, done) {
-		mUser.findById(id, function(err, user) {
-			done(err, user);
-		});
-	});
 	passport.use('signup', new LocalStrategy({
 			usernameField : 'email', // id 필드로 email 을 사용한다.
 			passwordField : 'password',
@@ -23,14 +15,15 @@ module.exports = function(passport) {
 				if (user) {
 					return done(null, false, {'message': 'emailexist'});
 				} else {
-					var newUser = new mUser();
-					newUser.nickname = req.body.name;
-					newUser.email = email;
-					newUser.password = newUser.genPw(password);
-					newUser.signhash = uuidv5(email, uuidv4());
-					newUser.save(function(err) {
+					let newbie = new mUser({
+						nickname : req.body.name,
+						email,
+						password : newbie.genPw(password),
+						signhash : uuidv5(email, uuidv4())
+					});
+					newbie.save(function(err) {
 						if (err) throw err;
-						return done(null, newUser);
+						return done(null, newbie);
 					});
 				}
 			});
@@ -52,7 +45,7 @@ module.exports = function(passport) {
 				} else {
 					user.nickname = req.body.name;
 					user.password = user.genPw(password);
-					if (req.file) {
+					if (req.profile) {
 						user.profileReg = new Date();
 					}
 					user.save(function(err) {
