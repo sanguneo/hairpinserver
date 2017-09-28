@@ -1,12 +1,15 @@
 const multer		= require('multer');
 const fs			= require('fs');
 
-module.exports = (express, passport, mongoose) => {
+module.exports = (express, passport) => {
 	const router      = express.Router();
+
 	const uploadPath = 'upload/profiles';
 	const profileUpload	= multer({ dest: uploadPath });
+
 	const mUser = require('../models/user');
 	const { mFollow } = require('../models/follow');
+
 	router.use((req, res, next) => {
 	    res.header("Access-Control-Allow-Origin", "*");
 	    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
@@ -19,7 +22,7 @@ module.exports = (express, passport, mongoose) => {
 	    });
 	});
 
-	router.post('/signup', profileUpload.single('profile'), (req, res, next ) => {
+	router.route('/signup').post(profileUpload.single('profile'), (req, res, next ) => {
 		passport.authenticate('signup', function(error, user, info) {
 			if (error) { return next(error) }
 			if (!user) { return res.jsonp( { service: 'signup', message: info.message }) }
@@ -29,7 +32,7 @@ module.exports = (express, passport, mongoose) => {
 			return res.jsonp({service: 'signup', message: 'success', signhash:user.signhash});
 		})(req, res, next)
 	});
-	router.post('/modify', profileUpload.single('profile'), (req, res, next ) => {
+	router.route('/modify').post(profileUpload.single('profile'), (req, res, next ) => {
 		passport.authenticate('modify', function(error, user, info) {
 			if (error) { return next(error) }
 			if (!user) { return res.jsonp( { service: 'modify', message: info.message }) }
@@ -41,14 +44,14 @@ module.exports = (express, passport, mongoose) => {
 			return res.jsonp({service: 'modify', message: 'success', signhash:user.signhash});
 		})(req, res, next)
 	});
-	router.post('/login', (req, res, next ) => {
+	router.route('/login').post((req, res, next ) => {
 		passport.authenticate('login', function(error, user, info) {
 			if (error) { return next(error) }
 			if (!user) { return res.jsonp( { service: 'login', message: info.message }) }
 			return res.jsonp({service: 'login', message: 'success', signhash:user.signhash});
 		})(req, res, next);
 	});
-	router.post('/follow/:signhash/:myhash/:nickname', (req, res) => {
+	router.route('/follow/:signhash/:myhash/:nickname').post((req, res) => {
 		let {signhash, myhash, nickname} = req.body;
 		mUser.findOne({signhash},function(error, user) {
 			if(error) {
@@ -76,7 +79,7 @@ module.exports = (express, passport, mongoose) => {
 
 		})
 	});
-	router.post('/unfollow/:signhash/:myhash', (req, res) => {
+	router.route('/unfollow/:signhash/:myhash').post((req, res) => {
 		let {signhash, myhash} = req.body;
 		mUser.findOne({signhash},function(error, user) {
 			if(error) {

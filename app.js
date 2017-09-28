@@ -36,7 +36,7 @@ app.use(passport.initialize());
 
 
 var apiRouter = require('./controllers/api')(express);
-var userRouter = require('./controllers/user')(express, passport, mongoose);
+var userRouter = require('./controllers/user')(express, passport);
 
 app.use('/api', apiRouter);
 app.use('/user', userRouter);
