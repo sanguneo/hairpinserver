@@ -4,7 +4,6 @@ const { ObjectId } = mongoose.Schema.Types;
 const sFollow = mongoose.Schema({
 	fid			: {type: ObjectId, required: false, unique: true},
 	signhash	: {type: String, required: true, unique: true},
-	nickname	: {type: String, required: true},
 	profileReg	: {type: Date, required: false},
 });
 
