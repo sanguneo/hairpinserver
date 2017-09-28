@@ -6,7 +6,7 @@
 ```javascript 1.7
 const sUser = mongoose.Schema({
     /* _id         : ObjectId,
-                     필드 고유값, 자동생성    */
+       필드 고유값, 자동생성    */
     signhash	: {type: String, required: true, unique: true},
     // 고유키 값
     nickname		: {type: String, required: true},
@@ -36,7 +36,7 @@ sUser.index({email:1, signhash:1});
 ```javascript 1.7
 const sFollow = mongoose.Schema({
     /* _id         : ObjectId,
-                         필드 고유값, 자동생성    */
+       필드 고유값, 자동생성    */
     fid			: {type: ObjectId, required: false, unique: true},
     // 팔로워 필드 고유값(_id)
     signhash	: {type: String, required: true, unique: true},
