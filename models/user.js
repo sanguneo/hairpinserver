@@ -9,8 +9,8 @@ const sUser = mongoose.Schema({
 	password	: {type: String, required: true},
 
 	regDate		: {type: Date, required: true, default: Date.now},
-	intro		: {type: String, required: false},
-	profileReg	: {type: Date, required: false},
+	intro		: {type: String},
+	profileReg	: {type: Date},
 
 	follower	: [sFollow],
 	following	: [sFollow]

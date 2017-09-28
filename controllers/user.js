@@ -24,6 +24,11 @@ module.exports = (express, passport) => {
 	});
 
 	router.route('/signup').post(profileUpload.single('profile'), (req, res, next ) => {
+		let {nickname, email, password} = req.body;
+		if (!nickname || !email || !password) {
+			res.jsonp({ code: 206, service: 'user', function: 'signup', message: 'unsatisfied_param'});
+			return;
+		}
 		passport.authenticate('signup', (error, user, info) => {
 			if (error) { res.jsonp( { code: 208, service: 'user', function: 'signup', message: 'error', error }); return; }
 			if (info) { res.jsonp( { code: 207, service: 'user', function: 'signup', message: info.message}); return; }
@@ -36,6 +41,11 @@ module.exports = (express, passport) => {
 
 
 	router.route('/modify').post(profileUpload.single('profile'), (req, res, next ) => {
+		let {email, password} = req.body;
+		if (!email || !password) {
+			res.jsonp({ code: 216, service: 'user', function: 'modify', message: 'unsatisfied_param'});
+			return;
+		}
 		passport.authenticate('modify', (error, user, info) =>{
 			if (error) { res.jsonp( { code: 218, service: 'user', function: 'modify', message: 'error', error });return; }
 			if (info) { res.jsonp( { code: 217, service: 'user', function: 'modify', message: info.message }); return; }
@@ -50,6 +60,11 @@ module.exports = (express, passport) => {
 
 
 	router.route('/login').post((req, res, next ) => {
+		let {email, password} = req.body;
+		if (!email || !password) {
+			res.jsonp({ code: 226, service: 'user', function: 'login', message: 'unsatisfied_param'});
+			return;
+		}
 		passport.authenticate('login', (error, user, info) => {
 			if (error) { res.jsonp( { code: 228, service: 'user', function: 'login', message: 'error', error }); return; }
 			if (info) { res.jsonp( { code: 227, service: 'user', function: 'login', message: info.message }); return; }
