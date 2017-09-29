@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt-nodejs');
+
 const {sFollow} = require('./follow');
+
 const sUser = mongoose.Schema({
 	signhash	: {type: String, required: true, unique: true},
 
@@ -16,7 +18,7 @@ const sUser = mongoose.Schema({
 	following	: [sFollow]
 });
 
-sUser.index({email:1, signhash:1});
+sUser.index({signhash:1, email:1});
 
 
 sUser.methods.genPw = function(password) {

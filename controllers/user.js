@@ -16,10 +16,10 @@ module.exports = (express, passport) => {
 	    next();
 	});
 
-	router.get('/', (req, res) => {
+	router.all('/', (req, res) => {
 	    res.jsonp({
-	        name: 'hair.pin user API',
-	        version: '1.0',
+	        name: 'hair.pin user service API',
+	        version: '1.0.0',
 	    });
 	});
 
@@ -88,8 +88,7 @@ module.exports = (express, passport) => {
 			}
 			if (!user.follower.find((e)=> e.signhash === myhash)){
 				user.follower.push(new mFollow({
-					signhash : myhash,
-					nickname
+					signhash : myhash
 				}));
 				user.save().then(() => {
 					res.jsonp({ code: 230, service: 'user', function: 'follow', message: 'success', target: user.nickname });
@@ -101,7 +100,6 @@ module.exports = (express, passport) => {
 			}
 		})
 	}).all((req, res) => res.jsonp({ code: 239, service: 'user', function: 'follow', message: 'unauthorized_method' }));
-
 
 
 	router.route('/unfollow').post((req, res) => {
