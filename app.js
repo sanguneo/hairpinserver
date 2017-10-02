@@ -37,8 +37,8 @@ app.use(passport.initialize());
 // 	secret: envs.secretOrKey,
 
 
-var apiRouter = require('./controllers/api')(express);
-var userRouter = require('./controllers/auth')(express, passport);
+const apiRouter = require('./controllers/api')(express);
+const userRouter = require('./controllers/auth')(express, passport);
 
 app.use('/api', apiRouter);
 app.use('/user', userRouter);
