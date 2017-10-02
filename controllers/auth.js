@@ -31,9 +31,11 @@ module.exports = (express, passport) => {
 		passport.authenticate('signup', (error, user, info) => {
 			if (error) { return res.jsonp( { code: 208, service: 'user', function: 'signup', message: 'error', error }) }
 			if (info) { return res.jsonp( { code: 207, service: 'user', function: 'signup', message: info.message}); }
-			fs.unlink(uploadPath + '/' + user.signhash, () => {
-				fs.copyFileSync(req.file.path, uploadPath + '/' + user.signhash);
-			});
+			if (req.file && req.file.path) {
+				fs.unlink(uploadPath + '/' + user.signhash, () => {
+					fs.copyFileSync(req.file.path, uploadPath + '/' + user.signhash);
+				});
+			}
 			return res.jsonp({ code: 200, service: 'user', function: 'signup', message: 'success', signhash:user.signhash});
 		})(req, res, next)
 	}).all((req, res) => res.jsonp({code: 209, function: 'signup', message: 'unauthorized_method'}));
@@ -47,11 +49,13 @@ module.exports = (express, passport) => {
 		passport.authenticate('modify', (error, user, info) =>{
 			if (error) { return res.jsonp( { code: 218, service: 'user', function: 'modify', message: 'error', error });}
 			if (info) { return res.jsonp( { code: 217, service: 'user', function: 'modify', message: info.message }); }
-			fs.unlink(uploadPath + '/' + user.signhash, () => {
-				fs.copyFile(req.file.path, uploadPath + '/' + user.signhash, () => {
-					fs.unlinkSync(req.file.path);
+			if (req.file && req.file.path) {
+				fs.unlink(uploadPath + '/' + user.signhash, () => {
+					fs.copyFile(req.file.path, uploadPath + '/' + user.signhash, () => {
+						fs.unlinkSync(req.file.path);
+					});
 				});
-			});
+			}
 			return res.jsonp({ code: 210, service: 'user', function: 'modify', message: 'success', signhash:user.signhash });
 		})(req, res, next)
 	}).all((req, res) => res.jsonp({ code: 219, service: 'user', function: 'modify', message: 'unauthorized_method'}));
