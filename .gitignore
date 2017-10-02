@@ -1,3 +1,9 @@
 *.log
 logs/**
 env.json
+*.iml
+.idea
+.idea/*
+.idea/**
+.idea/**/*
+node_modules/
