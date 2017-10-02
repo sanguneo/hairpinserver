@@ -1,5 +1,5 @@
 const LocalStrategy = require('passport-local').Strategy;
-const mUser = require('../../models/user');
+const mUser = require('../models/user');
 const uuidv4 = require('uuid/v4');
 const uuidv5 = require('uuid/v5');
 
@@ -44,7 +44,9 @@ module.exports = function(passport) {
 					return done(null, false, {'message': 'invalidpw'});
 				} else {
 					user.nickname = req.body.name;
-					user.password = user.genPw(password);
+					if (req.body.repw || req.body.repw !== '') {
+						user.password = user.genPw(req.body.repw);
+					}
 					if (req.profile) {
 						user.profileReg = new Date();
 					}

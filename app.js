@@ -20,6 +20,8 @@ app.use(express.static('public'));
 // Support for Crossdomain JSONP
 app.set('jsonp callback name', 'callback');
 
+app.set('ca-jwt-key', envs.secretOrKey);
+
 const db = mongoose.connection;
 db.on('error', console.error);
 db.once('open', function(){
@@ -29,14 +31,14 @@ mongoose.connect(envs.mongoserver + envs.database, {useMongoClient: true});
 mongoose.Promise = global.Promise;
 
 
-require('./controllers/user_specific/passport')(passport);
+require('./controllers/auth.passport')(passport);
 
 app.use(passport.initialize());
 // 	secret: envs.secretOrKey,
 
 
 var apiRouter = require('./controllers/api')(express);
-var userRouter = require('./controllers/user')(express, passport);
+var userRouter = require('./controllers/auth')(express, passport);
 
 app.use('/api', apiRouter);
 app.use('/user', userRouter);
