@@ -24,42 +24,7 @@ module.exports = (express, passport) => {
 	    });
 	});
 	
-	router.use((req, res, next) => {
-		const token = req.headers['nekotnipriah'] || req.query.nekotnipriah;
-		if (!token) {
-			return res.jsonp({
-				code: 294,
-				service: 'user',
-				function: 'basic',
-				message: 'Authorization header key undefined.',
-				token
-			});
-		}
-		const authPromise = new Promise(
-			(resolve, reject) => {
-				// jwt.verify(token, req.app.get('jwt-secret'), (err, decoded) => {
-				// 	if(err) reject(err)
-				// 	resolve(decoded)
-				// })
-				if(token.indexOf('omg')>=0) {
-					resolve({'isomg' : 'omgggg'});
-				}else {
-					reject({token, error: 'fucked'})
-				}
-			}
-		);
-		
-		authPromise.then((deccodedToken)=>{
-			req.deccodedToken = deccodedToken;
-			next()
-		}).catch((error) => res.jsonp({
-			code: 295,
-			service: 'user',
-			function: 'basic',
-			message: 'Authorization failed.',
-			...error,
-		}));
-	});
+	router.use(require('./auth.common')['authentication']);
 
 	router.route('/signup').post(profileUpload.single('profile'), (req, res, next ) => {
 		let {nickname, email, password} = req.body;
