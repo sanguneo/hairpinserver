@@ -31,7 +31,7 @@ const authentication = (req, res, next) => {
 		code: 295,
 		service: 'user',
 		function: 'common',
-		error: `${error.name} : ${error.message}`,
+		error: `(${error.name})${error.message}`,
 	}));
 }
 
