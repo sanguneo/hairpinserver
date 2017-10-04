@@ -4,6 +4,11 @@
 const jwt			= require('jsonwebtoken');
 
 const authentication = (req, res, next) => {
+	const passAuthenticate = ['/signup', '/login', '/modify'];
+	if (passAuthenticate.includes(req.path)){
+		next();
+		return;
+	}
 	let secret = req.app.get('secretnipriah');
 	const token = req.headers['nekotnipriah'] || req.query.nekotnipriah;
 	if (!token) {
