@@ -1,6 +1,6 @@
 const multer		= require('multer');
 const fs			= require('fs');
-const jwt			= require('jsonwebtoken');
+
 
 module.exports = (express, passport) => {
 	const router      = express.Router();
@@ -74,7 +74,7 @@ module.exports = (express, passport) => {
 		passport.authenticate('login', (error, user, info) => {
 			if (error) { return res.jsonp( { code: 228, service: 'user', function: 'login', message: 'error', error }); }
 			if (info) { return res.jsonp( { code: 227, service: 'user', function: 'login', message: info.message }); }
-			return res.jsonp({ code: 220, service: 'user', function: 'login', message: 'success', signhash:user.signhash });
+			return res.jsonp({ code: 220, service: 'user', function: 'login', message: 'success', signhash:user.signhash, token: user.token });
 		})(req, res, next);
 	}).all((req, res) => res.jsonp({ code: 229, service: 'user', function: 'login', message: 'unauthorized_method'}));
 

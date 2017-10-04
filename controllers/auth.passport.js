@@ -1,5 +1,7 @@
 const LocalStrategy = require('passport-local').Strategy;
 const mUser = require('../models/user');
+const jwt = require('jsonwebtoken');
+
 const uuidv4 = require('uuid/v4');
 const uuidv5 = require('uuid/v5');
 
@@ -72,7 +74,29 @@ module.exports = function(passport) {
 				if (!user.validPw(password)) {
 					return done(null, false, {'message': 'invalidpw'});
 				}
-				return done(null, user);
+				const tokenize = new Promise((resolve, reject) => {
+					jwt.sign(
+						{
+							_id: user._id,
+							signhash: user.signhash,
+							email: user.email
+						},
+						req.app.get('secretnipriah'),
+						{
+							expiresIn: '7d',
+							issuer: 'sanguneo.com',
+							subject: 'authentication'
+						}, (err, token) => {
+							if (err) reject(err)
+							resolve(token)
+						})
+				});
+				tokenize.then((token) => {
+					return done(null, {...user, token})
+				}).catch((error) => {
+					return done(null, false, {'message': 'tokenerror'});
+				})
+				//return done(null, user);
 			});
 		})
 	);
