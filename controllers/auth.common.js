@@ -4,7 +4,7 @@
 const jwt			= require('jsonwebtoken');
 
 const authentication = (req, res, next) => {
-	const passAuthenticate = ['/signup', '/login', '/modify'];
+	const passAuthenticate = ['/signup', '/login'];
 	if (passAuthenticate.includes(req.path)){
 		next();
 		return;
