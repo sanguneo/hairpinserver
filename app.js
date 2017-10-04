@@ -20,7 +20,7 @@ app.use(express.static('public'));
 // Support for Crossdomain JSONP
 app.set('jsonp callback name', 'callback');
 
-app.set('ca-jwt-key', envs.secretOrKey);
+app.set('secretnipriah', envs.secretOrKey);
 
 const db = mongoose.connection;
 db.on('error', console.error);

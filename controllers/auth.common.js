@@ -36,6 +36,7 @@ const authentication = (req, res, next) => {
 		service: 'user',
 		function: 'basic',
 		message: 'Authorization failed.',
+		reqapp: req.app.secretnipriah,
 		...error,
 	}));
 }
