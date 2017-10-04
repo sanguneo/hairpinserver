@@ -83,9 +83,7 @@ module.exports = function(passport) {
 						},
 						req.app.get('secretnipriah'),
 						{
-							expiresIn: '7d',
-							issuer: 'sanguneo.com',
-							subject: 'authentication'
+							issuer: 'sanguneo.com'
 						}, (err, token) => {
 							if (err) reject(err)
 							resolve(token)
@@ -94,7 +92,7 @@ module.exports = function(passport) {
 				tokenize.then((token) => {
 					return done(null, {...user, token})
 				}).catch((error) => {
-					return done(null, false, {'message': 'tokenerror'});
+					return done(null, false, {'message': 'calculatetokenfailed',error});
 				})
 				//return done(null, user);
 			});
