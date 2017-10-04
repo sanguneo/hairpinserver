@@ -27,8 +27,8 @@ const authentication = (req, res, next) => {
 			}
 		}
 	);
-	const reqapp = req.app;
-	console.log(req.app);
+	const reqapp = req.app.get('secretnipriah');
+	console.log(req.app.get('secretnipriah'));
 	authPromise.then((deccodedToken)=>{
 		req.deccodedToken = deccodedToken;
 		next()
