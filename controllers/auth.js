@@ -58,7 +58,7 @@ module.exports = (express, passport) => {
 			function: 'basic',
 			message: 'Authorization failed.',
 			header: req.headers['nekot-nipriah'],
-			error
+			...error
 		}));
 	});
 
