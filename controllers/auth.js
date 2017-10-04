@@ -32,7 +32,7 @@ module.exports = (express, passport) => {
 				service: 'user',
 				function: 'basic',
 				message: 'Authorization header key undefined.',
-				token: req.headers['nekotnipriah']
+				token
 			});
 		}
 		const authPromise = new Promise(
@@ -44,7 +44,7 @@ module.exports = (express, passport) => {
 				if(token.indexOf('omg')>=0) {
 					resolve({'isomg' : 'omgggg'});
 				}else {
-					reject({err: 'fucked'})
+					reject({token, error: 'fucked'})
 				}
 			}
 		);
@@ -57,7 +57,7 @@ module.exports = (express, passport) => {
 			service: 'user',
 			function: 'basic',
 			message: 'Authorization failed.',
-			header: req.headers['nekot-nipriah'],
+			token,
 			...error
 		}));
 	});
