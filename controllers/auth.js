@@ -22,6 +22,11 @@ module.exports = (express, passport) => {
 	        version: '1.0.0',
 	    });
 	});
+	
+	router.use((req, res, next) => {
+		res.jsonp({ code: 292, service: 'user', function: 'basic', message: 'Authorization header key undefined.'})
+		next();
+	});
 
 	router.route('/signup').post(profileUpload.single('profile'), (req, res, next ) => {
 		let {nickname, email, password} = req.body;
