@@ -10,6 +10,8 @@ module.exports = (express, passport) => {
 
 	const mUser = require('../models/user');
 	const { mFollow } = require('../models/follow');
+	
+	const authentication = require('./auth.common')['authentication']
 
 	router.use((req, res, next) => {
 	    res.header("Access-Control-Allow-Origin", "*");
@@ -24,7 +26,7 @@ module.exports = (express, passport) => {
 	    });
 	});
 	
-	router.use(require('./auth.common')['authentication']);
+	router.use(authentication);
 
 	router.route('/signup').post(profileUpload.single('profile'), (req, res, next ) => {
 		let {nickname, email, password} = req.body;
