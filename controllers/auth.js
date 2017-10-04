@@ -24,7 +24,7 @@ module.exports = (express, passport) => {
 	});
 	
 	router.use((req, res, next) => {
-		const token = true;
+		const token = false;
 		if (token) {
 			return res.jsonp({
 				code: 292,
