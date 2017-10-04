@@ -4,6 +4,7 @@
 
 
 const authentication = (req, res, next) => {
+	let secret = req.app.get('secretnipriah');
 	const token = req.headers['nekotnipriah'] || req.query.nekotnipriah;
 	if (!token) {
 		return res.jsonp({
@@ -27,8 +28,7 @@ const authentication = (req, res, next) => {
 			}
 		}
 	);
-	const reqapp = req.app.get('secretnipriah');
-	console.log(req.app.get('secretnipriah'));
+	
 	authPromise.then((deccodedToken)=>{
 		req.deccodedToken = deccodedToken;
 		next()
@@ -37,7 +37,7 @@ const authentication = (req, res, next) => {
 		service: 'user',
 		function: 'basic',
 		message: 'Authorization failed.',
-		reqapp,
+		secret,
 		...error,
 	}));
 }
