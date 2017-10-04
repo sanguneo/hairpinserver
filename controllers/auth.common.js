@@ -23,7 +23,7 @@ const authentication = (req, res, next) => {
 			})
 		}
 	);
-	
+	console.log(req.path);
 	authPromise.then((deccodedToken)=>{
 		req.deccodedToken = deccodedToken;
 		next()
