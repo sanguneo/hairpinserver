@@ -10,7 +10,7 @@ const authentication = (req, res, next) => {
 		return res.jsonp({
 			code: 294,
 			service: 'user',
-			function: 'basic',
+			function: 'common',
 			message: 'Authorization header key undefined.',
 			token
 		});
@@ -21,11 +21,6 @@ const authentication = (req, res, next) => {
 				if(err) reject(err)
 				resolve(deccodedToken)
 			})
-			// if(token.indexOf('omg')>=0) {
-			// 	resolve({secret,'isomg' : 'omgggg'});
-			// }else {
-			// 	reject({token, error: 'fucked'})
-			// }
 		}
 	);
 	
@@ -35,10 +30,8 @@ const authentication = (req, res, next) => {
 	}).catch((error) => res.jsonp({
 		code: 295,
 		service: 'user',
-		function: 'basic',
-		message: 'Authorization failed.',
-		secret,
-		...error,
+		function: 'common',
+		error: `${error.name} : ${error.message}`,
 	}));
 }
 
