@@ -27,7 +27,7 @@ const authentication = (req, res, next) => {
 			}
 		}
 	);
-	
+	const reqapp = req.app;
 	authPromise.then((deccodedToken)=>{
 		req.deccodedToken = deccodedToken;
 		next()
@@ -36,7 +36,7 @@ const authentication = (req, res, next) => {
 		service: 'user',
 		function: 'basic',
 		message: 'Authorization failed.',
-		reqapp: req.app,
+		reqapp,
 		...error,
 	}));
 }
