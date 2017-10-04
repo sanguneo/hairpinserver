@@ -1,5 +1,6 @@
 const multer		= require('multer');
 const fs			= require('fs');
+const jwt			= require('jsonwebtoken');
 
 module.exports = (express, passport) => {
 	const router      = express.Router();
@@ -24,17 +25,41 @@ module.exports = (express, passport) => {
 	});
 	
 	router.use((req, res, next) => {
-		const token = true;
+		const token = req.headers['nekotnipriah'] || req.query.nekotnipriah;
 		if (token) {
 			return res.jsonp({
-				code: 292,
+				code: 294,
 				service: 'user',
 				function: 'basic',
 				message: 'Authorization header key undefined.',
-				header: req.headers
+				header: req.headers['nekotnipriah']
 			});
 		}
-		next();
+		const authPromise = new Promise(
+			(resolve, reject) => {
+				// jwt.verify(token, req.app.get('jwt-secret'), (err, decoded) => {
+				// 	if(err) reject(err)
+				// 	resolve(decoded)
+				// })
+				if(token.indexOf('omg')>=0) {
+					resolve({'isomg' : 'omgggg'});
+				}else {
+					reject({err: 'fucked'})
+				}
+			}
+		);
+		
+		authPromise.then((deccodedToken)=>{
+			req.deccodedToken = deccodedToken;
+			next()
+		}).catch((error) => res.jsonp({
+			code: 295,
+			service: 'user',
+			function: 'basic',
+			message: 'Authorization failed.',
+			header: req.headers['nekot-nipriah'],
+			error
+		}));
 	});
 
 	router.route('/signup').post(profileUpload.single('profile'), (req, res, next ) => {
@@ -91,7 +116,7 @@ module.exports = (express, passport) => {
 	router.route('/follow').post((req, res) => {
 		let {signhash, myhash, nickname} = req.body;
 		if (!signhash || !myhash || !nickname) {
-			return res.jsonp({ code: 236, service: 'user', function: 'follow', message: 'unsatisfied_param'});
+			return res.jsonp({ code: 236, service: 'user', function: 'follow', message: 'unsatisfied_param', deccodedToken: req.deccodedToken});
 		}
 		mUser.findOne({signhash},(error, user) => {
 			if(error) {
