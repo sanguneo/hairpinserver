@@ -24,13 +24,14 @@ module.exports = (express, passport) => {
 	});
 	
 	router.use((req, res, next) => {
-		const token = false;
+		const token = true;
 		if (token) {
 			return res.jsonp({
 				code: 292,
 				service: 'user',
 				function: 'basic',
-				message: 'Authorization header key undefined.'
+				message: 'Authorization header key undefined.',
+				header: req.headers
 			});
 		}
 		next();
