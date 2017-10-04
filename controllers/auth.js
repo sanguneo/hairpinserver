@@ -26,13 +26,13 @@ module.exports = (express, passport) => {
 	
 	router.use((req, res, next) => {
 		const token = req.headers['nekotnipriah'] || req.query.nekotnipriah;
-		if (token) {
+		if (!token) {
 			return res.jsonp({
 				code: 294,
 				service: 'user',
 				function: 'basic',
 				message: 'Authorization header key undefined.',
-				header: req.headers['nekotnipriah']
+				token: req.headers['nekotnipriah']
 			});
 		}
 		const authPromise = new Promise(
