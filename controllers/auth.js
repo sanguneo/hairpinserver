@@ -57,8 +57,7 @@ module.exports = (express, passport) => {
 			service: 'user',
 			function: 'basic',
 			message: 'Authorization failed.',
-			token,
-			...error
+			...error,
 		}));
 	});
 
