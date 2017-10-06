@@ -18,7 +18,7 @@ module.exports = function(passport) {
 					return done(null, false, {'message': 'emailexist'});
 				} else {
 					var newbie = new mUser({
-						nickname : req.body.name,
+						nickname : req.body.nickname,
 						email,
 						signhash : uuidv5(email, uuidv4())
 					});
@@ -45,7 +45,7 @@ module.exports = function(passport) {
 				if (!user.validPw(password)) {
 					return done(null, false, {'message': 'invalidpw'});
 				} else {
-					user.nickname = req.body.name;
+					user.nickname = req.body.nickname;
 					if (req.body.repw || req.body.repw !== '') {
 						user.password = user.genPw(req.body.repw);
 					}
