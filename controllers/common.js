@@ -27,14 +27,14 @@ const authenticationFunc = (req, res, next) => {
 	}
 	const authPromise = new Promise(
 		(resolve, reject) => {
-			jwt.verify(token, secret, (err, deccodedToken) => {
+			jwt.verify(token, secret, (err, decoded) => {
 				if(err) reject(err)
-				resolve(deccodedToken)
+				resolve(decoded)
 			})
 		}
 	);
-	authPromise.then((deccodedToken)=>{
-		req.deccodedToken = deccodedToken;
+	authPromise.then((decoded)=>{
+		req.decoded = decoded;
 		next()
 	}).catch((error) => res.jsonp({
 		code: 295,

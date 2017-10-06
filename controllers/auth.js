@@ -11,7 +11,7 @@ module.exports = (express, passport) => {
 	const mUser = require('../models/user');
 	const { mFollow } = require('../models/follow');
 	
-	const authentication = require('./auth.common')['authentication']
+	const authentication = require('./common')['authentication']
 
 	router.use((req, res, next) => {
 	    res.header("Access-Control-Allow-Origin", "*");
@@ -80,9 +80,10 @@ module.exports = (express, passport) => {
 
 
 	router.route('/follow').post((req, res) => {
-		let {signhash, myhash, nickname} = req.body;
-		if (!signhash || !myhash || !nickname) {
-			return res.jsonp({ code: 236, service: 'user', function: 'follow', message: 'unsatisfied_param', deccodedToken: req.deccodedToken});
+		let {signhash} = req.body;
+		let me = req.deccodedToken;
+		if (!signhash) {
+			return res.jsonp({ code: 236, service: 'user', function: 'follow', message: 'unsatisfied_param'});
 		}
 		mUser.findOne({signhash},(error, user) => {
 			if(error) {
@@ -91,7 +92,7 @@ module.exports = (express, passport) => {
 			if(!user) {
 				return res.jsonp({ code: 237, service: 'user', function: 'follow', message: info.message });
 			}
-			if (!user.follower.find((e)=> e.signhash === myhash)){
+			if (!user.follower.find((e)=> e.signhash === me.signhash)){
 				user.follower.push(new mFollow({
 					signhash : myhash
 				}));
@@ -108,8 +109,9 @@ module.exports = (express, passport) => {
 
 
 	router.route('/unfollow').post((req, res) => {
-		let {signhash, myhash} = req.body;
-		if (!signhash || !myhash) {
+		let {signhash} = req.body;
+		let me = req.deccodedToken;
+		if (!signhash) {
 			return res.jsonp({ code: 236, service: 'user', function: 'unfollow', message: 'unsatisfied_param'});
 		}
 		mUser.findOne({signhash},(error, user) => {
