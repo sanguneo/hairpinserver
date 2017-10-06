@@ -17,12 +17,12 @@ module.exports = function(passport) {
 				if (user) {
 					return done(null, false, {'message': 'emailexist'});
 				} else {
-					var newbie = new mUser({
+					let newbie = new mUser({
 						nickname : req.body.name,
 						email,
-						password : newbie.genPw(password),
 						signhash : uuidv5(email, uuidv4())
 					});
+					newbie.password = newbie.genPw(password);
 					newbie.save(function(err) {
 						if (err) throw err;
 						return done(null, newbie);
