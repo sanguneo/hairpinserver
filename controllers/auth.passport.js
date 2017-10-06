@@ -20,9 +20,9 @@ module.exports = function(passport) {
 					let newbie = new mUser({
 						nickname : req.body.name,
 						email,
+						password : this.genPw(password),
 						signhash : uuidv5(email, uuidv4())
 					});
-					newbie.password = newbie.genPw(password);
 					newbie.save(function(err) {
 						if (err) throw err;
 						return done(null, newbie);
