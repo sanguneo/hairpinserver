@@ -26,7 +26,7 @@ module.exports = (express, passport) => {
 	    });
 	});
 	
-	router.use(authentication);
+	router.use(authentication(['/signup', '/login']));
 
 	router.route('/signup').post(profileUpload.single('profile'), (req, res, next ) => {
 		let {nickname, email, password} = req.body;

@@ -3,9 +3,14 @@
  */
 const jwt			= require('jsonwebtoken');
 
-const authentication = (req, res, next) => {
-	const passAuthenticate = ['/signup', '/login'];
-	if (passAuthenticate.includes(req.path)){
+let passRoute		= [];
+
+const authentication = (passRouteMore) => {
+	passRoute = [...passRoute,...passRouteMore];
+	return authenticationFunc
+}
+const authenticationFunc = (req, res, next) => {
+	if (passRoute.includes(req.path)){
 		next();
 		return;
 	}
@@ -28,7 +33,6 @@ const authentication = (req, res, next) => {
 			})
 		}
 	);
-	console.log(req.path);
 	authPromise.then((deccodedToken)=>{
 		req.deccodedToken = deccodedToken;
 		next()
@@ -36,7 +40,7 @@ const authentication = (req, res, next) => {
 		code: 295,
 		service: 'user',
 		function: 'common',
-		error: `(${error.name})${error.message}`,
+		message: `(${error.name})${error.message}`,
 	}));
 }
 
