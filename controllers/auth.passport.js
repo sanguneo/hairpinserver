@@ -17,7 +17,7 @@ module.exports = function(passport) {
 				if (user) {
 					return done(null, false, {'message': 'emailexist'});
 				} else {
-					let newbie = new mUser({
+					var newbie = new mUser({
 						nickname : req.body.name,
 						email,
 						password : newbie.genPw(password),
