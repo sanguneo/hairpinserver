@@ -1,18 +1,21 @@
-const multer		= require('multer');
-const fs			= require('fs');
 
-const uploadPath = 'upload/profiles';
-const profileUpload	= multer({ dest: uploadPath });
 
-const mUser = require('../models/user');
-const { mFollow } = require('../models/follow');
 
-const validation = require('./user.validation')([]);
 
 
 module.exports = (express, passport) => {
-	const router      = express.Router();
-
+	const router		= express.Router();
+	const multer		= require('multer');
+	const fs			= require('fs');
+	
+	const uploadPath = 'upload/profiles';
+	const profileUpload	= multer({ dest: uploadPath });
+	
+	const mUser = require('../models/user');
+	const { mFollow } = require('../models/follow');
+	
+	const validation	= require('./user.validation')([]);
+	
 	router.use((req, res, next) => {
 	    res.header("Access-Control-Allow-Origin", "*");
 	    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
