@@ -140,25 +140,6 @@ module.exports = (express, passport) => {
 			}
 		})
 	}).all((req, res) => res.jsonp({ code: 249, service: 'user', function: 'unfollow', message: 'unauthorized_method' }));
-	
-	router.route('/test').post((req, res) => {
-		let signhash = '6043c3f6-4829-5108-8470-85f976c0d979';
-		let myhash = req.body.myhash;
-		if (!signhash) {
-			return res.jsonp({ code: 236, service: 'user', function: 'unfollow', message: 'unsatisfied_param'});
-		}
-		mUser.findOneAndUpdate({signhash},
-			{ "$push": { follower: { signhash: myhash } }},
-			{ safe: true }, (error, user) => {
-			if(error) {
-				return res.jsonp({ code: 238, service: 'user', function: 'follow', message: 'error', error });
-			}
-			if(!user) {
-				return res.jsonp({ code: 237, service: 'user', function: 'follow', message: 'noaccount' });
-			}
-			return res.jsonp({ code: 230, service: 'user', function: 'follow', message: 'success', target: user.nickname });
-		});
-	}).all((req, res) => res.jsonp({ code: 239, service: 'user', function: 'follow', message: 'unauthorized_method' }));
 
 	return router;
 };
