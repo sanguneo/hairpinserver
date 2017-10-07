@@ -14,7 +14,7 @@ module.exports = (express, passport) => {
 	const mUser = require('../models/user');
 	const { mFollow } = require('../models/follow');
 	
-	const validation	= require('./user.validation')([]);
+	const validation	= require('./user.validation');
 	
 	router.use((req, res, next) => {
 	    res.header("Access-Control-Allow-Origin", "*");
