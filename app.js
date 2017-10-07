@@ -27,7 +27,7 @@ db.on('error', console.error);
 db.once('open', function(){
 	console.log("Connected to mongod server");
 });
-mongoose.connect(envs.mongoserver + envs.database, {useMongoClient: true});
+mongoose.connect(envs.mongoserver + ':' + envs.mongoport + '/' + envs.database, {useMongoClient: true});
 mongoose.Promise = global.Promise;
 
 
