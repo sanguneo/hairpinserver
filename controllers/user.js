@@ -142,8 +142,8 @@ module.exports = (express, passport) => {
 	}).all((req, res) => res.jsonp({ code: 249, service: 'user', function: 'unfollow', message: 'unauthorized_method' }));
 	
 	router.route('/test').post((req, res) => {
-		let signhash = '6043c3f6-4829-5108-8470-85f976c0d979';
-		let myhash = 'asdfwqerxczv';
+		let signhash = '604qwerxv3c3f6-4829-5108-8470-85f976c0d979';
+		let myhash = 'asdfwqerasdfasfxczv';
 		if (!signhash) {
 			return res.jsonp({ code: 236, service: 'user', function: 'unfollow', message: 'unsatisfied_param'});
 		}
