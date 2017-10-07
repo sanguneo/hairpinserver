@@ -40,7 +40,7 @@ module.exports = (express, passport) => {
 			if (error) { return res.jsonp( { code: 208, service: 'user', function: 'signup', message: 'error', error }) }
 			if (info) { return res.jsonp( { code: 207, service: 'user', function: 'signup', message: info.message}); }
 			if (req.file && req.file.path) {
-				fs.unlink(uploadPath + '/' + user.signhash, () => {
+				fs.unlink(uploadPath + '/' + user.signhash, (err) => {
 					if(err) console.log('"' + uploadPath + '/' + user.signhash+'" file are not exist.' );
 					fs.copyFile(req.file.path, uploadPath + '/' + user.signhash, () => {
 						fs.unlinkSync(req.file.path);
@@ -61,7 +61,7 @@ module.exports = (express, passport) => {
 			if (error) { return res.jsonp( { code: 218, service: 'user', function: 'modify', message: 'error', error });}
 			if (info) { return res.jsonp( { code: 217, service: 'user', function: 'modify', message: info.message }); }
 			if (req.file && req.file.path) {
-				fs.unlink(uploadPath + '/' + user.signhash, () => {
+				fs.unlink(uploadPath + '/' + user.signhash, (err) => {
 					if(err) console.log('"' + uploadPath + '/' + user.signhash+'" file are not exist.' );
 					fs.copyFile(req.file.path, uploadPath + '/' + user.signhash, () => {
 						fs.unlinkSync(req.file.path);
