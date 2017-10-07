@@ -7,7 +7,7 @@ const profileUpload	= multer({ dest: uploadPath });
 const mUser = require('../models/user');
 const { mFollow } = require('../models/follow');
 
-const validation = require('./user.validation');
+const validation = require('./user.validation')([]);
 
 
 module.exports = (express, passport) => {

@@ -39,5 +39,3 @@ module.exports = (passRouteMore) => (req, res, next) => {
 		message: `(${error.name})${error.message}`,
 	}));
 }
-
-module.exports = authentication
