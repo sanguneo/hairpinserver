@@ -1,8 +1,6 @@
 const multer		= require('multer');
 const fs			= require('fs');
 
-const router      = express.Router();
-
 const uploadPath = 'upload/profiles';
 const profileUpload	= multer({ dest: uploadPath });
 
@@ -13,7 +11,7 @@ const validation = require('./user.validation');
 
 
 module.exports = (express, passport) => {
-	
+	const router      = express.Router();
 
 	router.use((req, res, next) => {
 	    res.header("Access-Control-Allow-Origin", "*");
