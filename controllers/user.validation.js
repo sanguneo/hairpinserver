@@ -40,4 +40,4 @@ module.exports = (passRouteMore) => (req, res, next) => {
 	}));
 }
 
-module.exports = authentication}
+module.exports = authentication
