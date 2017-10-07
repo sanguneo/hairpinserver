@@ -3,14 +3,10 @@
  */
 const jwt			= require('jsonwebtoken');
 
-let passRoute		= [];
+const passRoute		= [];
 
-const authentication = (passRouteMore) => {
-	passRoute = [...passRoute,...passRouteMore];
-	return authenticationFunc
-}
-const authenticationFunc = (req, res, next) => {
-	if (passRoute.includes(req.path)){
+module.exports = (passRouteMore) => (req, res, next) => {
+	if (([...passRoute,...passRouteMore]).includes(req.path)){
 		next();
 		return;
 	}
@@ -44,4 +40,4 @@ const authenticationFunc = (req, res, next) => {
 	}));
 }
 
-module.exports = {authentication}
+module.exports = authentication}

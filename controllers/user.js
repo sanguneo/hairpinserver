@@ -1,17 +1,19 @@
 const multer		= require('multer');
 const fs			= require('fs');
 
+const router      = express.Router();
+
+const uploadPath = 'upload/profiles';
+const profileUpload	= multer({ dest: uploadPath });
+
+const mUser = require('../models/user');
+const { mFollow } = require('../models/follow');
+
+const validation = require('./user.validation');
+
 
 module.exports = (express, passport) => {
-	const router      = express.Router();
-
-	const uploadPath = 'upload/profiles';
-	const profileUpload	= multer({ dest: uploadPath });
-
-	const mUser = require('../models/user');
-	const { mFollow } = require('../models/follow');
 	
-	const authentication = require('./common')['authentication']
 
 	router.use((req, res, next) => {
 	    res.header("Access-Control-Allow-Origin", "*");
@@ -26,7 +28,7 @@ module.exports = (express, passport) => {
 	    });
 	});
 	
-	router.use(authentication(['/signup', '/login']));
+	router.use(validation(['/signup', '/login']));
 
 	router.route('/signup').post(profileUpload.single('profile'), (req, res, next ) => {
 		let {nickname, email, password} = req.body;
@@ -38,7 +40,10 @@ module.exports = (express, passport) => {
 			if (info) { return res.jsonp( { code: 207, service: 'user', function: 'signup', message: info.message}); }
 			if (req.file && req.file.path) {
 				fs.unlink(uploadPath + '/' + user.signhash, () => {
-					fs.copyFileSync(req.file.path, uploadPath + '/' + user.signhash);
+					if(err) console.log('"' + uploadPath + '/' + user.signhash+'" file are not exist.' );
+					fs.copyFile(req.file.path, uploadPath + '/' + user.signhash, () => {
+						fs.unlinkSync(req.file.path);
+					});
 				});
 			}
 			return res.jsonp({ code: 200, service: 'user', function: 'signup', message: 'success', signhash:user.signhash});
@@ -56,6 +61,7 @@ module.exports = (express, passport) => {
 			if (info) { return res.jsonp( { code: 217, service: 'user', function: 'modify', message: info.message }); }
 			if (req.file && req.file.path) {
 				fs.unlink(uploadPath + '/' + user.signhash, () => {
+					if(err) console.log('"' + uploadPath + '/' + user.signhash+'" file are not exist.' );
 					fs.copyFile(req.file.path, uploadPath + '/' + user.signhash, () => {
 						fs.unlinkSync(req.file.path);
 					});
@@ -81,7 +87,7 @@ module.exports = (express, passport) => {
 
 	router.route('/follow').post((req, res) => {
 		let {signhash} = req.body;
-		let me = req.deccodedToken;
+		let myhash = req.decoded.signhash;
 		if (!signhash) {
 			return res.jsonp({ code: 236, service: 'user', function: 'follow', message: 'unsatisfied_param'});
 		}
@@ -92,7 +98,7 @@ module.exports = (express, passport) => {
 			if(!user) {
 				return res.jsonp({ code: 237, service: 'user', function: 'follow', message: info.message });
 			}
-			if (!user.follower.find((e)=> e.signhash === me.signhash)){
+			if (!user.follower.find((e)=> e.signhash === myhash)){
 				user.follower.push(new mFollow({
 					signhash : myhash
 				}));
@@ -110,7 +116,7 @@ module.exports = (express, passport) => {
 
 	router.route('/unfollow').post((req, res) => {
 		let {signhash} = req.body;
-		let me = req.deccodedToken;
+		let myhash = req.decoded.signhash;
 		if (!signhash) {
 			return res.jsonp({ code: 236, service: 'user', function: 'unfollow', message: 'unsatisfied_param'});
 		}
@@ -133,6 +139,38 @@ module.exports = (express, passport) => {
 			}
 		})
 	}).all((req, res) => res.jsonp({ code: 249, service: 'user', function: 'unfollow', message: 'unauthorized_method' }));
+	
+	router.route('/test').post((req, res) => {
+		let signhash = '6043c3f6-4829-5108-8470-85f976c0d979';
+		let myhash = 'asdfwqerxczv';
+		if (!signhash) {
+			return res.jsonp({ code: 236, service: 'user', function: 'unfollow', message: 'unsatisfied_param'});
+		}
+		mUser.update({signhash},
+			{ "$push": { follower: { signhash: myhash } }},
+			{ safe: true }, (error, user) => {
+			if(error) {
+				return res.jsonp({ code: 238, service: 'user', function: 'follow', message: 'error', error });
+			}
+			if(!user) {
+				return res.jsonp({ code: 237, service: 'user', function: 'follow', message: info.message });
+			}
+			
+			if (!user.follower.find((e)=> e.signhash === myhash)){
+				user.follower.push(new mFollow({
+					fid: '59d6ed5d842db34bae81f57a',
+					signhash : myhash
+				}));
+				user.save().then(() => {
+					return res.jsonp({ code: 230, service: 'user', function: 'follow', message: 'success', target: user.nickname });
+				}).catch((error)=> {
+					return res.jsonp({ code: 238, service: 'user', function: 'follow', message: 'error', error});
+				});
+			} else {
+				return res.jsonp({ code: 231, service: 'user', function: 'follow', message: 'following', target: user.nickname });
+			}
+		});
+	}).all((req, res) => res.jsonp({ code: 239, service: 'user', function: 'follow', message: 'unauthorized_method' }));
 
 	return router;
 };

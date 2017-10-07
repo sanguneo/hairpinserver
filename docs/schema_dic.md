@@ -9,7 +9,7 @@ const sUser = mongoose.Schema({
     signhash	: {type: String, required: true, unique: true},
     // 고유키 값
     nickname		: {type: String, required: true},
-    email		: {type: String, required: true, unique:true},
+    email		: {type: String, required: true, index:true},
     password	: {type: String, required: true},
     
     regDate		: {type: Date, required: true, default: Date.now},
@@ -25,8 +25,6 @@ const sUser = mongoose.Schema({
     // 팔로잉 리스트 배열(Follow 스키마 참고)
 });
 
-sUser.index({email:1, signhash:1});
-//인덱싱
 ```
 
 
@@ -38,14 +36,12 @@ const sFollow = mongoose.Schema({
     // 필드 고유값, 자동생성
     fid			: {type: ObjectId, required: false, unique: true},
     // 팔로워 필드 고유값( = _id)
-    signhash	: {type: String, required: true, unique: true},
+    signhash	: {type: String, required: true, index: true},
     // 팔로워 고유키값
     nickname	: {type: String, required: true},
     profileReg	: {type: Date, required: false},
     // 팔로워 프로필 최종변경일자
 });
-
-sFollow.index({fid:1, signhash:1});
 // 인덱싱
 ```
 

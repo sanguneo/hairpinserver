@@ -31,14 +31,14 @@ mongoose.connect(envs.mongoserver + envs.database, {useMongoClient: true});
 mongoose.Promise = global.Promise;
 
 
-require('./controllers/auth.passport')(passport);
+require('./controllers/user.passport')(passport);
 
 app.use(passport.initialize());
 // 	secret: envs.secretOrKey,
 
 
 const apiRouter = require('./controllers/api')(express);
-const userRouter = require('./controllers/auth')(express, passport);
+const userRouter = require('./controllers/user')(express, passport);
 
 app.use('/api', apiRouter);
 app.use('/user', userRouter);

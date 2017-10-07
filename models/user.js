@@ -7,7 +7,7 @@ const sUser = mongoose.Schema({
 	signhash	: {type: String, required: true, unique: true},
 
 	nickname	: {type: String, required: true},
-	email		: {type: String, required: true, unique: true},
+	email		: {type: String, required: true, index: true},
 	password	: {type: String, required: true},
 
 	regDate		: {type: Date, required: true, default: Date.now},
@@ -17,8 +17,6 @@ const sUser = mongoose.Schema({
 	follower	: [sFollow],
 	following	: [sFollow]
 });
-
-sUser.index({signhash:1, email:1});
 
 
 sUser.methods.genPw = function(password) {
