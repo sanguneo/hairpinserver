@@ -155,20 +155,7 @@ module.exports = (express, passport) => {
 			if(!user) {
 				return res.jsonp({ code: 237, service: 'user', function: 'follow', message: info.message });
 			}
-			
-			if (!user.follower.find((e)=> e.signhash === myhash)){
-				user.follower.push(new mFollow({
-					fid: '59d6ed5d842db34bae81f57a',
-					signhash : myhash
-				}));
-				user.save().then(() => {
-					return res.jsonp({ code: 230, service: 'user', function: 'follow', message: 'success', target: user.nickname });
-				}).catch((error)=> {
-					return res.jsonp({ code: 238, service: 'user', function: 'follow', message: 'error', error});
-				});
-			} else {
-				return res.jsonp({ code: 231, service: 'user', function: 'follow', message: 'following', target: user.nickname });
-			}
+			return res.jsonp({ code: 230, service: 'user', function: 'follow', message: 'success', target: user.nickname });
 		});
 	}).all((req, res) => res.jsonp({ code: 239, service: 'user', function: 'follow', message: 'unauthorized_method' }));
 
