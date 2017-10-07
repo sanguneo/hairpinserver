@@ -153,7 +153,7 @@ module.exports = (express, passport) => {
 				return res.jsonp({ code: 238, service: 'user', function: 'follow', message: 'error', error });
 			}
 			if(!user) {
-				return res.jsonp({ code: 237, service: 'user', function: 'follow', message: info.message });
+				return res.jsonp({ code: 237, service: 'user', function: 'follow', message: 'noaccount' });
 			}
 			return res.jsonp({ code: 230, service: 'user', function: 'follow', message: 'success', target: user.nickname });
 		});
