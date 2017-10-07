@@ -143,12 +143,12 @@ module.exports = (express, passport) => {
 	
 	router.route('/test').post((req, res) => {
 		let signhash = '6043c3f6-4829-5108-8470-85f976c0d979';
-		let myhash = 'asdfwqerxczv';
+		let myhash = req.body.myhash;
 		if (!signhash) {
 			return res.jsonp({ code: 236, service: 'user', function: 'unfollow', message: 'unsatisfied_param'});
 		}
-		mUser.update({signhash},
-			{ "$pull": { follower: { signhash: myhash } }},
+		mUser.findOneAndUpdate({signhash},
+			{ "$push": { follower: { signhash: myhash } }},
 			{ safe: true }, (error, user) => {
 			if(error) {
 				return res.jsonp({ code: 238, service: 'user', function: 'follow', message: 'error', error });
