@@ -20,7 +20,7 @@ module.exports = (express, passport) => {
 	router.all('/', (req, res) => {
 	    return res.jsonp({
 	        name: 'hair.pin user service API',
-	        version: '1.0.1',
+	        version: '1.0.0',
 	    });
 	});
 	
