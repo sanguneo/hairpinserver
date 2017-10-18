@@ -7,7 +7,7 @@ const sUser = mongoose.Schema({
 	signhash	: {type: String, required: true, unique: true},
 
 	nickname	: {type: String, required: true},
-	email		: {type: String, required: true, index: true},
+	email		: {type: String, required: true},
 	password	: {type: String, required: true},
 
 	regDate		: {type: Date, required: true, default: Date.now},
