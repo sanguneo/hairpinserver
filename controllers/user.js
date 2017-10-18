@@ -68,6 +68,7 @@ module.exports = (express, passport) => {
 
 	router.route('/login').post((req, res, next ) => {
 		let {email, password} = req.body;
+		console.log(email, password);
 		if (!email || !password) {
 			return res.jsonp({ code: 226, service: 'user', function: 'login', message: 'unsatisfied_param'});
 		}
