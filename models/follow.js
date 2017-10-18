@@ -6,6 +6,4 @@ const sFollow = mongoose.Schema({
 	signhash	: {type: String, required: true, unique: true},
 });
 
-sFollow.index({fid:1, signhash:1});
-
 module.exports = {sFollow,mFollow: mongoose.model('mFollow', sFollow)};
