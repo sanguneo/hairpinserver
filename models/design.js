@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const sDesign = mongoose.Schema({
-	signhash	: {type: String, required: true},
+	signhash	: {type: String, required: true, index: true},
 	uniqkey		: {type: String, required: true},
 
 	title		: {type: String},
@@ -11,8 +11,6 @@ const sDesign = mongoose.Schema({
 
 	regDate		: {type: Date, required: true, default: Date.now}
 });
-
-sDesign.index({signhash:1, uniqkey:1});
 
 
 module.exports = mongoose.model('design', sDesign);
