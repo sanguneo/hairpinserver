@@ -79,7 +79,8 @@ module.exports = function(passport) {
 						{
 							_id: user._id,
 							signhash: user.signhash,
-							email: user.email
+							email: user.email,
+							nickname: user.nickname
 						},
 						req.app.get('secretnipriah'),
 						{
