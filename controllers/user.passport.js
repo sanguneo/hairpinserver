@@ -91,7 +91,7 @@ module.exports = function(passport) {
 						})
 				});
 				tokenize.then((token) => {
-					return done(null, {...user, token})
+					return done(null, {user, token})
 				}).catch((error) => {
 					return done(null, false, {'message': 'calculatetokenfailed',error});
 				})
