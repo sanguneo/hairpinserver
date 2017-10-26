@@ -21,7 +21,7 @@ module.exports = (express) => {
 		if (!content) {
 			return res.jsonp({ code: 316, service: 'notice', function: 'write', message: 'unsatisfied_param'});
 		}
-		let newnotice = new mNotice({ noticeType : noticeType || noticeType !== '' ? noticeType : null, content });
+		let newnotice = new mNotice({ content });
 		if (noticeType !== '') {
 			newnotice.noticeType = noticeType;
 		}
