@@ -25,33 +25,22 @@ module.exports = (express) => {
 		if (noticeType !== '') {
 			newnotice.noticeType = noticeType;
 		}
-		return newnotice.save((err) => {
+		newnotice.save((err) => {
 			if (err) throw err;
-			return res.jsonp({ code: 316, service: 'notice', function: 'write', ...req.query});
+			res.jsonp({ code: 316, service: 'notice', function: 'write', ...req.query});
 		});
 
 	}).all((req, res) => res.jsonp({ code: 339, service: 'user', function: 'write', message: 'unauthorized_method' }));
 
 	router.route('/listup').get((req, res) => {
-		mNotice.find({},(error, user) => {
+		mNotice.find({},(error, notice) => {
 			if(error) {
 				return res.jsonp({ code: 238, service: 'user', function: 'follow', message: 'error', error });
 			}
-			if(!user) {
-				return res.jsonp({ code: 237, service: 'user', function: 'follow', message: info.message });
+			if(!notice) {
+				return res.jsonp({ code: 237, service: 'user', function: 'follow', message: '' });
 			}
-			if (!user.follower.find((e)=> e.signhash === myhash)){
-				user.follower.push(new mFollow({
-					signhash : myhash
-				}));
-				user.save().then(() => {
-					return res.jsonp({ code: 230, service: 'user', function: 'follow', message: 'success', target: user.nickname });
-				}).catch((error)=> {
-					return res.jsonp({ code: 238, service: 'user', function: 'follow', message: 'error', error});
-				});
-			} else {
-				return res.jsonp({ code: 231, service: 'user', function: 'follow', message: 'following', target: user.nickname });
-			}
+			return res.jsonp({ code: 231, service: 'user', function: 'follow', message: 'following', target: notice });
 		})
 	}).all((req, res) => res.jsonp({ code: 239, service: 'user', function: 'follow', message: 'unauthorized_method' }));
 
