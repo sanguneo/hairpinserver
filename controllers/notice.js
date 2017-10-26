@@ -33,16 +33,16 @@ module.exports = (express) => {
 	}).all((req, res) => res.jsonp({ code: 339, service: 'user', function: 'write', message: 'unauthorized_method' }));
 
 	router.route('/listup').get((req, res) => {
-		mNotice.find({},(error, notice) => {
+		mNotice.find({},['regDate', 'noticeType', 'content'],{sort: {noticeType: -1}},(error, notice) => {
 			if(error) {
-				return res.jsonp({ code: 238, service: 'user', function: 'follow', message: 'error', error });
+				return res.jsonp({ code: 238, service: 'notice', function: 'follow', message: 'error', error });
 			}
 			if(!notice) {
-				return res.jsonp({ code: 237, service: 'user', function: 'follow', message: '' });
+				return res.jsonp({ code: 237, service: 'notice', function: 'follow', message: 'no notice' });
 			}
-			return res.jsonp({ code: 231, service: 'user', function: 'follow', message: 'following', target: notice });
+			return res.jsonp({ code: 231, service: 'notice', function: 'follow', message: 'following', notice });
 		})
-	}).all((req, res) => res.jsonp({ code: 239, service: 'user', function: 'follow', message: 'unauthorized_method' }));
+	}).all((req, res) => res.jsonp({ code: 239, service: 'notice', function: 'follow', message: 'unauthorized_method' }));
 
 	return router;
 };
