@@ -27,22 +27,46 @@ module.exports = (express) => {
 		}
 		newnotice.save((err) => {
 			if (err) throw err;
-			res.jsonp({ code: 316, service: 'notice', function: 'write', ...req.query});
+			res.jsonp({ code: 316, service: 'notice', function: 'write', message: 'success', ...req.query});
 		});
 
 	}).all((req, res) => res.jsonp({ code: 339, service: 'user', function: 'write', message: 'unauthorized_method' }));
 
-	router.route('/listup').get((req, res) => {
-		mNotice.find({},['regDate', 'noticeType', 'content'],{sort: {noticeType: -1}},(error, notice) => {
+	router.route('/list').get((req, res) => {
+		mNotice.find({},['regDate', 'noticeType', 'content'],{sort: {regDate: -1}},(error, notice) => {
 			if(error) {
-				return res.jsonp({ code: 238, service: 'notice', function: 'follow', message: 'error', error });
+				return res.jsonp({ code: 338, service: 'notice', function: 'listup', message: 'error', error });
 			}
 			if(!notice) {
-				return res.jsonp({ code: 237, service: 'notice', function: 'follow', message: 'no notice' });
+				return res.jsonp({ code: 337, service: 'notice', function: 'listup', message: 'no notice' });
 			}
-			return res.jsonp({ code: 231, service: 'notice', function: 'follow', message: 'following', notice });
+			return res.jsonp({ code: 331, service: 'notice', function: 'listup', message: 'success', notice });
 		})
-	}).all((req, res) => res.jsonp({ code: 239, service: 'notice', function: 'follow', message: 'unauthorized_method' }));
+	}).all((req, res) => res.jsonp({ code: 339, service: 'notice', function: 'listup', message: 'unauthorized_method' }));
+
+	router.route('/plain').get((req, res) => {
+		mNotice.find({},['regDate', 'noticeType', 'content'],{sort: {regDate: -1}},(error, notice) => {
+			if(error) {
+				return res.jsonp({ code: 338, service: 'notice', function: 'listup', message: 'error', error });
+			}
+			if(!notice) {
+				return res.jsonp({ code: 337, service: 'notice', function: 'listup', message: 'no notice' });
+			}
+			return res.jsonp({ code: 331, service: 'notice', function: 'listup', message: 'success', notice });
+		})
+	}).all((req, res) => res.jsonp({ code: 339, service: 'notice', function: 'listup', message: 'unauthorized_method' }));
+
+	router.route('/popup').get((req, res) => {
+		mNotice.find({noticeType: 1},['regDate', 'noticeType', 'content'],{sort: {regDate: -1}},(error, notice) => {
+			if(error) {
+				return res.jsonp({ code: 338, service: 'notice', function: 'listup', message: 'error', error });
+			}
+			if(!notice) {
+				return res.jsonp({ code: 337, service: 'notice', function: 'listup', message: 'no notice' });
+			}
+			return res.jsonp({ code: 331, service: 'notice', function: 'listup', message: 'success', notice });
+		})
+	}).all((req, res) => res.jsonp({ code: 339, service: 'notice', function: 'listup', message: 'unauthorized_method' }));
 
 	return router;
 };
