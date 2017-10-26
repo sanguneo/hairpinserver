@@ -21,12 +21,10 @@ module.exports = (express) => {
 		if (!content) {
 			return res.jsonp({ code: 316, service: 'notice', function: 'write', message: 'unsatisfied_param'});
 		}
-		let note = { content };
-
-		if (noticeType !== '') {
-			note.noticeType = noticeType;
+		let newnotice = new mNotice({ content });
+		if (noticeType !== '' && typeof noticeType === 'number') {
+			newnotice.noticeType = noticeType;
 		}
-		let newnotice = new mNotice(note);
 		newnotice.save((err) => {
 			if (err) throw err;
 			res.jsonp({ code: 316, service: 'notice', function: 'write', ...req.query});
