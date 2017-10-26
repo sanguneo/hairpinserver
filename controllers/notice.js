@@ -13,7 +13,7 @@ module.exports = (express) => {
 	    return res.jsonp({
 	        name: 'hair.pin notice service API',
 	        version: '1.0.0',
-		date: new Date(Date.now()).getHours()
+		date: new Date().toLocaleString()
 	    });
 	});
 
