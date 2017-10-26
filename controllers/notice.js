@@ -13,6 +13,7 @@ module.exports = (express) => {
 	    return res.jsonp({
 	        name: 'hair.pin notice service API',
 	        version: '1.0.0',
+			date: Date.now
 	    });
 	});
 
@@ -40,22 +41,20 @@ module.exports = (express) => {
 			if(!notice) {
 				return res.jsonp({ code: 337, service: 'notice', function: 'listup', message: 'no notice' });
 			}
-			return res.jsonp({ code: 331, service: 'notice', function: 'listup', message: 'success', notice });
+			return res.jsonp({ code: 330, service: 'notice', function: 'listup', message: 'success', notice });
 		})
 	}).all((req, res) => res.jsonp({ code: 339, service: 'notice', function: 'listup', message: 'unauthorized_method' }));
 
 	router.route('/plain').get((req, res) => {
-		mNotice.find({$or: [
-			{noticeType: {$exists: false}},
-			{noticeType: 0}
-		]},['regDate', 'noticeType', 'content'],{sort: {regDate: -1}},(error, notice) => {
+		mNotice.find({$or: [{noticeType: {$exists: false}},{noticeType: 0}]},
+			['regDate', 'noticeType', 'content'],{sort: {regDate: -1}},(error, notice) => {
 			if(error) {
 				return res.jsonp({ code: 338, service: 'notice', function: 'listup', message: 'error', error });
 			}
 			if(!notice) {
 				return res.jsonp({ code: 337, service: 'notice', function: 'listup', message: 'no notice' });
 			}
-			return res.jsonp({ code: 331, service: 'notice', function: 'listup', message: 'success', notice });
+			return res.jsonp({ code: 330, service: 'notice', function: 'listup', message: 'success', notice });
 		})
 	}).all((req, res) => res.jsonp({ code: 339, service: 'notice', function: 'listup', message: 'unauthorized_method' }));
 
@@ -67,7 +66,7 @@ module.exports = (express) => {
 			if(!notice) {
 				return res.jsonp({ code: 337, service: 'notice', function: 'listup', message: 'no notice' });
 			}
-			return res.jsonp({ code: 331, service: 'notice', function: 'listup', message: 'success', notice });
+			return res.jsonp({ code: 330, service: 'notice', function: 'listup', message: 'success', notice });
 		})
 	}).all((req, res) => res.jsonp({ code: 339, service: 'notice', function: 'listup', message: 'unauthorized_method' }));
 
