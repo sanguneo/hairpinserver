@@ -45,7 +45,10 @@ module.exports = (express) => {
 	}).all((req, res) => res.jsonp({ code: 339, service: 'notice', function: 'listup', message: 'unauthorized_method' }));
 
 	router.route('/plain').get((req, res) => {
-		mNotice.find({noticeType: { $exists: 1, $ne: null }},['regDate', 'noticeType', 'content'],{sort: {regDate: -1}},(error, notice) => {
+		mNotice.find({$or: [
+			{noticeType: {$exists: false}},
+			{noticeType: 0}
+		]},['regDate', 'noticeType', 'content'],{sort: {regDate: -1}},(error, notice) => {
 			if(error) {
 				return res.jsonp({ code: 338, service: 'notice', function: 'listup', message: 'error', error });
 			}
