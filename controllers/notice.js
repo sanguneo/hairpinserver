@@ -16,7 +16,6 @@ module.exports = (express) => {
 	    });
 	});
 
-
 	router.route('/write').get((req, res) => {
 		let {noticeType, content} = req.query;
 		if (!content) {
