@@ -46,7 +46,7 @@ module.exports = (express) => {
 
 	router.route('/plain').get((req, res) => {
 		mNotice.find({$or: [{noticeType: {$exists: false}},{noticeType: 0}]},
-			['regDate', 'noticeType', 'content'],{sort: {regDate: -1}},(error, notice) => {
+			['regDate', 'noticeType', 'content', 'title'],{sort: {regDate: -1}},(error, notice) => {
 			if(error) {
 				return res.jsonp({ code: 328, service: 'notice', function: 'listup', message: 'error', error });
 			}
@@ -58,7 +58,7 @@ module.exports = (express) => {
 	}).all((req, res) => res.jsonp({ code: 329, service: 'notice', function: 'listup', message: 'unauthorized_method' }));
 
 	router.route('/popup').get((req, res) => {
-		mNotice.find({noticeType: 1},['regDate', 'noticeType', 'content'],{sort: {regDate: -1}},(error, notice) => {
+		mNotice.find({noticeType: 1},['regDate', 'noticeType', 'content', 'title'],{sort: {regDate: -1}},(error, notice) => {
 			if(error) {
 				return res.jsonp({ code: 338, service: 'notice', function: 'listup', message: 'error', error });
 			}
