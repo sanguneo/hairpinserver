@@ -17,11 +17,11 @@ module.exports = (express) => {
 	});
 
 	router.route('/write').get((req, res) => {
-		let {noticeType, content} = req.query;
-		if (!content) {
+		let {noticeType, content, title} = req.query;
+		if (!content || !title) {
 			return res.jsonp({ code: 306, service: 'notice', function: 'write', message: 'unsatisfied_param'});
 		}
-		let newnotice = new mNotice({ content });
+		let newnotice = new mNotice({ content, title });
 		if (noticeType !== '' && typeof noticeType === 'number') {
 			newnotice.noticeType = noticeType;
 		}
@@ -33,7 +33,7 @@ module.exports = (express) => {
 	}).all((req, res) => res.jsonp({ code: 309, service: 'user', function: 'write', message: 'unauthorized_method' }));
 
 	router.route('/list').get((req, res) => {
-		mNotice.find({},['regDate', 'noticeType', 'content'],{sort: {regDate: -1}},(error, notice) => {
+		mNotice.find({},['regDate', 'noticeType', 'content', 'title'],{sort: {regDate: -1}},(error, notice) => {
 			if(error) {
 				return res.jsonp({ code: 318, service: 'notice', function: 'listup', message: 'error', error });
 			}
