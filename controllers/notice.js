@@ -47,7 +47,6 @@ module.exports = (express) => {
 	}).all((req, res) => res.jsonp({ code: 319, service: 'notice', function: 'listup', message: 'unauthorized_method' }));
 
 	router.route('/plain').get((req, res) => {
-		console.log(req.query)
 		let query = {}
 		if(req.query.after && req.query.after !== '') query.regDate = { $gt: new Date(req.query.after)};
 		mNotice.find({$and: [{$or: [{noticeType: {$exists: false}},{noticeType: 0}]},query]},
