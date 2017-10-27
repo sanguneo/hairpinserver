@@ -33,14 +33,20 @@ module.exports = (express) => {
 	}).all((req, res) => res.jsonp({ code: 309, service: 'user', function: 'write', message: 'unauthorized_method' }));
 
 	router.route('/list').get((req, res) => {
-		mNotice.find({},['regDate', 'noticeType', 'content', 'title'],{sort: {regDate: -1}},(error, notice) => {
+		let query = {}
+		if(req.query.after && req.query.after !== '') {
+			query.regDate = {
+				$gte: req.query.after,
+			}
+		}
+		mNotice.find(query,['regDate', 'noticeType', 'content', 'title'],{sort: {regDate: -1}},(error, notice) => {
 			if(error) {
 				return res.jsonp({ code: 318, service: 'notice', function: 'listup', message: 'error', error });
 			}
 			if(!notice) {
 				return res.jsonp({ code: 317, service: 'notice', function: 'listup', message: 'no notice' });
 			}
-			return res.jsonp({ code: 310, service: 'notice', function: 'listup', message: 'success', notice });
+			return res.jsonp({ code: 310, service: 'notice', function: 'listup', message: 'success', notice,nn: typeof notice[0].regDate });
 		})
 	}).all((req, res) => res.jsonp({ code: 319, service: 'notice', function: 'listup', message: 'unauthorized_method' }));
 
