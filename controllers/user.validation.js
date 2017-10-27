@@ -1,12 +1,12 @@
 /**
  * Created by sknah on 2017. 10. 4..
  */
-const jwt			= require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
 
-const passRoute		= [];
+const passRoute = [];
 
-module.exports = (passRouteMore) => (req, res, next) => {
-	if (([...passRoute,...passRouteMore]).includes(req.path)){
+module.exports = passRouteMore => (req, res, next) => {
+	if ([...passRoute, ...passRouteMore].includes(req.path)) {
 		next();
 		return;
 	}
@@ -21,21 +21,23 @@ module.exports = (passRouteMore) => (req, res, next) => {
 			token
 		});
 	}
-	const authPromise = new Promise(
-		(resolve, reject) => {
-			jwt.verify(token, secret, (err, decoded) => {
-				if(err) reject(err)
-				resolve(decoded)
+	const authPromise = new Promise((resolve, reject) => {
+		jwt.verify(token, secret, (err, decoded) => {
+			if (err) reject(err);
+			resolve(decoded);
+		});
+	});
+	authPromise
+		.then(decoded => {
+			req.decoded = decoded;
+			next();
+		})
+		.catch(error =>
+			res.jsonp({
+				code: 295,
+				service: 'user',
+				function: 'common',
+				message: `(${error.name})${error.message}`
 			})
-		}
-	);
-	authPromise.then((decoded)=>{
-		req.decoded = decoded;
-		next()
-	}).catch((error) => res.jsonp({
-		code: 295,
-		service: 'user',
-		function: 'common',
-		message: `(${error.name})${error.message}`,
-	}));
-}
+		);
+};

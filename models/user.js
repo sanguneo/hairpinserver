@@ -4,20 +4,19 @@ const bcrypt = require('bcrypt-nodejs');
 const {sFollow} = require('./follow');
 
 const sUser = mongoose.Schema({
-	signhash	: {type: String, required: true, unique: true},
+	signhash: {type: String, required: true, unique: true},
 
-	nickname	: {type: String, required: true},
-	email		: {type: String, required: true},
-	password	: {type: String, required: true},
+	nickname: {type: String, required: true},
+	email: {type: String, required: true},
+	password: {type: String, required: true},
 
-	regDate		: {type: Date, required: true, default: Date.now},
-	intro		: {type: String},
-	profileReg	: {type: Date},
+	regDate: {type: Date, required: true, default: Date.now},
+	intro: {type: String},
+	profileReg: {type: Date},
 
-	follower	: [sFollow],
-	following	: [sFollow]
+	follower: [sFollow],
+	following: [sFollow]
 });
-
 
 sUser.methods.genPw = function(password) {
 	return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
