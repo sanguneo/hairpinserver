@@ -34,11 +34,7 @@ module.exports = (express) => {
 
 	router.route('/list').get((req, res) => {
 		let query = {}
-		if(req.query.after && req.query.after !== '') {
-			query.regDate = {
-				$gte: new Date(req.query.after),
-			}
-		}
+		if(req.query.after && req.query.after !== '') query.regDate = { $gte: new Date(req.query.after)}
 		mNotice.find(query,['regDate', 'noticeType', 'content', 'title'],{sort: {regDate: -1}},(error, notice) => {
 			if(error) {
 				return res.jsonp({ code: 318, service: 'notice', function: 'listup', message: 'error', error });
@@ -46,12 +42,14 @@ module.exports = (express) => {
 			if(!notice) {
 				return res.jsonp({ code: 317, service: 'notice', function: 'listup', message: 'no notice' });
 			}
-			return res.jsonp({ code: 310, service: 'notice', function: 'listup', message: 'success', notice,nn: typeof notice[0].regDate });
+			return res.jsonp({ code: 310, service: 'notice', function: 'listup', message: 'success', notice});
 		})
 	}).all((req, res) => res.jsonp({ code: 319, service: 'notice', function: 'listup', message: 'unauthorized_method' }));
 
 	router.route('/plain').get((req, res) => {
-		mNotice.find({$or: [{noticeType: {$exists: false}},{noticeType: 0}]},
+		let query = {}
+		if(req.query.after && req.query.after !== '') query.regDate = { $gte: new Date(req.query.after)}
+		mNotice.find({$and: [{$or: [{noticeType: {$exists: false}},{noticeType: 0}]},query]},
 			['regDate', 'noticeType', 'content', 'title'],{sort: {regDate: -1}},(error, notice) => {
 			if(error) {
 				return res.jsonp({ code: 328, service: 'notice', function: 'listup', message: 'error', error });
@@ -64,7 +62,10 @@ module.exports = (express) => {
 	}).all((req, res) => res.jsonp({ code: 329, service: 'notice', function: 'listup', message: 'unauthorized_method' }));
 
 	router.route('/popup').get((req, res) => {
-		mNotice.find({noticeType: 1},['regDate', 'noticeType', 'content', 'title'],{sort: {regDate: -1}},(error, notice) => {
+		let query = {}
+		if(req.query.after && req.query.after !== '') query.regDate = { $gte: new Date(req.query.after)}
+		mNotice.find({$and: [{noticeType: 0},query]},
+			['regDate', 'noticeType', 'content', 'title'],{sort: {regDate: -1}},(error, notice) => {
 			if(error) {
 				return res.jsonp({ code: 338, service: 'notice', function: 'listup', message: 'error', error });
 			}
