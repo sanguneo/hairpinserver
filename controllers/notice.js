@@ -34,7 +34,7 @@ module.exports = (express) => {
 
 	router.route('/list').get((req, res) => {
 		let query = {}
-		if(req.query.after && req.query.after !== '') query.regDate = { $gte: new Date(req.query.after)}
+		if(req.query.after && req.query.after !== '') query.regDate = { $gt: new Date(req.query.after)}
 		mNotice.find(query,['regDate', 'noticeType', 'content', 'title'],{sort: {regDate: -1}},(error, notice) => {
 			if(error) {
 				return res.jsonp({ code: 318, service: 'notice', function: 'listup', message: 'error', error });
@@ -48,7 +48,7 @@ module.exports = (express) => {
 
 	router.route('/plain').get((req, res) => {
 		let query = {}
-		if(req.query.after && req.query.after !== '') query.regDate = { $gte: new Date(req.query.after)}
+		if(req.query.after && req.query.after !== '') query.regDate = { $gt: new Date(req.query.after)}
 		mNotice.find({$and: [{$or: [{noticeType: {$exists: false}},{noticeType: 0}]},query]},
 			['regDate', 'noticeType', 'content', 'title'],{sort: {regDate: -1}},(error, notice) => {
 			if(error) {
@@ -63,7 +63,7 @@ module.exports = (express) => {
 
 	router.route('/popup').get((req, res) => {
 		let query = {}
-		if(req.query.after && req.query.after !== '') query.regDate = { $gte: new Date(req.query.after)}
+		if(req.query.after && req.query.after !== '') query.regDate = { $gt: new Date(req.query.after)}
 		mNotice.find({$and: [{noticeType: 0},query]},
 			['regDate', 'noticeType', 'content', 'title'],{sort: {regDate: -1}},(error, notice) => {
 			if(error) {
