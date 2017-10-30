@@ -1,4 +1,4 @@
-base64 = (RNFS, filename, callback) => {
+const base64 = function(RNFS, filename, callback) {
 	let extname = filename.split('.').pop();
 	extname = extname || 'png';
 	RNFS.readFile(
@@ -11,7 +11,7 @@ base64 = (RNFS, filename, callback) => {
 	});
 }
 
-img = (data) => {
+const img = function (data) {
 	let reg = /^data:image\/(\w+);base64,([\s\S]+)/;
 	let match = data.match(reg);
 	let baseType = {
@@ -58,7 +58,6 @@ base64Img.base64 = function(filename, callback) {
  */
 base64Img.img = function(data, destpath, name, extuse) {
 	let result = img(data);
-	console.log(result);
 	let filepath = destpath +'/'+ name + extuse ? result.extname : '';
 	return this.fs.writeFileSync(filepath, result.base64, 'base64');
 };
