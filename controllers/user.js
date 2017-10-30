@@ -1,10 +1,8 @@
-
-
 module.exports = (express, passport) => {
 	const router = express.Router();
 	const fs = require('fs');
 
-	import base64Img from '../base64-img';
+	const base64Img = require('../base64-img');
 	base64Img.setFSModule(fs);
 
 	const uploadPath = 'upload/profiles';

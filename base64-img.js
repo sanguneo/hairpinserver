@@ -62,4 +62,5 @@ base64Img.img = function(data, destpath, name, extuse) {
 	return this.fs.writeFileSync(filepath, result.base64, {encoding: 'base64'});
 };
 
-export default base64Img;
+//export default base64Img;
+module.exports = base64Img;
