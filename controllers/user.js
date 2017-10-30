@@ -65,10 +65,11 @@ module.exports = (express, passport) => {
 				// 		fs.unlinkSync(req.file.path);
 				// 	});
 				// }
-				console.log(base64);
+
 				if (base64) {
 					base64Img.img(base64, uploadPath, user.signhash);
 				}
+				console.log(user.signhash);
 				return res.jsonp({
 					code: 200,
 					service: 'user',
