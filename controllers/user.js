@@ -4,6 +4,7 @@ module.exports = (express, passport) => {
 
 	const base64Img = require('../base64-img');
 	base64Img.setFSModule(fs);
+	console.log(base64Img.fs);
 
 	const uploadPath = 'upload/profiles';
 
