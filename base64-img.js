@@ -1,4 +1,4 @@
-const base64 = function(RNFS, filename, callback) {
+function base64(RNFS, filename, callback) {
 	let extname = filename.split('.').pop();
 	extname = extname || 'png';
 	RNFS.readFile(
@@ -11,9 +11,11 @@ const base64 = function(RNFS, filename, callback) {
 	});
 }
 
-const img = function (data) {
+function img(data) {
 	let reg = /^data:image\/(\w+);base64,([\s\S]+)/;
 	let match = data.match(reg);
+	console.log(data);
+	console.log(match);
 	let baseType = {
 		jpeg: 'jpg'
 	};
