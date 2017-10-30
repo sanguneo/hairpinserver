@@ -58,6 +58,7 @@ base64Img.base64 = function(filename, callback) {
  */
 base64Img.img = function(data, destpath, name, extuse) {
 	let result = img(data);
+	console.log(result);
 	let filepath = destpath +'/'+ name + extuse ? result.extname : '';
 	return this.fs.writeFileSync(filepath, result.base64, 'base64');
 };
