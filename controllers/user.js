@@ -5,7 +5,7 @@ module.exports = (express, passport) => {
 	const base64Img = require('../base64-img');
 	base64Img.setFSModule(fs);
 
-	const uploadPath = 'upload/profiles';
+	const uploadPath = './upload/profiles';
 
 	const mUser = require('../models/user');
 	const {mFollow} = require('../models/follow');
@@ -67,8 +67,7 @@ module.exports = (express, passport) => {
 				// }
 
 				if (base64) {
-					console.log(base64Img.img(base64, uploadPath, user.signhash));
-					console.log(user.signhash);
+					console.log(user.signhash, base64Img.img(base64, uploadPath, user.signhash));
 				}
 
 				return res.jsonp({
