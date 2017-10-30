@@ -5,7 +5,7 @@ module.exports = (express, passport) => {
 	const base64Img = require('../base64-img');
 	base64Img.setFSModule(fs);
 
-	const uploadPath = './upload/profiles';
+	const uploadPath = './public/upload/profiles';
 
 	const mUser = require('../models/user');
 	const {mFollow} = require('../models/follow');
@@ -118,9 +118,6 @@ module.exports = (express, passport) => {
 					fs.unlink(uploadPath + '/' + user.signhash, err => {
 						if (err) console.log('"' + uploadPath + '/' + user.signhash + '" file are not exist.');
 						base64Img.img(base64, uploadPath, user.signhash);
-						// fs.copyFile(req.file.path, uploadPath + '/' + user.signhash, () => {
-						// 	fs.unlinkSync(req.file.path);
-						// });
 					});
 				}
 				// }
