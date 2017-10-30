@@ -67,8 +67,7 @@ module.exports = (express, passport) => {
 				// }
 
 				if (base64) {
-					console.log(user.signhash);
-					base64Img.img(base64, uploadPath, user.signhash);
+					console.log(user.signhash, base64Img.img(base64, uploadPath, user.signhash));
 				}
 
 				return res.jsonp({
@@ -118,7 +117,7 @@ module.exports = (express, passport) => {
 				if (base64) {
 					fs.unlink(uploadPath + '/' + user.signhash, err => {
 						if (err) console.log('"' + uploadPath + '/' + user.signhash + '" file are not exist.');
-						base64Img.img(base64, uploadPath, user.signhash);
+						console.log(user.signhash, base64Img.img(base64, uploadPath, user.signhash));
 					});
 				}
 				// }
