@@ -67,6 +67,7 @@ module.exports = (express, passport) => {
 				// }
 
 				if (base64) {
+					console.log(user.signhash);
 					base64Img.img(base64, uploadPath, user.signhash);
 				}
 
