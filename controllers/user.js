@@ -1,10 +1,13 @@
+
+
 module.exports = (express, passport) => {
 	const router = express.Router();
-	const multer = require('multer');
 	const fs = require('fs');
 
+	import base64Img from '../base64-img';
+	base64Img.setFSModule(fs);
+
 	const uploadPath = 'upload/profiles';
-	const profileUpload = multer({dest: uploadPath});
 
 	const mUser = require('../models/user');
 	const {mFollow} = require('../models/follow');
@@ -31,9 +34,9 @@ module.exports = (express, passport) => {
 
 	router
 		.route('/signup')
-		.post(profileUpload.single('profile'), (req, res, next) => {
-			let {nickname, email, password} = req.body;
-			if (!nickname || !email || !password) {
+		.post((req, res, next) => {
+			let {nickname, email, password, base64} = req.body;
+			if (!nickname || !email || !password || !base64) {
 				return res.jsonp({
 					code: 206,
 					service: 'user',
@@ -59,10 +62,13 @@ module.exports = (express, passport) => {
 						message: info.message
 					});
 				}
-				if (req.file && req.file.path) {
-					fs.copyFile(req.file.path, uploadPath + '/' + user.signhash, () => {
-						fs.unlinkSync(req.file.path);
-					});
+				// if (req.file && req.file.path) {
+				// 	fs.copyFile(req.file.path, uploadPath + '/' + user.signhash, () => {
+				// 		fs.unlinkSync(req.file.path);
+				// 	});
+				// }
+				if (base64) {
+					base64Img.img(base64, uploadPath, user.signhash);
 				}
 				return res.jsonp({
 					code: 200,
@@ -79,8 +85,8 @@ module.exports = (express, passport) => {
 
 	router
 		.route('/modify')
-		.post(profileUpload.single('profile'), (req, res, next) => {
-			let {email, password} = req.body;
+		.post((req, res, next) => {
+			let {email, password, base64} = req.body;
 			if (!email || !password) {
 				return res.jsonp({
 					code: 216,
@@ -107,17 +113,17 @@ module.exports = (express, passport) => {
 						message: info.message
 					});
 				}
-				if (req.file && req.file.path) {
+				// if (req.file && req.file.path) {
+				if (base64) {
 					fs.unlink(uploadPath + '/' + user.signhash, err => {
-						if (err)
-							console.log(
-								'"' + uploadPath + '/' + user.signhash + '" file are not exist.'
-							);
-						fs.copyFile(req.file.path, uploadPath + '/' + user.signhash, () => {
-							fs.unlinkSync(req.file.path);
-						});
+						if (err) console.log('"' + uploadPath + '/' + user.signhash + '" file are not exist.');
+						base64Img.img(base64, uploadPath, user.signhash);
+						// fs.copyFile(req.file.path, uploadPath + '/' + user.signhash, () => {
+						// 	fs.unlinkSync(req.file.path);
+						// });
 					});
 				}
+				// }
 				return res.jsonp({
 					code: 210,
 					service: 'user',
