@@ -60,14 +60,8 @@ module.exports = (express, passport) => {
 						message: info.message
 					});
 				}
-				// if (req.file && req.file.path) {
-				// 	fs.copyFile(req.file.path, uploadPath + '/' + user.signhash, () => {
-				// 		fs.unlinkSync(req.file.path);
-				// 	});
-				// }
-
 				if (base64) {
-					console.log(user.signhash, base64Img.img(base64, uploadPath, user.signhash));
+					base64Img.img(base64, uploadPath, user.signhash);
 				}
 
 				return res.jsonp({
@@ -113,14 +107,12 @@ module.exports = (express, passport) => {
 						message: info.message
 					});
 				}
-				// if (req.file && req.file.path) {
 				if (base64) {
 					fs.unlink(uploadPath + '/' + user.signhash, err => {
 						if (err) console.log('"' + uploadPath + '/' + user.signhash + '" file are not exist.');
-						console.log(user.signhash, base64Img.img(base64, uploadPath, user.signhash));
+						base64Img.img(base64, uploadPath, user.signhash);
 					});
 				}
-				// }
 				return res.jsonp({
 					code: 210,
 					service: 'user',
