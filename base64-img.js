@@ -57,7 +57,7 @@ base64Img.base64 = function(filename, callback) {
 base64Img.img = function(data, destpath, name, extuse) {
 	let result = img(data);
 	let filepath = destpath +'/'+ name + extuse ? result.extname : '';
-	this.fs.writeFile(filepath, result.base64, 'base64', (err) => {
+	this.fs.writeFile(filepath, new Buffer(result.base64, 'base64'), 'base64', (err) => {
 		if (err) throw err;
 		console.log('The file has been saved!');
 	});
