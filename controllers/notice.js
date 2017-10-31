@@ -19,10 +19,8 @@ module.exports = express => {
 		});
 	});
 
-	router
-		.route('/write')
-		.get((req, res) => {
-			let {noticeType, content, title} = req.query;
+	router.route('/write').post((req, res) => {
+			let {noticeType, content, title} = req.body;
 			if (!content || !title) {
 				return res.jsonp({
 					code: 306,
@@ -42,11 +40,10 @@ module.exports = express => {
 					service: 'notice',
 					function: 'write',
 					message: 'success',
-					...req.query
+					notice : {noticeType, content, title}
 				});
 			});
-		})
-		.all((req, res) =>
+		}).all((req, res) =>
 			res.jsonp({
 				code: 309,
 				service: 'user',
@@ -55,9 +52,7 @@ module.exports = express => {
 			})
 		);
 
-	router
-		.route('/list')
-		.get((req, res) => {
+	router.route('/list').get((req, res) => {
 			let query = {};
 			if (req.query.after && req.query.after !== '')
 				query.regDate = {$gt: new Date(req.query.after)};
@@ -92,8 +87,7 @@ module.exports = express => {
 					});
 				}
 			);
-		})
-		.all((req, res) =>
+		}).all((req, res) =>
 			res.jsonp({
 				code: 319,
 				service: 'notice',
@@ -102,9 +96,7 @@ module.exports = express => {
 			})
 		);
 
-	router
-		.route('/plain')
-		.get((req, res) => {
+	router.route('/plain').get((req, res) => {
 			let query = {};
 			if (req.query.after && req.query.after !== '')
 				query.regDate = {$gt: new Date(req.query.after)};
@@ -154,9 +146,7 @@ module.exports = express => {
 			})
 		);
 
-	router
-		.route('/popup')
-		.get((req, res) => {
+	router.route('/popup').get((req, res) => {
 			let query = {};
 			if (req.query.after && req.query.after !== '')
 				query.regDate = {$gt: new Date(req.query.after)};
@@ -191,8 +181,7 @@ module.exports = express => {
 					});
 				}
 			);
-		})
-		.all((req, res) =>
+		}).all((req, res) =>
 			res.jsonp({
 				code: 339,
 				service: 'notice',
