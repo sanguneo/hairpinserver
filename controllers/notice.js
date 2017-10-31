@@ -63,7 +63,7 @@ module.exports = express => {
 				query.regDate = {$gt: new Date(req.query.after)};
 			mNotice.find(
 				query,
-				['regDate', 'noticeType', 'content', 'title'],
+				['title'],
 				{sort: {regDate: -1}},
 				(error, notice) => {
 					if (error) {
