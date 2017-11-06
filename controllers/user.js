@@ -30,6 +30,7 @@ module.exports = (express, passport) => {
 	router.route('/signup').post(profileUpload.single('profile'), (req, res, next ) => {
 		let {nickname, email, password} = req.body;
 		console.log({email, password});
+
 		if (!nickname || !email || !password) {
 			return res.jsonp({ code: 206, service: 'user', function: 'signup', message: 'unsatisfied_param'});
 		}
