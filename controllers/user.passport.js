@@ -50,7 +50,7 @@ module.exports = function(passport) {
 					if (!user) {
 						return done(null, false, {message: 'noaccount'});
 					}
-					if (!user.validPw(password)) {
+					if (!user.validPw(req.body.password)) {
 						return done(null, false, {message: 'invalidpw'});
 					}
 					user.nickname = req.body.nickname;
