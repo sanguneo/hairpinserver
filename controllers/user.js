@@ -50,6 +50,7 @@ module.exports = (express, passport) => {
 		if (!email || !password) {
 			return res.jsonp({ code: 216, service: 'user', function: 'modify', message: 'unsatisfied_param'});
 		}
+		console.log({email, password});
 		passport.authenticate('modify', (error, user, info) =>{
 			if (error) { return res.jsonp( { code: 218, service: 'user', function: 'modify', message: 'error', error });}
 			if (info) { return res.jsonp( { code: 217, service: 'user', function: 'modify', message: info.message }); }
