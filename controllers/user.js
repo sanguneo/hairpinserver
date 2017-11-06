@@ -51,6 +51,7 @@ module.exports = (express, passport) => {
 			return res.jsonp({ code: 216, service: 'user', function: 'modify', message: 'unsatisfied_param'});
 		}
 		passport.authenticate('modify', (error, user, info) =>{
+			console.log(info);
 			if (error) { return res.jsonp( { code: 218, service: 'user', function: 'modify', message: 'error', error });}
 			if (info) { return res.jsonp( { code: 217, service: 'user', function: 'modify', message: info.message }); }
 			if (req.file && req.file.path) {
