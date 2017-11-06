@@ -45,24 +45,26 @@ module.exports = function(passport) {
 			},
 			function(req, email, password, done) {
 				mUser.findOne({email: email}, function(err, user) {
+					console.log(user.genPw('sangkwon@79'));
 					if (err) return done(err);
 					if (!user) {
 						return done(null, false, {message: 'noaccount'});
 					}
-					if (!user.validPw(req.body.password)) {
+					if (!user.validPw(password)) {
 						return done(null, false, {message: 'invalidpw'});
+					} else {
+						user.nickname = req.body.nickname;
+						if (req.body.repw || req.body.repw !== '') {
+							user.password = user.genPw(req.body.repw);
+						}
+						if (req.profile) {
+							user.profileReg = new Date();
+						}
+						user.save(function(err) {
+							if (err) throw err;
+							return done(null, user);
+						});
 					}
-					user.nickname = req.body.nickname;
-					if (req.body.repw || req.body.repw !== '') {
-						user.password = user.genPw(req.body.repw);
-					}
-					if (req.profile) {
-						user.profileReg = new Date();
-					}
-					user.save(function(err) {
-						if (err) throw err;
-						return done(null, user);
-					});
 				});
 			}
 		)
