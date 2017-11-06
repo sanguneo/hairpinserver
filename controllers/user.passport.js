@@ -51,19 +51,18 @@ module.exports = function(passport) {
 					}
 					if (!user.validPw(password)) {
 						return done(null, false, {message: 'invalidpw'});
-					} else {
-						user.nickname = req.body.nickname;
-						if (password && password !== '' && req.body.repw && req.body.repw !== '') {
-							user.password = user.genPw(req.body.password);
-						}
-						if (req.profile) {
-							user.profileReg = new Date();
-						}
-						user.save(function(err) {
-							if (err) throw err;
-							return done(null, user);
-						});
 					}
+					user.nickname = req.body.nickname;
+					if (password && password !== '' && req.body.repw && req.body.repw !== '') {
+						user.password = user.genPw(req.body.password);
+					}
+					if (req.profile) {
+						user.profileReg = new Date();
+					}
+					user.save(function(err) {
+						if (err) throw err;
+						return done(null, user);
+					});
 				});
 			}
 		)
