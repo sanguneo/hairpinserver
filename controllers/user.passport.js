@@ -53,7 +53,7 @@ module.exports = function(passport) {
 						return done(null, false, {message: 'invalidpw'});
 					} else {
 						user.nickname = req.body.nickname;
-						if (req.body.repw || req.body.repw !== '') {
+						if (req.body.repw) {
 							user.password = user.genPw(req.body.repw);
 						}
 						if (req.profile) {
