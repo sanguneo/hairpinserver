@@ -46,14 +46,11 @@ module.exports = (express, passport) => {
 
 
 	router.route('/modify').post(profileUpload.single('profile'), (req, res, next ) => {
-
 		let {email, password} = req.body;
-
 		if (!email || !password) {
 			return res.jsonp({ code: 216, service: 'user', function: 'modify', message: 'unsatisfied_param'});
 		}
 		passport.authenticate('modify', (error, user, info) =>{
-			console.log({email,  message: info.message});
 			if (error) { return res.jsonp( { code: 218, service: 'user', function: 'modify', message: 'error', error });}
 			if (info) { return res.jsonp( { code: 217, service: 'user', function: 'modify', message: info.message }); }
 			if (req.file && req.file.path) {
