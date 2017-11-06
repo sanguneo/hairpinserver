@@ -22,6 +22,7 @@ sUser.methods.genPw = function(password) {
 	return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
 };
 sUser.methods.validPw = function(password) {
+	console.log(password, this.password, bcrypt.compareSync(password, this.password))
 	return bcrypt.compareSync(password, this.password);
 };
 
