@@ -45,7 +45,7 @@ module.exports = function(passport) {
 			},
 			function(req, email, password, done) {
 				mUser.findOne({email: email}, function(err, user) {
-					console.log(user);
+					console.log(user.validPw(password), password, user.genPw(req.body.password), user);
 					if (err) return done(err);
 					if (!user) {
 						return done(null, false, {message: 'noaccount'});
