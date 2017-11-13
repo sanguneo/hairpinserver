@@ -22,84 +22,47 @@ module.exports = express => {
 	router.route('/write').post((req, res) => {
 			let {noticeType, content, title} = req.body;
 			if (!content || !title) {
-				return res.jsonp({
-					code: 306,
-					service: 'notice',
-					function: 'write',
-					message: 'unsatisfied_param'
-				});
+				return res.jsonp({code: 306,service: 'notice',function: 'write',message: 'unsatisfied_param'});
 			}
 			let newnotice = new mNotice({content, title});
-			if (noticeType !== '' && typeof noticeType === 'number') {
+			if (noticeType !== '' && typeof noticeType === 'number')
 				newnotice.noticeType = noticeType;
-			}
 			newnotice.save(err => {
 				if (err) throw err;
-				res.jsonp({
-					code: 300,
-					service: 'notice',
-					function: 'write',
-					message: 'success',
-					notice : {noticeType, content, title}
-				});
+				res.jsonp({code: 300,service: 'notice',function: 'write',message: 'success',notice : {noticeType, content, title}});
 			});
 		}).all((req, res) =>
-			res.jsonp({
-				code: 309,
-				service: 'user',
-				function: 'write',
-				message: 'unauthorized_method'
-			})
+			res.jsonp({code: 309,service: 'user',function: 'write',message: 'unauthorized_method'})
 		);
 
 	router.route('/list').get((req, res) => {
 			let query = {};
 			if (req.query.after && req.query.after !== '')
 				query.regDate = {$gt: new Date(req.query.after)};
+			let fields = ['regDate', 'noticeType', 'title', 'content'];
+			if (req.query.withoutcontent && req.query.withoutcontent !== '')
+				fields.pop();
 			mNotice.find(
 				query,
-				['regDate', 'noticeType', 'content', 'title'],
+				fields,
 				{sort: {regDate: -1}},
 				(error, notice) => {
-					if (error) {
-						return res.jsonp({
-							code: 318,
-							service: 'notice',
-							function: 'listup',
-							message: 'error',
-							error
-						});
-					}
-					if (!notice) {
-						return res.jsonp({
-							code: 317,
-							service: 'notice',
-							function: 'listup',
-							message: 'no notice'
-						});
-					}
-					return res.jsonp({
-						code: 310,
-						service: 'notice',
-						function: 'listup',
-						message: 'success',
-						notice
-					});
+					if (error) return res.jsonp({code: 318,service: 'notice',function: 'listup',message: 'error',error});
+					if (!notice) return res.jsonp({code: 317,service: 'notice',function: 'listup',message: 'no notice'});
+					return res.jsonp({code: 310,service: 'notice',function: 'listup',message: 'success',notice});
 				}
 			);
 		}).all((req, res) =>
-			res.jsonp({
-				code: 319,
-				service: 'notice',
-				function: 'listup',
-				message: 'unauthorized_method'
-			})
+			res.jsonp({code: 319,service: 'notice',function: 'listup',message: 'unauthorized_method'})
 		);
 
 	router.route('/plain').get((req, res) => {
 			let query = {};
 			if (req.query.after && req.query.after !== '')
 				query.regDate = {$gt: new Date(req.query.after)};
+			let fields = ['regDate', 'noticeType', 'title', 'content'];
+			if (req.query.withoutcontent && req.query.withoutcontent !== '')
+				fields.pop();
 			mNotice.find(
 				{
 					$and: [
@@ -107,88 +70,60 @@ module.exports = express => {
 						query
 					]
 				},
-				['regDate', 'noticeType', 'content', 'title'],
+				fields,
 				{sort: {regDate: -1}},
 				(error, notice) => {
-					if (error) {
-						return res.jsonp({
-							code: 328,
-							service: 'notice',
-							function: 'listup',
-							message: 'error',
-							error
-						});
-					}
-					if (!notice) {
-						return res.jsonp({
-							code: 327,
-							service: 'notice',
-							function: 'listup',
-							message: 'no notice'
-						});
-					}
-					return res.jsonp({
-						code: 320,
-						service: 'notice',
-						function: 'listup',
-						message: 'success',
-						notice
-					});
+					if (error) return res.jsonp({code: 328,service: 'notice',function: 'listup',message: 'error',error});
+					if (!notice) return res.jsonp({code: 327,service: 'notice',function: 'listup',message: 'no notice'});
+					return res.jsonp({code: 320,service: 'notice',function: 'listup',message: 'success',notice});
 				}
 			);
 		})
 		.all((req, res) =>
-			res.jsonp({
-				code: 329,
-				service: 'notice',
-				function: 'listup',
-				message: 'unauthorized_method'
-			})
+			res.jsonp({code: 329,service: 'notice',function: 'listup',message: 'unauthorized_method'})
 		);
 
 	router.route('/popup').get((req, res) => {
 			let query = {};
 			if (req.query.after && req.query.after !== '')
 				query.regDate = {$gt: new Date(req.query.after)};
+			let fields = ['regDate', 'noticeType', 'title', 'content'];
+			if (req.query.withoutcontent && req.query.withoutcontent !== '')
+				fields.pop();
 			mNotice.find(
 				{$and: [{noticeType: 0}, query]},
-				['regDate', 'noticeType', 'content', 'title'],
+				fields,
 				{sort: {regDate: -1}},
 				(error, notice) => {
-					if (error) {
-						return res.jsonp({
-							code: 338,
-							service: 'notice',
-							function: 'listup',
-							message: 'error',
-							error
-						});
-					}
-					if (!notice) {
-						return res.jsonp({
-							code: 337,
-							service: 'notice',
-							function: 'listup',
-							message: 'no notice'
-						});
-					}
-					return res.jsonp({
-						code: 330,
-						service: 'notice',
-						function: 'listup',
-						message: 'success',
-						notice
-					});
+					if (error) return res.jsonp({code: 338,service: 'notice',function: 'listup',message: 'error',error});
+					if (!notice) return res.jsonp({code: 337,service: 'notice',function: 'listup',message: 'no notice'});
+					return res.jsonp({code: 330,service: 'notice',function: 'listup',message: 'success',notice});
 				}
 			);
 		}).all((req, res) =>
-			res.jsonp({
-				code: 339,
-				service: 'notice',
-				function: 'listup',
-				message: 'unauthorized_method'
-			})
+			res.jsonp({code: 339,service: 'notice',function: 'listup',message: 'unauthorized_method'})
 		);
+
+	router.route('/one').get((req, res) => {
+		let {_id} = req.query;
+		if (!_id) {
+			return res.jsonp({code: 336,service: 'notice',function: 'listup',message: 'unsatisfied_param'});
+		}
+		let fields = ['regDate', 'noticeType', 'title', 'content'];
+		mNotice.findOne(
+			{_id},
+			fields,
+			(error, notice) => {
+				if (error)
+					return res.jsonp({code: 338,service: 'notice',function: 'listup',message: 'error',error});
+				if (!notice)
+					return res.jsonp({code: 337,service: 'notice',function: 'listup',message: 'no notice'});
+				return res.jsonp({code: 330,service: 'notice',function: 'listup',message: 'success',notice});
+			}
+		);
+	}).all((req, res) =>
+		res.jsonp({code: 339,service: 'notice',function: 'listup',message: 'unauthorized_method'})
+	);
 
 	return router;
 };
