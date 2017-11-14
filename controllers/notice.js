@@ -104,23 +104,23 @@ module.exports = express => {
 			res.jsonp({code: 339,service: 'notice',function: 'listup',message: 'unauthorized_method'})
 		);
 
-	router.route('/one/:_id').get((req, res) => {
+	router.route('/:_id').get((req, res) => {
 		let {_id} = req.params;
 		if (!_id) {
-			return res.jsonp({code: 336,service: 'notice',function: 'listup',message: 'unsatisfied_param'});
+			return res.jsonp({code: 346,service: 'notice',function: 'specific',message: 'unsatisfied_param'});
 		}
 		let fields = ['regDate', 'noticeType', 'title', 'content'];
 		mNotice.findOne(
 			{_id},
 			fields,
 			(error, notice) => {
-				if (error)return res.jsonp({code: 338,service: 'notice',function: 'listup',message: 'error',error});
-				if (!notice)return res.jsonp({code: 337,service: 'notice',function: 'listup',message: 'no notice'});
-				return res.jsonp({code: 330,service: 'notice',function: 'listup',message: 'success',notice});
+				if (error)return res.jsonp({code: 348,service: 'notice',function: 'specific',message: 'error',error});
+				if (!notice)return res.jsonp({code: 347,service: 'notice',function: 'specific',message: 'no notice'});
+				return res.jsonp({code: 340,service: 'notice',function: 'specific',message: 'success',notice});
 			}
 		);
 	}).all((req, res) =>
-		res.jsonp({code: 339,service: 'notice',function: 'listup',message: 'unauthorized_method'})
+		res.jsonp({code: 349,service: 'notice',function: 'specific',message: 'unauthorized_method'})
 	);
 
 	return router;
