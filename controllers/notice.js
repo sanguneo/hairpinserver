@@ -104,8 +104,8 @@ module.exports = express => {
 			res.jsonp({code: 339,service: 'notice',function: 'listup',message: 'unauthorized_method'})
 		);
 
-	router.route('/one').get((req, res) => {
-		let {_id} = req.query;
+	router.route('/one/:_id').get((req, res) => {
+		let {_id} = req.param;
 		if (!_id) {
 			return res.jsonp({code: 336,service: 'notice',function: 'listup',message: 'unsatisfied_param'});
 		}
@@ -114,10 +114,8 @@ module.exports = express => {
 			{_id},
 			fields,
 			(error, notice) => {
-				if (error)
-					return res.jsonp({code: 338,service: 'notice',function: 'listup',message: 'error',error});
-				if (!notice)
-					return res.jsonp({code: 337,service: 'notice',function: 'listup',message: 'no notice'});
+				if (error)return res.jsonp({code: 338,service: 'notice',function: 'listup',message: 'error',error});
+				if (!notice)return res.jsonp({code: 337,service: 'notice',function: 'listup',message: 'no notice'});
 				return res.jsonp({code: 330,service: 'notice',function: 'listup',message: 'success',notice});
 			}
 		);
