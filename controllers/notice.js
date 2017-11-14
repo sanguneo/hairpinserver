@@ -105,7 +105,7 @@ module.exports = express => {
 		);
 
 	router.route('/one/:_id').get((req, res) => {
-		let {_id} = req.param;
+		let {_id} = req.params;
 		if (!_id) {
 			return res.jsonp({code: 336,service: 'notice',function: 'listup',message: 'unsatisfied_param'});
 		}
