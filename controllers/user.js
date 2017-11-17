@@ -139,14 +139,14 @@ module.exports = (express, passport) => {
 		if (!signhash) {
 			return res.jsonp({ code: 256, service: 'user', function: 'viewuser', message: 'unsatisfied_param'});
 		}
-		mUser.findOne({signhash},(error, user) => {
+		mUser.findOne({signhash},['_id', 'signhash', 'email', 'nickname', 'follower', 'following'],(error, user) => {
 			if(error) {
 				return res.jsonp({ code: 258, service: 'user', function: 'viewuser', message: 'error', error });
 			}
 			if(!user) {
 				return res.jsonp({ code: 237, service: 'user', function: 'viewuser', message: info.message });
 			}
-			return res.jsonp({ code: 250, service: 'user', function: 'viewuser', message: 'success', user, fwcount: user.follower.length, ficount: user.following.length});
+			return res.jsonp({ code: 250, service: 'user', function: 'viewuser', message: 'success', user: {...user, fwcount: user.follower.length, ficount: user.following.length}});
 		})
 	}).all((req, res) => res.jsonp({ code: 259, service: 'user', function: 'viewuser', message: 'unauthorized_method' }));
 
