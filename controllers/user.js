@@ -67,7 +67,6 @@ module.exports = (express, passport) => {
 
 
 	router.route('/login').post((req, res, next ) => {
-		console.log(1);
 		let {email, password} = req.body;
 		if (!email || !password) {
 			return res.jsonp({ code: 226, service: 'user', function: 'login', message: 'unsatisfied_param'});
@@ -79,12 +78,8 @@ module.exports = (express, passport) => {
 				_id:user.user._id, nickname:user.user.nickname, email:user.user.email, signhash:user.user.signhash });
 
 		})(req, res, next);
-	}).all((req, res) => {
-		console.log(2);
-		return res.jsonp({ code: 229, service: 'user', function: 'login', message: 'unauthorized_method'})
-	});
-
-
+	}).all((req, res) => res.jsonp({ code: 229, service: 'user', function: 'login', message: 'unauthorized_method'}));
+	
 	router.route('/follow').post((req, res) => {
 		let {signhash} = req.body;
 		let myhash = req.decoded.signhash;
@@ -113,7 +108,6 @@ module.exports = (express, passport) => {
 		})
 	}).all((req, res) => res.jsonp({ code: 239, service: 'user', function: 'follow', message: 'unauthorized_method' }));
 
-
 	router.route('/unfollow').post((req, res) => {
 		let {signhash} = req.body;
 		let myhash = req.decoded.signhash;
@@ -139,6 +133,22 @@ module.exports = (express, passport) => {
 			}
 		})
 	}).all((req, res) => res.jsonp({ code: 249, service: 'user', function: 'unfollow', message: 'unauthorized_method' }));
+	
+	router.route('/vuser/:signhash').get((req, res) => {
+		let {signhash} = req.params;
+		if (!signhash) {
+			return res.jsonp({ code: 256, service: 'user', function: 'viewuser', message: 'unsatisfied_param'});
+		}
+		mUser.findOne({signhash},['_id', 'signhash', 'email', 'nickname', 'follower', 'following'],(error, user) => {
+			if(error) {
+				return res.jsonp({ code: 258, service: 'user', function: 'viewuser', message: 'error', error });
+			}
+			if(!user) {
+				return res.jsonp({ code: 237, service: 'user', function: 'viewuser', message: info.message });
+			}
+			return res.jsonp({ code: 250, service: 'user', function: 'viewuser', message: 'success', ...user, fwcount: user.follower.length, ficount: user.following.length});
+		})
+	}).all((req, res) => res.jsonp({ code: 259, service: 'user', function: 'viewuser', message: 'unauthorized_method' }));
 
 	return router;
 };
