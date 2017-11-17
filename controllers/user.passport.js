@@ -78,12 +78,8 @@ module.exports = function(passport) {
 			function(req, email, password, done) {
 				mUser.findOne({email: email}, function(err, user) {
 					if (err) return done(err);
-					if (!user) {
-						return done(null, false, {message: 'noaccount'});
-					}
-					if (!user.validPw(password)) {
-						return done(null, false, {message: 'invalidpw'});
-					}
+					if (!user) return done(null, false, {message: 'noaccount'});
+					if (!user.validPw(password)) return done(null, false, {message: 'invalidpw'});
 					const tokenize = new Promise((resolve, reject) => {
 						jwt.sign(
 							{
