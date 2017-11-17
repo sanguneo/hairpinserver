@@ -67,6 +67,7 @@ module.exports = (express, passport) => {
 
 
 	router.route('/login').post((req, res, next ) => {
+		console.log(1);
 		let {email, password} = req.body;
 		if (!email || !password) {
 			return res.jsonp({ code: 226, service: 'user', function: 'login', message: 'unsatisfied_param'});
@@ -78,7 +79,10 @@ module.exports = (express, passport) => {
 				_id:user.user._id, nickname:user.user.nickname, email:user.user.email, signhash:user.user.signhash });
 
 		})(req, res, next);
-	}).all((req, res) => res.jsonp({ code: 229, service: 'user', function: 'login', message: 'unauthorized_method'}));
+	}).all((req, res) => {
+		console.log(2);
+		return res.jsonp({ code: 229, service: 'user', function: 'login', message: 'unauthorized_method'})
+	});
 
 
 	router.route('/follow').post((req, res) => {
