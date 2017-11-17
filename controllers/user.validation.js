@@ -5,11 +5,18 @@ const jwt = require('jsonwebtoken');
 
 const passRoute = [];
 
-module.exports = passRouteMore => (req, res, next) => {
+module.exports = (passRouteMore, passRouteArray) => (req, res, next) => {
 	if ([...passRoute, ...passRouteMore].includes(req.path)) {
 		next();
 		return;
 	}
+	for (let i in passRouteArray) {
+		if (req.path.indexOf(passRouteArray[i]) >= 0) {
+			next();
+			return;
+		}
+	}
+	
 	let secret = req.app.get('secretnipriah');
 	const token = req.headers['nekotnipriah'] || req.query.nekotnipriah;
 	if (!token) {
