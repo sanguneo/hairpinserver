@@ -134,6 +134,11 @@ module.exports = (express, passport) => {
 		})
 	}).all((req, res) => res.jsonp({ code: 249, service: 'user', function: 'unfollow', message: 'unauthorized_method' }));
 	
+	/*
+	db.users.aggregate([
+    	{$project: {_id: 1, frcount: {$size: '$follower'}, ficount: {$size: '$following'}}}
+	]);
+	*/
 	router.route('/vuser/:signhash').get((req, res) => {
 		let {signhash} = req.params;
 		if (!signhash) {
@@ -146,7 +151,13 @@ module.exports = (express, passport) => {
 			if(!user) {
 				return res.jsonp({ code: 237, service: 'user', function: 'viewuser', message: info.message });
 			}
-			return res.jsonp({ code: 250, service: 'user', function: 'viewuser', message: 'success', user: (user => {user.fwcount= user.follower.length;user.ficount=user.following.length;return user;})(user)});
+			user.virtual('followersize').get(function(){
+				return this.follower.length;
+			});
+			user.virtual('followingsize').get(function(){
+				return this.following.length;
+			});
+			return res.jsonp({ code: 250, service: 'user', function: 'viewuser', message: 'success', user});
 		})
 	}).all((req, res) => res.jsonp({ code: 259, service: 'user', function: 'viewuser', message: 'unauthorized_method' }));
 
