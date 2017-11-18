@@ -25,4 +25,11 @@ sUser.methods.validPw = function(password) {
 	return bcrypt.compareSync(password, this.password);
 };
 
+sUser.virtual('followersize').get(function(){
+	return this.follower.length;
+});
+sUser.virtual('followingsize').get(function(){
+	return this.following.length;
+});
+
 module.exports = mongoose.model('user', sUser);

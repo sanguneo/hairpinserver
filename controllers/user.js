@@ -151,12 +151,6 @@ module.exports = (express, passport) => {
 			if(!user) {
 				return res.jsonp({ code: 237, service: 'user', function: 'viewuser', message: info.message });
 			}
-			user.user.virtual('followersize').get(function(){
-				return this.follower.length;
-			});
-			user.user.virtual('followingsize').get(function(){
-				return this.following.length;
-			});
 			return res.jsonp({ code: 250, service: 'user', function: 'viewuser', message: 'success', user: user.user});
 		})
 	}).all((req, res) => res.jsonp({ code: 259, service: 'user', function: 'viewuser', message: 'unauthorized_method' }));
