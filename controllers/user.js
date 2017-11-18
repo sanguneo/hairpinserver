@@ -144,7 +144,7 @@ module.exports = (express, passport) => {
 		if (!signhash) {
 			return res.jsonp({ code: 256, service: 'user', function: 'viewuser', message: 'unsatisfied_param'});
 		}
-		mUser.findOne({signhash},['_id', 'signhash', 'email', 'nickname', 'follower', 'following'],(error, user) => {
+		mUser.findOne({signhash},['_id', 'signhash', 'email', 'nickname', 'follower', 'following', 'followersize', 'followingsize'],(error, user) => {
 			if(error) {
 				return res.jsonp({ code: 258, service: 'user', function: 'viewuser', message: 'error', error });
 			}
