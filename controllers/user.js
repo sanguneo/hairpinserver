@@ -74,8 +74,14 @@ module.exports = (express, passport) => {
 		passport.authenticate('login', (error, user, info) => {
 			if (error) { return res.jsonp( { code: 228, service: 'user', function: 'login', message: 'error', error }); }
 			if (info) { return res.jsonp( { code: 227, service: 'user', function: 'login', message: info.message }); }
-			return res.jsonp({ code: 220, service: 'user', function: 'login', message: 'success', token: user.token,
-				_id:user.user._id, nickname:user.user.nickname, email:user.user.email, signhash:user.user.signhash });
+			const ret = {
+				token: user.token,
+				_id:user.user._id,
+				nickname:user.user.nickname,
+				email:user.user.email,
+				signhash:user.user.signhash
+			}
+			return res.jsonp({ code: 220, service: 'user', function: 'login', message: 'success', ...ret});
 
 		})(req, res, next);
 	}).all((req, res) => res.jsonp({ code: 229, service: 'user', function: 'login', message: 'unauthorized_method'}));
