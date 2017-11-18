@@ -151,7 +151,7 @@ module.exports = (express, passport) => {
 			if(!user) {
 				return res.jsonp({ code: 237, service: 'user', function: 'viewuser', message: info.message });
 			}
-			return res.jsonp({ code: 250, service: 'user', function: 'viewuser', message: 'success', user: user.user});
+			return res.jsonp({ code: 250, service: 'user', function: 'viewuser', message: 'success', user});
 		})
 	}).all((req, res) => res.jsonp({ code: 259, service: 'user', function: 'viewuser', message: 'unauthorized_method' }));
 
