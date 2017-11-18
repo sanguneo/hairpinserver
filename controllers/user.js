@@ -152,11 +152,16 @@ module.exports = (express, passport) => {
 				return res.jsonp({ code: 237, service: 'user', function: 'viewuser', message: info.message });
 			}
 			const ret = {
-				...user,
+				_id: user._id,
+				signhash: user.signhash,
+				email: user.email,
+				nickname: user.nickname,
+				follower: user.follower,
+				following: user.following,
 				followersize: user.follower.length,
 				followingsize: user.following.length,
 			}
-			return res.jsonp({ code: 250, service: 'user', function: 'viewuser', message: 'success', ret});
+			return res.jsonp({ code: 250, service: 'user', function: 'viewuser', message: 'success', ...ret});
 		})
 	}).all((req, res) => res.jsonp({ code: 259, service: 'user', function: 'viewuser', message: 'unauthorized_method' }));
 
