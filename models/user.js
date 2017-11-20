@@ -1,8 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt-nodejs');
 
-const {sFollow} = require('./follow');
-
 const sUser = mongoose.Schema({
 	signhash: {type: String, required: true, unique: true},
 

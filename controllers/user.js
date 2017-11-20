@@ -7,8 +7,7 @@ module.exports = (express, passport) => {
 	const profileUpload	= multer({ dest: uploadPath });
 	
 	const mUser = require('../models/user');
-	const { mFollow } = require('../models/follow');
-	
+
 	const validation	= require('./user.validation');
 	
 	router.use((req, res, next) => {
@@ -24,7 +23,7 @@ module.exports = (express, passport) => {
 	    });
 	});
 	
-	router.use(validation(['/signup', '/modify', '/login'], ['/vuser']));
+	router.use(validation(['/signup', '/modify', '/login']));
 
 
 	router.route('/signup').post(profileUpload.single('profile'), (req, res, next ) => {
@@ -92,26 +91,39 @@ module.exports = (express, passport) => {
 		if (!signhash) {
 			return res.jsonp({ code: 236, service: 'user', function: 'follow', message: 'unsatisfied_param'});
 		}
-		mUser.findOne({signhash},(error, user) => {
+		mUser.findOne({signhash}, ['_id', 'nickname', 'follower'], (error, destuser) => {
 			if(error) {
 				return res.jsonp({ code: 238, service: 'user', function: 'follow', message: 'error', error });
 			}
-			if(!user) {
+			if(!destuser) {
 				return res.jsonp({ code: 237, service: 'user', function: 'follow', message: info.message });
 			}
-			if (!user.follower.find((e)=> e.signhash === myhash)){
-				user.follower.push(new mFollow({
-					signhash : myhash
-				}));
-				user.save().then(() => {
-					return res.jsonp({ code: 230, service: 'user', function: 'follow', message: 'success', target: user.nickname });
+			if (!destuser.follower.includes(myhash)){
+				destuser.follower.push(myhash);
+				destuser.save().then(() => {
+					mUser.findOne({signhash: myhash}, ['_id', 'nickname', 'following'], (error, srcuser) => {
+						if(error) {
+							return res.jsonp({ code: 238, service: 'user', function: 'follow', message: 'error', error });
+						}
+						if (!srcuser.following.includes(signhash)){
+							srcuser.following.push(signhash);
+							srcuser.save().then(() => {
+								return res.jsonp({ code: 230, service: 'user', function: 'follow', message: 'success', target: destuser.nickname });
+							}).catch((error)=> {
+								return res.jsonp({ code: 238, service: 'user', function: 'follow', message: 'error', error});
+							});
+						} else {
+							return res.jsonp({ code: 231, service: 'user', function: 'follow', message: 'following', target: srcuser.nickname });
+						}
+					});
 				}).catch((error)=> {
 					return res.jsonp({ code: 238, service: 'user', function: 'follow', message: 'error', error});
 				});
 			} else {
-				return res.jsonp({ code: 231, service: 'user', function: 'follow', message: 'following', target: user.nickname });
+				return res.jsonp({ code: 231, service: 'user', function: 'follow', message: 'following', target: destuser.nickname });
 			}
-		})
+		});
+
 	}).all((req, res) => res.jsonp({ code: 239, service: 'user', function: 'follow', message: 'unauthorized_method' }));
 
 	router.route('/unfollow').post((req, res) => {
@@ -120,34 +132,46 @@ module.exports = (express, passport) => {
 		if (!signhash) {
 			return res.jsonp({ code: 236, service: 'user', function: 'unfollow', message: 'unsatisfied_param'});
 		}
-		mUser.findOne({signhash},(error, user) => {
+		mUser.findOne({signhash}, ['_id', 'nickname', 'follower'], (error, destuser) => {
 			if(error) {
-				return res.jsonp({ code: 248, service: 'user', function: 'unfollow', message: 'error', error });
+				return res.jsonp({ code: 248, service: 'user', function: 'unfollow', message: 'error', pos: 'dest', error });
 			}
-			if(!user) {
-				return res.jsonp({ code: 247, service: 'user', function: 'unfollow', message: 'nouser' });
+			if(!destuser) {
+				return res.jsonp({ code: 247, service: 'user', function: 'unfollow', message: 'nouser', pos: 'dest' });
 			}
-			if (user.follower.find((e)=> e.signhash === myhash)){
-				user.follower = user.follower.filter((follower) => follower.signhash !== myhash);
-				user.save().then(() => {
-					return res.jsonp({ code: 240, service: 'user', function: 'unfollow', message: 'success', target: user.nickname });
+			let uidx = destuser.follower.indexOf(myhash);
+			if (uidx >= 0){
+				destuser.follower.splice(uidx, 1);
+				destuser.save().then(() => {
+					mUser.findOne({signhash: myhash}, ['_id', 'nickname', 'following'], (error, srcuser) => {
+						if(error) {
+							return res.jsonp({ code: 248, service: 'user', function: 'unfollow', message: 'error', error });
+						}
+						let uidx = srcuser.following.indexOf(myhash);
+						if (uidx >= 0){
+							srcuser.following.splice(uidx, 1);
+							srcuser.save().then(() => {
+								return res.jsonp({ code: 240, service: 'user', function: 'unfollow', message: 'success', target: destuser.nickname });
+							}).catch((error)=> {
+								return res.jsonp({ code: 248, service: 'user', function: 'unfollow', message: 'error', error });
+							});
+						} else {
+							return res.jsonp({ code: 241, service: 'user', function: 'unfollow', message: 'unfollowing', target: srcuser.nickname });
+						}
+					});
 				}).catch((error)=> {
 					return res.jsonp({ code: 248, service: 'user', function: 'unfollow', message: 'error', error });
 				});
 			} else {
 				return res.jsonp({ code: 241, service: 'user', function: 'unfollow', message: 'unfollowing', target: user.nickname });
 			}
-		})
+		});
+
 	}).all((req, res) => res.jsonp({ code: 249, service: 'user', function: 'unfollow', message: 'unauthorized_method' }));
 	
-	/*
-	db.users.aggregate([
-    	{$project: {_id: 1, frcount: {$size: '$follower'}, ficount: {$size: '$following'}}}
-	]);
-	*/
-	router.route('/vuser/:signhash').get((req, res) => {
-		let {signhash} = req.params;
-		if (!signhash) {
+	router.route('/vuser/:signhash/:myhash').get((req, res) => {
+		let {signhash, myhash} = req.params;
+		if (!signhash, myhash) {
 			return res.jsonp({ code: 256, service: 'user', function: 'viewuser', message: 'unsatisfied_param'});
 		}
 		mUser.findOne({signhash},['_id', 'signhash', 'email', 'nickname', 'follower', 'following'],(error, user) => {
@@ -166,6 +190,7 @@ module.exports = (express, passport) => {
 				following: user.following,
 				followersize: user.follower.length,
 				followingsize: user.following.length,
+				amIfollowing: user.follower.includes(myhash)
 			}
 			return res.jsonp({ code: 250, service: 'user', function: 'viewuser', message: 'success', ...ret});
 		})
