@@ -9,7 +9,9 @@ const sDesign = mongoose.Schema({
 	recipe: {type: String},
 	comment: {type: String},
 
-	regDate: {type: Date, required: true, default: Date.now}
+	regDate: {type: Date, required: true, default: Date.now},
+
+	publish: {type: Number, required: true, default: 0}
 });
 
 module.exports = mongoose.model('design', sDesign);

@@ -143,7 +143,7 @@ module.exports = (express, passport) => {
 				return res.jsonp({ code: 247, service: 'user', function: 'unfollow', message: 'nouser', pos: 'dest' });
 			}
 			let uidx = destuser.follower.indexOf(myhash);
-			if (uidx >= 0){
+			if (uidx !== -1){
 				destuser.follower.splice(uidx, 1);
 				destuser.save().then(() => {
 					mUser.findOne({signhash: myhash}, ['_id', 'nickname', 'following'], (error, srcuser) => {
