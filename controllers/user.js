@@ -209,10 +209,12 @@ module.exports = (express, passport) => {
 				return res.jsonp({ code: 267, service: 'user', function: 'userstat', message: info.message });
 			}
 			const ret = {
+				designs: [],
 				follower: user.follower,
 				following: user.following,
+				designsize: 0, //user.designsize.length
 				followersize: user.follower.length,
-				followingsize: user.following.length
+				followingsize: user.following.length,
 			}
 			return res.jsonp({ code: 260, service: 'user', function: 'userstat', message: 'success', ...ret});
 		})
