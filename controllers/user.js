@@ -150,7 +150,7 @@ module.exports = (express, passport) => {
 						if(error) {
 							return res.jsonp({ code: 248, service: 'user', function: 'unfollow', message: 'error', error });
 						}
-						let uidx = srcuser.following.indexOf(myhash);
+						let uidx = srcuser.following.indexOf(signhash);
 						if (uidx !== -1){
 							srcuser.following.splice(uidx, 1);
 							srcuser.save().then(() => {
