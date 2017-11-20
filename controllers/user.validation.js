@@ -18,7 +18,8 @@ module.exports = (passRouteMore, passRouteArray) => (req, res, next) => {
 	}
 	
 	let secret = req.app.get('secretnipriah');
-	const token = req.headers['nekotnipriah'] || req.query.nekotnipriah;
+	console.log(req.headers);
+	const token = req.headers['nekotnipriah'];
 	if (!token) {
 		return res.jsonp({
 			code: 294,
