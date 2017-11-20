@@ -190,7 +190,7 @@ module.exports = (express, passport) => {
 				following: user.following,
 				followersize: user.follower.length,
 				followingsize: user.following.length,
-				amIfollowing: user.follower.includes(myhash)
+				// amIfollowing: user.follower.includes(myhash)
 			}
 			return res.jsonp({ code: 250, service: 'user', function: 'viewuser', message: 'success', ...ret});
 		})
