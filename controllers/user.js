@@ -171,7 +171,7 @@ module.exports = (express, passport) => {
 	
 	router.route('/vuser/:signhash/:myhash').get((req, res) => {
 		let {signhash, myhash} = req.params;
-		if (!signhash, myhash) {
+		if (!signhash, !myhash) {
 			return res.jsonp({ code: 256, service: 'user', function: 'viewuser', message: 'unsatisfied_param'});
 		}
 		mUser.findOne({signhash},['_id', 'signhash', 'email', 'nickname', 'follower', 'following'],(error, user) => {
