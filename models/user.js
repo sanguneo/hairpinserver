@@ -12,8 +12,8 @@ const sUser = mongoose.Schema({
 	intro: {type: String},
 	profileReg: {type: Date},
 
-	follower: [sFollow],
-	following: [sFollow]
+	follower: [String],
+	following: [String]
 });
 
 sUser.methods.genPw = function(password) {
@@ -22,12 +22,5 @@ sUser.methods.genPw = function(password) {
 sUser.methods.validPw = function(password) {
 	return bcrypt.compareSync(password, this.password);
 };
-
-sUser.virtual('followersize').get(function(){
-	return this.follower.length;
-});
-sUser.virtual('followingsize').get(function(){
-	return this.following.length;
-});
 
 module.exports = mongoose.model('user', sUser);
