@@ -78,7 +78,11 @@ module.exports = (express, passport) => {
 				_id:user.user._id,
 				nickname:user.user.nickname,
 				email:user.user.email,
-				signhash:user.user.signhash
+				signhash:user.user.signhash,
+				follower: user.follower,
+				following: user.following,
+				followersize: user.follower.length,
+				followingsize: user.following.length
 			}
 			return res.jsonp({ code: 220, service: 'user', function: 'login', message: 'success', ...ret});
 
