@@ -192,6 +192,7 @@ module.exports = (express, passport) => {
 				nickname: user.nickname,
 				follower: user.follower,
 				following: user.following,
+				designsize: 0, //user.user.designsize.length
 				followersize: user.follower.length,
 				followingsize: user.following.length,
 				amIfollowing: user.follower.includes(myhash)
