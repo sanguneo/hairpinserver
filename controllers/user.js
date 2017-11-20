@@ -78,11 +78,7 @@ module.exports = (express, passport) => {
 				_id:user.user._id,
 				nickname:user.user.nickname,
 				email:user.user.email,
-				signhash:user.user.signhash,
-				follower: user.follower,
-				following: user.following,
-				followersize: user.follower.length,
-				followingsize: user.following.length
+				signhash:user.user.signhash
 			}
 			return res.jsonp({ code: 220, service: 'user', function: 'login', message: 'success', ...ret});
 
@@ -183,7 +179,7 @@ module.exports = (express, passport) => {
 				return res.jsonp({ code: 258, service: 'user', function: 'viewuser', message: 'error', error });
 			}
 			if(!user) {
-				return res.jsonp({ code: 237, service: 'user', function: 'viewuser', message: info.message });
+				return res.jsonp({ code: 257, service: 'user', function: 'viewuser', message: info.message });
 			}
 			const ret = {
 				_id: user._id,
@@ -199,6 +195,28 @@ module.exports = (express, passport) => {
 			return res.jsonp({ code: 250, service: 'user', function: 'viewuser', message: 'success', ...ret});
 		})
 	}).all((req, res) => res.jsonp({ code: 259, service: 'user', function: 'viewuser', message: 'unauthorized_method' }));
+
+	router.route('/userstat').get((req, res) => {
+		let signhash = req.decoded.signhash;
+		if (!signhash) {
+			return res.jsonp({ code: 266, service: 'user', function: 'userstat', message: 'unsatisfied_param'});
+		}
+		mUser.findOne({signhash},['follower', 'following'],(error, user) => {
+			if(error) {
+				return res.jsonp({ code: 268, service: 'user', function: 'userstat', message: 'error', error });
+			}
+			if(!user) {
+				return res.jsonp({ code: 267, service: 'user', function: 'userstat', message: info.message });
+			}
+			const ret = {
+				follower: user.follower,
+				following: user.following,
+				followersize: user.follower.length,
+				followingsize: user.following.length
+			}
+			return res.jsonp({ code: 260, service: 'user', function: 'userstat', message: 'success', ...ret});
+		})
+	}).all((req, res) => res.jsonp({ code: 269, service: 'user', function: 'userstat', message: 'unauthorized_method' }));
 
 	return router;
 };
