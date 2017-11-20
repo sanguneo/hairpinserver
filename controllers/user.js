@@ -172,8 +172,9 @@ module.exports = (express, passport) => {
 
 	}).all((req, res) => res.jsonp({ code: 249, service: 'user', function: 'unfollow', message: 'unauthorized_method' }));
 	
-	router.route('/vuser/:signhash/:myhash').get((req, res) => {
-		let {signhash, myhash} = req.params;
+	router.route('/vuser/:signhash').get((req, res) => {
+		let {signhash} = req.params;
+		let myhash = req.decoded.signhash;
 		if (!signhash || !myhash) {
 			return res.jsonp({ code: 256, service: 'user', function: 'viewuser', message: 'unsatisfied_param'});
 		}
