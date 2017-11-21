@@ -182,9 +182,6 @@ module.exports = (express, passport) => {
 			if(error) {
 				return res.jsonp({ code: 258, service: 'user', function: 'viewuser', message: 'error', error });
 			}
-			if(!user) {
-				return res.jsonp({ code: 257, service: 'user', function: 'viewuser', message: info.message });
-			}
 			const ret = {
 				_id: user._id,
 				signhash: user.signhash,
@@ -210,9 +207,6 @@ module.exports = (express, passport) => {
 			if(error) {
 				return res.jsonp({ code: 268, service: 'user', function: 'userstat', message: 'error', error });
 			}
-			if(!user) {
-				return res.jsonp({ code: 267, service: 'user', function: 'userstat', message: info.message });
-			}
 			const ret = {
 				designs: [],
 				follower: user.follower,
@@ -224,6 +218,17 @@ module.exports = (express, passport) => {
 			return res.jsonp({ code: 260, service: 'user', function: 'userstat', message: 'success', ...ret});
 		})
 	}).all((req, res) => res.jsonp({ code: 269, service: 'user', function: 'userstat', message: 'unauthorized_method' }));
+
+	router.route('/searchuser/:param').get((req, res) => {
+		let {param} = req.params;
+		const query = (!param || param === '') ? {} : {$or: [{nickname: param}, {email: param}]};
+		mUser.find(query,(error, user) => {
+			if(error) {
+				return res.jsonp({ code: 278, service: 'user', function: 'userstat', message: 'error', error });
+			}
+			return res.jsonp({ code: 270, service: 'user', function: 'userstat', message: 'success', user});
+		})
+	}).all((req, res) => res.jsonp({ code: 279, service: 'user', function: 'userstat', message: 'unauthorized_method' }));
 
 	return router;
 };
