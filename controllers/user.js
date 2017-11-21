@@ -221,7 +221,7 @@ module.exports = (express, passport) => {
 
 	router.route(['/searchuser/:param', '/searchuser/']).get((req, res) => {
 		let {param} = req.params;
-		let searchRegExp = (!param || param === '') ? null : new RegExp('^'+param.toString('utf8')+'$', 'i');
+		let searchRegExp = (!param || param === '') ? null : new RegExp('^'+decodeURIComponent(param)+'$', 'i');
 		const query = (!param || param === '') ? {} : {$or: [{nickname: searchRegExp}, {email: searchRegExp}]};
 		mUser.find(query,['_id', 'signhash', 'nickname', 'email'],(error, user) => {
 			if(error) {
