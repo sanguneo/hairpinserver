@@ -222,7 +222,7 @@ module.exports = (express, passport) => {
 	router.route(['/searchuser/:param', '/searchuser/']).get((req, res) => {
 		let {param} = req.params;
 		const query = (!param || param === '') ? {} : {$or: [{nickname: param}, {email: param}]};
-		mUser.find(query,(error, user) => {
+		mUser.find(query,['_id', 'signhash', 'nickname', 'email'],(error, user) => {
 			if(error) {
 				return res.jsonp({ code: 278, service: 'user', function: 'userstat', message: 'error', error });
 			}
