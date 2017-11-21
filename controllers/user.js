@@ -219,7 +219,7 @@ module.exports = (express, passport) => {
 		})
 	}).all((req, res) => res.jsonp({ code: 269, service: 'user', function: 'userstat', message: 'unauthorized_method' }));
 
-	router.route('/searchuser/:param').get((req, res) => {
+	router.route(['/searchuser/:param', '/searchuser/']).get((req, res) => {
 		let {param} = req.params;
 		const query = (!param || param === '') ? {} : {$or: [{nickname: param}, {email: param}]};
 		mUser.find(query,(error, user) => {
