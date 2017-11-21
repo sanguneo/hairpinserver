@@ -23,7 +23,7 @@ module.exports = (express, passport) => {
 	    });
 	});
 	
-	router.use(validation(['/signup', '/modify', '/login']));
+	router.use(validation(['/signup', '/modify', '/login'], ['/searchuser']));
 
 
 	router.route('/signup').post(profileUpload.single('profile'), (req, res, next ) => {
