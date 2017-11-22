@@ -42,11 +42,7 @@ module.exports = express => {
 			let fields = ['regDate', 'noticeType', 'title', 'content'];
 			if (req.query.withoutcontent && req.query.withoutcontent !== '')
 				fields.pop();
-			mNotice.find(
-				query,
-				fields,
-				{sort: {regDate: -1}},
-				(error, notice) => {
+			mNotice.find(query, fields, {sort: {regDate: -1}},(error, notice) => {
 					if (error) return res.jsonp({code: 318,service: 'notice',function: 'listup',message: 'error',error});
 					if (!notice) return res.jsonp({code: 317,service: 'notice',function: 'listup',message: 'no notice'});
 					return res.jsonp({code: 310,service: 'notice',function: 'listup',message: 'success',notice});
@@ -63,16 +59,8 @@ module.exports = express => {
 			let fields = ['regDate', 'noticeType', 'title', 'content'];
 			if (req.query.withoutcontent && req.query.withoutcontent !== '')
 				fields.pop();
-			mNotice.find(
-				{
-					$and: [
-						{$or: [{noticeType: {$exists: false}}, {noticeType: 0}]},
-						query
-					]
-				},
-				fields,
-				{sort: {regDate: -1}},
-				(error, notice) => {
+			mNotice.find({$and: [{$or: [{noticeType: {$exists: false}}, {noticeType: 0}]},query]}, fields,
+				{sort: {regDate: -1}},(error, notice) => {
 					if (error) return res.jsonp({code: 328,service: 'notice',function: 'listup',message: 'error',error});
 					if (!notice) return res.jsonp({code: 327,service: 'notice',function: 'listup',message: 'no notice'});
 					return res.jsonp({code: 320,service: 'notice',function: 'listup',message: 'success',notice});
@@ -85,16 +73,10 @@ module.exports = express => {
 
 	router.route('/popup').get((req, res) => {
 			let query = {};
-			if (req.query.after && req.query.after !== '')
-				query.regDate = {$gt: new Date(req.query.after)};
+			if (req.query.after && req.query.after !== '') query.regDate = {$gt: new Date(req.query.after)};
 			let fields = ['regDate', 'noticeType', 'title', 'content'];
-			if (req.query.withoutcontent && req.query.withoutcontent !== '')
-				fields.pop();
-			mNotice.find(
-				{$and: [{noticeType: 0}, query]},
-				fields,
-				{sort: {regDate: -1}},
-				(error, notice) => {
+			if (req.query.withoutcontent && req.query.withoutcontent !== '') fields.pop();
+			mNotice.find({$and: [{noticeType: 0}, query]}, fields, {sort: {regDate: -1}}, (error, notice) => {
 					if (error) return res.jsonp({code: 338,service: 'notice',function: 'listup',message: 'error',error});
 					if (!notice) return res.jsonp({code: 337,service: 'notice',function: 'listup',message: 'no notice'});
 					return res.jsonp({code: 330,service: 'notice',function: 'listup',message: 'success',notice});
@@ -110,10 +92,7 @@ module.exports = express => {
 			return res.jsonp({code: 346,service: 'notice',function: 'specific',message: 'unsatisfied_param'});
 		}
 		let fields = ['regDate', 'noticeType', 'title', 'content'];
-		mNotice.findOne(
-			{_id},
-			fields,
-			(error, notice) => {
+		mNotice.findOne({_id}, fields, (error, notice) => {
 				if (error)return res.jsonp({code: 348,service: 'notice',function: 'specific',message: 'error',error});
 				if (!notice)return res.jsonp({code: 347,service: 'notice',function: 'specific',message: 'no notice'});
 				return res.jsonp({code: 340,service: 'notice',function: 'specific',message: 'success',notice});

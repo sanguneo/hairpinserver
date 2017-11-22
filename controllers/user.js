@@ -105,9 +105,7 @@ module.exports = (express, passport) => {
 				destuser.follower.push(myhash);
 				destuser.save().then(() => {
 					mUser.findOne({signhash: myhash}, ['_id', 'nickname', 'following'], (error, srcuser) => {
-						if(error) {
-							return res.jsonp({ code: 238, service: 'user', function: 'follow', message: 'error', error });
-						}
+						if(error) return res.jsonp({ code: 238, service: 'user', function: 'follow', message: 'error', error });
 						if (!srcuser.following.includes(signhash)){
 							srcuser.following.push(signhash);
 							srcuser.save().then(() => {
@@ -119,9 +117,7 @@ module.exports = (express, passport) => {
 							return res.jsonp({ code: 231, service: 'user', function: 'follow', message: 'following', target: srcuser.nickname });
 						}
 					});
-				}).catch((error)=> {
-					return res.jsonp({ code: 238, service: 'user', function: 'follow', message: 'error', error});
-				});
+				}).catch((error)=> res.jsonp({ code: 238, service: 'user', function: 'follow', message: 'error', error}));
 			} else {
 				return res.jsonp({ code: 231, service: 'user', function: 'follow', message: 'following', target: destuser.nickname });
 			}
@@ -136,35 +132,24 @@ module.exports = (express, passport) => {
 			return res.jsonp({ code: 236, service: 'user', function: 'unfollow', message: 'unsatisfied_param'});
 		}
 		mUser.findOne({signhash}, ['_id', 'nickname', 'follower'], (error, destuser) => {
-			if(error) {
-				return res.jsonp({ code: 248, service: 'user', function: 'unfollow', message: 'error', pos: 'dest', error });
-			}
-			if(!destuser) {
-				return res.jsonp({ code: 247, service: 'user', function: 'unfollow', message: 'nouser', pos: 'dest' });
-			}
+			if(error) return res.jsonp({ code: 248, service: 'user', function: 'unfollow', message: 'error', pos: 'dest', error });
+			if(!destuser) return res.jsonp({ code: 247, service: 'user', function: 'unfollow', message: 'nouser', pos: 'dest' });
 			let uidx = destuser.follower.indexOf(myhash);
 			if (uidx !== -1){
 				destuser.follower.splice(uidx, 1);
 				destuser.save().then(() => {
 					mUser.findOne({signhash: myhash}, ['_id', 'nickname', 'following'], (error, srcuser) => {
-						if(error) {
-							return res.jsonp({ code: 248, service: 'user', function: 'unfollow', message: 'error', error });
-						}
+						if(error) return res.jsonp({ code: 248, service: 'user', function: 'unfollow', message: 'error', error });
 						let uidx = srcuser.following.indexOf(signhash);
 						if (uidx !== -1){
 							srcuser.following.splice(uidx, 1);
-							srcuser.save().then(() => {
-								return res.jsonp({ code: 240, service: 'user', function: 'unfollow', message: 'success', target: destuser.nickname });
-							}).catch((error)=> {
-								return res.jsonp({ code: 248, service: 'user', function: 'unfollow', message: 'error', error });
-							});
+							srcuser.save().then(() => res.jsonp({ code: 240, service: 'user', function: 'unfollow', message: 'success', target: destuser.nickname }))
+								.catch((error) => res.jsonp({ code: 248, service: 'user', function: 'unfollow', message: 'error', error }));
 						} else {
 							return res.jsonp({ code: 241, service: 'user', function: 'unfollow', message: 'unfollowing', target: srcuser.nickname });
 						}
 					});
-				}).catch((error)=> {
-					return res.jsonp({ code: 248, service: 'user', function: 'unfollow', message: 'error', error });
-				});
+				}).catch((error)=> res.jsonp({ code: 248, service: 'user', function: 'unfollow', message: 'error', error }));
 			} else {
 				return res.jsonp({ code: 241, service: 'user', function: 'unfollow', message: 'unfollowing', target: user.nickname });
 			}
@@ -175,13 +160,9 @@ module.exports = (express, passport) => {
 	router.route('/vuser/:signhash').get((req, res) => {
 		let {signhash} = req.params;
 		let myhash = req.decoded.signhash;
-		if (!signhash || !myhash) {
-			return res.jsonp({ code: 256, service: 'user', function: 'viewuser', message: 'unsatisfied_param'});
-		}
+		if (!signhash || !myhash) return res.jsonp({ code: 256, service: 'user', function: 'viewuser', message: 'unsatisfied_param'});
 		mUser.findOne({signhash},['_id', 'signhash', 'email', 'nickname', 'follower', 'following'],(error, user) => {
-			if(error) {
-				return res.jsonp({ code: 258, service: 'user', function: 'viewuser', message: 'error', error });
-			}
+			if(error) return res.jsonp({ code: 258, service: 'user', function: 'viewuser', message: 'error', error });
 			const ret = {
 				_id: user._id,
 				signhash: user.signhash,
@@ -200,13 +181,9 @@ module.exports = (express, passport) => {
 
 	router.route('/userstat').get((req, res) => {
 		let signhash = req.decoded.signhash;
-		if (!signhash) {
-			return res.jsonp({ code: 266, service: 'user', function: 'userstat', message: 'unsatisfied_param'});
-		}
+		if (!signhash) return res.jsonp({ code: 266, service: 'user', function: 'userstat', message: 'unsatisfied_param'});
 		mUser.findOne({signhash},['follower', 'following'],(error, user) => {
-			if(error) {
-				return res.jsonp({ code: 268, service: 'user', function: 'userstat', message: 'error', error });
-			}
+			if(error) return res.jsonp({ code: 268, service: 'user', function: 'userstat', message: 'error', error });
 			const ret = {
 				designs: [],
 				follower: user.follower,
@@ -221,12 +198,10 @@ module.exports = (express, passport) => {
 
 	router.route(['/searchuser/:param', '/searchuser/']).get((req, res) => {
 		let {param} = req.params;
-		let signhash = req.decoded.signhash;
+		let signhash = req.decoded.signhash || 'nosignhash';
 		const query = (!param || param === '') ? {} : {$or: [{nickname: {$regex: '.*' + param +'.*'}}, {email: {$regex: '.*' + param +'.*'}}]};
 		mUser.find(query,['_id', 'signhash', 'nickname', 'email'],(error, user) => {
-			if(error) {
-				return res.jsonp({ code: 278, service: 'user', function: 'userstat', message: 'error', error });
-			}
+			if(error) return res.jsonp({ code: 278, service: 'user', function: 'userstat', message: 'error', error });
 			return res.jsonp({ code: 270, service: 'user', function: 'userstat', message: 'success', user: user.filter((e) => e.signhash != signhash)});
 		})
 	}).all((req, res) => res.jsonp({ code: 279, service: 'user', function: 'userstat', message: 'unauthorized_method' }));
