@@ -221,13 +221,13 @@ module.exports = (express, passport) => {
 
 	router.route(['/searchuser/:param', '/searchuser/']).get((req, res) => {
 		let {param} = req.params;
-		let _id = req.decoded._id;
+		let signhash = req.decoded.signhash;
 		const query = (!param || param === '') ? {} : {$or: [{nickname: {$regex: '.*' + param +'.*'}}, {email: {$regex: '.*' + param +'.*'}}]};
 		mUser.find(query,['_id', 'signhash', 'nickname', 'email'],(error, user) => {
 			if(error) {
 				return res.jsonp({ code: 278, service: 'user', function: 'userstat', message: 'error', error });
 			}
-			return res.jsonp({ code: 270, service: 'user', function: 'userstat', message: 'success', id: _id,user: user.filter((e) => e._id != _id)});
+			return res.jsonp({ code: 270, service: 'user', function: 'userstat', message: 'success', user: user.filter((e) => e.signhash != signhash)});
 		})
 	}).all((req, res) => res.jsonp({ code: 279, service: 'user', function: 'userstat', message: 'unauthorized_method' }));
 
