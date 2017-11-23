@@ -209,11 +209,14 @@ module.exports = (express, passport) => {
 	router.route(['/searchtag/:param', '/searchtag/']).get((req, res) => {
 		let {param} = req.params;
 		let signhash = req.decoded.signhash || 'nosignhash';
-		mUser.aggregate({$group: {_id: "$signhash",nickname: "$nickname",count: { $sum: 1 }}}).exec((error, user) => {
-			if(error) return res.jsonp({ code: 288, service: 'user', function: 'searchtag', message: 'error', error });
-			return res.jsonp({ code: 280, service: 'user', function: 'searchtag', message: 'success', user: user.filter((e) => e._id != signhash)});
+		const query = (!param || param === '') ? {} : {$or: [{nickname: {$regex: '.*' + param +'.*'}}, {email: {$regex: '.*' + param +'.*'}}]};
+		mUser.aggregate({$group: {_id: "$nickname",count: { $sum: 1 }}}).exec((error, user) => {
+			if(error) return res.jsonp({ code: 278, service: 'user', function: 'userstat', message: 'error', error });
+			return res.jsonp({ code: 270, service: 'user', function: 'userstat', message: 'success', user});
 		})
-	}).all((req, res) => res.jsonp({ code: 289, service: 'user', function: 'searchtag', message: 'unauthorized_method' }));
+
+
+	}).all((req, res) => res.jsonp({ code: 279, service: 'user', function: 'userstat', message: 'unauthorized_method' }));
 
 	return router;
 };
