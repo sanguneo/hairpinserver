@@ -210,10 +210,10 @@ module.exports = (express, passport) => {
 		let {param} = req.params;
 		let signhash = req.decoded.signhash || 'nosignhash';
 		let query = [{$group: {signhash: "$signhash",nickname: "$nickname",count: { $sum: 1 }}}]
-		query.push({$match : {nickname: {$regex: '.*' + param +'.*'}}});
 		mUser.aggregate(query).exec((error, user) => {
+			console.log(user.filter((e) => e.signhash != signhash));
 			if(error) return res.jsonp({ code: 288, service: 'user', function: 'searchtag', message: 'error', error });
-			return res.jsonp({ code: 280, service: 'user', function: 'searchtag', message: 'success', user: user});
+			return res.jsonp({ code: 280, service: 'user', function: 'searchtag', message: 'success', user: user.filter((e) => e.signhash != signhash)});
 		})
 	}).all((req, res) => res.jsonp({ code: 289, service: 'user', function: 'searchtag', message: 'unauthorized_method' }));
 
