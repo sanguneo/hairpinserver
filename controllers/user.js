@@ -212,9 +212,8 @@ module.exports = (express, passport) => {
 		let query = [{$group: {signhash: "$signhash",nickname: "$nickname",count: { $sum: 1 }}}]
 		query.push({$match : {nickname: {$regex: '.*' + param +'.*'}}});
 		mUser.aggregate(query).exec((error, user) => {
-			console.log(user.filter((e) => e.signhash != signhash));
 			if(error) return res.jsonp({ code: 288, service: 'user', function: 'searchtag', message: 'error', error });
-			return res.jsonp({ code: 280, service: 'user', function: 'searchtag', message: 'success', user: user.filter((e) => e.signhash != signhash)});
+			return res.jsonp({ code: 280, service: 'user', function: 'searchtag', message: 'success', user: user});
 		})
 	}).all((req, res) => res.jsonp({ code: 289, service: 'user', function: 'searchtag', message: 'unauthorized_method' }));
 
