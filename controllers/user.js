@@ -209,9 +209,7 @@ module.exports = (express, passport) => {
 	router.route(['/searchtag/:param', '/searchtag/']).get((req, res) => {
 		let {param} = req.params;
 		let signhash = req.decoded.signhash || 'nosignhash';
-		let query = {$group: {signhash: "$signhash",nickname: "$nickname",count: { $sum: 1 }}}
-		mUser.aggregate(query).exec((error, user) => {
-			console.log(user.filter((e) => e.signhash != signhash));
+		mUser.aggregate({$group: {signhash: "$signhash",nickname: "$nickname",count: { $sum: 1 }}}).exec((error, user) => {
 			if(error) return res.jsonp({ code: 288, service: 'user', function: 'searchtag', message: 'error', error });
 			return res.jsonp({ code: 280, service: 'user', function: 'searchtag', message: 'success', user: user.filter((e) => e.signhash != signhash)});
 		})
