@@ -208,11 +208,11 @@ module.exports = (express, passport) => {
 
 	router.route(['/searchtag/:param', '/searchtag/']).get((req, res) => {
 		let {param} = req.params;
-		let signhash = req.decoded.signhash || 'nosignhash';
+		let nickname = req.decoded.nickname || 'nonickname';
 		const query = (!param || param === '') ? {} : {$or: [{nickname: {$regex: '.*' + param +'.*'}}, {email: {$regex: '.*' + param +'.*'}}]};
 		mUser.aggregate({$group: {_id: "$nickname",count: { $sum: 1 },  signhash : {"$push" : "$signhash"}}}).exec((error, user) => {
 			if(error) return res.jsonp({ code: 278, service: 'user', function: 'userstat', message: 'error', error });
-			return res.jsonp({ code: 270, service: 'user', function: 'userstat', message: 'success', user: user.filter((e) => e.signhash != signhash)});
+			return res.jsonp({ code: 270, service: 'user', function: 'userstat', message: 'success', user: user.filter((e) => e._id != nickname)});
 		})
 
 
