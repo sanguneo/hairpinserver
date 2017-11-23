@@ -211,7 +211,7 @@ module.exports = (express, passport) => {
 		const query = (!param || param === '') ? {} : {$or: [{nickname: {$regex: '.*' + param +'.*'}}, {email: {$regex: '.*' + param +'.*'}}]};
 		mUser.aggregate({$group: {_id: "$nickname",count: { $sum: 1 },  signhash : {"$push" : "$signhash"}}}).exec((error, tags) => {
 			if(error) return res.jsonp({ code: 278, service: 'searchtag', function: 'userstat', message: 'error', error });
-			return res.jsonp({ code: 270, service: 'searchtag', function: 'userstat', message: 'success', tags: tags.map((tag) => {_id: tag._id, signhash: tag.signhash[0], count: tag.count})});
+			return res.jsonp({ code: 270, service: 'searchtag', function: 'userstat', message: 'success', tags: tags.map((tag) => {return {_id: tag._id, signhash: tag.signhash[0], count: tag.count}})});
 		})
 
 
