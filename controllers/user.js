@@ -208,7 +208,7 @@ module.exports = (express, passport) => {
 
 	router.route(['/searchtag/:param', '/searchtag/']).get((req, res) => {
 		let {param} = req.params;
-		let query = [{$group: {_id: "$nickname",count: { $sum: 1 },  signhash : {"$push" : "$signhash"}}}]
+		let query = {$group: {_id: "$nickname",count: { $sum: 1 },  signhash : {"$push" : "$signhash"}}}
 		// if (param && param !== '') query.push({$or: [{nickname: {$regex: '.*' + param +'.*'}}, {email: {$regex: '.*' + param +'.*'}}]});
 		mUser.aggregate(query).exec((error, tags) => {
 			if(error) return res.jsonp({ code: 278, service: 'searchtag', function: 'userstat', message: 'error', error });
