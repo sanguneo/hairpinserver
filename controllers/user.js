@@ -210,14 +210,14 @@ module.exports = (express, passport) => {
 		let {param} = req.params;
 		let signhash = req.decoded.signhash || 'nosignhash';
 		const query = (!param || param === '') ? {} : {$or: [{nickname: {$regex: '.*' + param +'.*'}}, {email: {$regex: '.*' + param +'.*'}}]};
-		mUser.aggregate([{$unwind: "$user"},
+		mUser.aggregate(
 			{
 				$group: {
-					_id: "$user.nickname",
+					_id: "$nickname",
 					count: { $sum: 1 }
 				}
 			}
-		]).exec((e, u) => {
+		).exec((e, u) => {
 			console.log(u)
 		})
 		mUser.find(query,['_id', 'signhash', 'nickname', 'email'],(error, user) => {
