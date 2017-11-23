@@ -211,7 +211,7 @@ module.exports = (express, passport) => {
 		let signhash = req.decoded.signhash || 'nosignhash';
 		mUser.aggregate({$group: {_id: "$signhash",nickname: "$nickname",count: { $sum: 1 }}}).exec((error, user) => {
 			if(error) return res.jsonp({ code: 288, service: 'user', function: 'searchtag', message: 'error', error });
-			return res.jsonp({ code: 280, service: 'user', function: 'searchtag', message: 'success', user: user.filter((e) => e.signhash != signhash)});
+			return res.jsonp({ code: 280, service: 'user', function: 'searchtag', message: 'success', user: user.filter((e) => e._id != signhash)});
 		})
 	}).all((req, res) => res.jsonp({ code: 289, service: 'user', function: 'searchtag', message: 'unauthorized_method' }));
 
