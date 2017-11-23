@@ -210,7 +210,8 @@ module.exports = (express, passport) => {
 		let {param} = req.params;
 		let query = {$group: {_id: "$nickname",count: { $sum: 1 },  signhash : {"$push" : "$signhash"}}}
 		// if (param && param !== '') query.push({$or: [{nickname: {$regex: '.*' + param +'.*'}}, {email: {$regex: '.*' + param +'.*'}}]});
-		mUser.aggregate(query).exec((error, tags) => {
+		mUser.aggregate(query).exec((error, tagswrap) => {
+			let tags = tagswrap.filter((e) => e._id !== param);
 			if(error) return res.jsonp({ code: 278, service: 'searchtag', function: 'userstat', message: 'error', error });
 			if (tags.length) res.jsonp({ code: 271, service: 'searchtag', function: 'userstat', message: 'notags', tags: []);
 			return res.jsonp({ code: 270, service: 'searchtag', function: 'userstat', message: 'success', tags: tags.map((tag) => {return {_id: tag._id, signhash: tag.signhash[0], count: tag.count}})});
