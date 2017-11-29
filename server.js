@@ -7,8 +7,12 @@ const portssl = process.env.PORTSSL || 4443;
 const host = process.env.HOST || '0.0.0.0';
 
 const options = {
-	key: fs.readFileSync('./cert/privkey.pem'),
-	cert: fs.readFileSync('./cert/cert.pem')
+	key: fs.readFileSync('./certificates/privkey.pem'),
+	cert: fs.readFileSync('./certificates/cert.pem'),
+	ca: [
+		fs.readFileSync('./certificates/fullchain.pem', 'utf8'),
+		fs.readFileSync('./certificates/chain.pem', 'utf8')
+	]
 };
 
 http.createServer(app).listen(port, host, () => {
