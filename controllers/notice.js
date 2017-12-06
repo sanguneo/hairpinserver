@@ -36,7 +36,7 @@ module.exports = express => {
 			let query = {};
 			if (req.query.after && req.query.after !== '')
 				query.regDate = {$gt: new Date(req.query.after)};
-			let fields = ['regDate', 'noticeType', 'title', 'content'];
+			let fields = ['regDate', 'noticeType', 'title'];
 			if (req.query.withoutcontent && req.query.withoutcontent !== '')
 				fields.pop();
 			mNotice.find(query, fields, {sort: {regDate: -1}},(error, notice) => {
@@ -53,7 +53,7 @@ module.exports = express => {
 			let query = {};
 			if (req.query.after && req.query.after !== '')
 				query.regDate = {$gt: new Date(req.query.after)};
-			let fields = ['regDate', 'noticeType', 'title', 'content'];
+			let fields = ['regDate', 'noticeType', 'title'];
 			if (req.query.withoutcontent && req.query.withoutcontent !== '')
 				fields.pop();
 			mNotice.find({$and: [{$or: [{noticeType: {$exists: false}}, {noticeType: 0}]},query]}, fields,
@@ -71,7 +71,7 @@ module.exports = express => {
 	router.route('/popup').get((req, res) => {
 			let query = {};
 			if (req.query.after && req.query.after !== '') query.regDate = {$gt: new Date(req.query.after)};
-			let fields = ['regDate', 'noticeType', 'title', 'content'];
+			let fields = ['regDate', 'noticeType', 'title'];
 			if (req.query.withoutcontent && req.query.withoutcontent !== '') fields.pop();
 			mNotice.find({$and: [{noticeType: 0}, query]}, fields, {sort: {regDate: -1}}, (error, notice) => {
 					if (error) return res.jsonp({code: 338,service: 'notice',function: 'listup',message: 'error',error});
