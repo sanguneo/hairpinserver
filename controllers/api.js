@@ -4,7 +4,7 @@ module.exports = express => {
 
 	router.use((req, res, next) => {
 		if (DEBUG) console.log('You have hit the /api', req.method, req.url);
-		// res.header('Access-Control-Allow-Origin', '*');
+		res.header('Access-Control-Allow-Origin', '*');
 		res.header(
 			'Access-Control-Allow-Headers',
 			'X-Requested-With, Content-Type, Accept'
