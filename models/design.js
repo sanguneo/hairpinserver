@@ -11,7 +11,7 @@ const sDesign = mongoose.Schema({
 
 	regDate: {type: Date, required: true, default: Date.now},
 
-	publish: {type: Number, required: true, default: 0}
+	publish: {type: Number, required: true, default: 1}
 });
 
 module.exports = mongoose.model('design', sDesign);
