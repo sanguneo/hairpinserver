@@ -1,4 +1,4 @@
-module.exports = (express, passport) => {
+module.exports = (express) => {
 	const router		= express.Router();
 	const multer		= require('multer');
 	const fs			= require('fs');

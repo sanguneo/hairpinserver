@@ -39,10 +39,12 @@ app.use(passport.initialize());
 const apiRouter = require('./controllers/api')(express);
 const userRouter = require('./controllers/user')(express, passport);
 const noticeRouter = require('./controllers/notice')(express);
+const designRouter = require('./controllers/design')(express);
 
 app.use('/api', apiRouter);
 app.use('/user', userRouter);
 app.use('/notice', noticeRouter);
+app.use('/design', designRouter);
 
 // non api route for our views
 app.get('/', (req, res) => {
