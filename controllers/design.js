@@ -39,6 +39,7 @@ module.exports = (express) => {
 * */
 	router.route('/upload').post(profileUpload.array('designimage', 4), (req, res) => {
 		console.log(req, req.files.length, '=>', req.files);
+
 		const {signhash} = req.decoded;
 		const {designHash} = req.body;
 		if (!designHash) {
