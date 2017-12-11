@@ -35,10 +35,8 @@ module.exports = (express) => {
 		if (!designhash) {
 			return res.jsonp({ code: 406, service: 'design', function: 'upload', message: 'unsatisfied_param'});
 		}
-		console.log(123123, req.files,req.body.files);
+		console.log(req.files, req.file, 123123123123);
 		['SRC_LEFT', 'SRC_RIGHT','ORG','THUMB'].forEach((item) => {
-			// fsSettings(req[item], signhash + '_' + designhash + '_' + item);
-
 		});
 		return res.jsonp({ code: 400, service: 'design', function: 'upload', message: 'success', signhash});
 	}).all((req, res) => res.jsonp({code: 409, service: 'design', function: 'upload', message: 'unauthorized_method'}));
