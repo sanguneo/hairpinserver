@@ -44,6 +44,7 @@ module.exports = (express) => {
 			return res.jsonp({ code: 406, service: 'design', function: 'upload', message: 'unsatisfied_param'});
 		}
 		req.files.forEach((file) => {
+			console.log(file.destination + '/' + file.filename, file.destination + '/' + file.originalname)
 			fs.renameSync(file.destination + '/' + file.filename, file.destination + '/' + file.originalname)
 		})
 		return res.jsonp({ code: 400, service: 'design', function: 'upload', message: 'success', signhash});
