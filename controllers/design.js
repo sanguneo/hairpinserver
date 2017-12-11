@@ -29,7 +29,7 @@ module.exports = (express) => {
 		(file && file.path) && fs.copyFile(file.path, uploadPath + '/' + filename, ()=> fs.unlinkSync(file.path));
 	}
 
-	router.route('/upload').post(profileUpload.single('design'), (req, res) => {
+	router.route('/upload').post(profileUpload.array('designimage', 4), (req, res) => {
 		const {signhash} = req.decoded;
 		const {designhash} = req.body;
 		if (!designhash) {
@@ -37,7 +37,7 @@ module.exports = (express) => {
 		}
 		['SRC_LEFT', 'SRC_RIGHT','ORG','THUMB'].forEach((item) => {
 			// fsSettings(req[item], signhash + '_' + designhash + '_' + item);
-			console.log(Object.keys(req.body));
+			console.log(req.files);
 		});
 		return res.jsonp({ code: 400, service: 'design', function: 'upload', message: 'success', signhash});
 	}).all((req, res) => res.jsonp({code: 409, service: 'design', function: 'upload', message: 'unauthorized_method'}));
