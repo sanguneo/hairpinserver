@@ -6,7 +6,7 @@ module.exports = (express, passport) => {
 	const uploadPath = 'upload/designs';
 	const profileUpload	= multer({ dest: uploadPath });
 	
-	const mUser = require('../models/design');
+	const sDesign = require('../models/design');
 
 	const validation	= require('./user.validation');
 	
@@ -26,17 +26,21 @@ module.exports = (express, passport) => {
 	router.use(validation([]));
 
 	const fsSettings = (file, filename)=> {
-		(file && file.path) && fs.copyFile(file.path, uploadPath + '/' + filename, ()=>fs.unlinkSync(file.path));
+		(file && file.path) && fs.copyFile(file.path, uploadPath + '/' + filename, ()=> fs.unlinkSync(file.path));
 	}
 
 	router.route('/upload').post(profileUpload.single('design'), (req, res) => {
-		let {nickname, email, password} = req.body;
-		if (!nickname || !email || !password) {
-			return res.jsonp({ code: 406, service: 'design', function: 'signup', message: 'unsatisfied_param'});
+		const {signhash} = req.decoded;
+		const {designhash} = req.body;
+		if (!designhash) {
+			return res.jsonp({ code: 406, service: 'design', function: 'upload', message: 'unsatisfied_param'});
 		}
-		fsSettings(req.file, user.signhash);
-		return res.jsonp({ code: 400, service: 'design', function: 'signup', message: 'success', signhash:user.signhash});
-	}).all((req, res) => res.jsonp({code: 409, service: 'design', function: 'signup', message: 'unauthorized_method'}));
+		['SRC_LEFT', 'SRC_RIGHT','ORG','THUMB'].forEach((item) => {
+			fsSettings(req[item], signhash + '_' + designhash + '_' + item);
+		});
+
+		return res.jsonp({ code: 400, service: 'design', function: 'upload', message: 'success', signhash});
+	}).all((req, res) => res.jsonp({code: 409, service: 'design', function: 'upload', message: 'unauthorized_method'}));
 
 	return router;
 };

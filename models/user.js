@@ -9,6 +9,7 @@ const sUser = mongoose.Schema({
 	password: {type: String, required: true},
 
 	regDate: {type: Date, required: true, default: Date.now},
+	upDate: {type: Date, required: true, default: Date.now},
 	intro: {type: String},
 	profileReg: {type: Date},
 
