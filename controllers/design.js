@@ -36,6 +36,7 @@ module.exports = (express) => {
 			return res.jsonp({ code: 406, service: 'design', function: 'upload', message: 'unsatisfied_param'});
 		}
 		console.log(123123, req.files,req.body.files);
+
 		['SRC_LEFT', 'SRC_RIGHT','ORG','THUMB'].forEach((item) => {
 			// fsSettings(req[item], signhash + '_' + designhash + '_' + item);
 
