@@ -38,15 +38,15 @@ module.exports = (express) => {
     size: 8507 }
 * */
 	router.route('/upload').post(profileUpload.array('designimage', 4), (req, res) => {
+		console.log(req, req.files.length, '=>', req.files);
 		const {signhash} = req.decoded;
-		const {designhash} = req.body;
-		if (!designhash) {
+		const {designHash} = req.body;
+		if (!designHash) {
 			return res.jsonp({ code: 406, service: 'design', function: 'upload', message: 'unsatisfied_param'});
 		}
-		console.log(req.files.length, '=>', req.files);
 		req.files.forEach((file) => {
 			console.log(file.destination + '/' + file.filename, file.destination + '/' + file.originalname)
-			fs.renameSync(file.destination + '/' + file.filename, file.destination + '/' + file.originalname)
+			// fs.renameSync(file.destination + '/' + file.filename, file.destination + '/' + file.originalname)
 		})
 		return res.jsonp({ code: 400, service: 'design', function: 'upload', message: 'success', signhash});
 	}).all((req, res) => res.jsonp({code: 409, service: 'design', function: 'upload', message: 'unauthorized_method'}));
