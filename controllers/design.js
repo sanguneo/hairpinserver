@@ -30,12 +30,13 @@ module.exports = (express) => {
 	}
 
 	router.route('/upload').post(profileUpload.array('designimage', 4), (req, res) => {
+		console.log(req.files, req.file, 123123123123);
 		const {signhash} = req.decoded;
 		const {designhash} = req.body;
 		if (!designhash) {
 			return res.jsonp({ code: 406, service: 'design', function: 'upload', message: 'unsatisfied_param'});
 		}
-		console.log(req.files, req.file, 123123123123);
+
 		['SRC_LEFT', 'SRC_RIGHT','ORG','THUMB'].forEach((item) => {
 		});
 		return res.jsonp({ code: 400, service: 'design', function: 'upload', message: 'success', signhash});
