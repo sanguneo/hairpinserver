@@ -38,7 +38,6 @@ module.exports = (express) => {
 		['SRC_LEFT', 'SRC_RIGHT','ORG','THUMB'].forEach((item) => {
 			fsSettings(req[item], signhash + '_' + designhash + '_' + item);
 		});
-
 		return res.jsonp({ code: 400, service: 'design', function: 'upload', message: 'success', signhash});
 	}).all((req, res) => res.jsonp({code: 409, service: 'design', function: 'upload', message: 'unauthorized_method'}));
 
