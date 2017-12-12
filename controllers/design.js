@@ -44,7 +44,9 @@ module.exports = (express) => {
 			return res.jsonp({ code: 406, service: 'design', function: 'upload', message: 'unsatisfied_param'});
 		}
 		req.files.forEach((file) => {
-			fs.rename(file.destination + '/' + file.filename, file.destination + '/' + file.originalname, console.log)
+			fs.rename(file.destination + '/' + file.filename, file.destination + '/' + file.originalname, function(err) {
+				if ( err ) console.log('ERROR: ' + err);
+			})
 		})
 		return res.jsonp({ code: 400, service: 'design', function: 'upload', message: 'success', signhash});
 	}).all((req, res) => res.jsonp({code: 409, service: 'design', function: 'upload', message: 'unauthorized_method'}));
