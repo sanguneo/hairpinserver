@@ -30,7 +30,7 @@ module.exports = (express) => {
 		const {designHash, designRegdate, designTitle, designTag, designRecipe, designComment, uploadedType} = req.body;
 		if (!designHash) return res.jsonp({ code: 406, service: 'design', function: 'upload', message: 'unsatisfied_param'});
 		mDesign.findOne({signhash, designHash}, function(err, design) {
-			if(err) return res.jsonp({ code: 408, service: 'design', function: 'upload', message: 'error1', error: err});
+			if(err) return res.jsonp({ code: 408, service: 'design', function: 'upload', message: 'error', error: err});
 			const upDate = Date.now();
 			req.files.forEach((file) => {
 				fs.rename(file.destination + '/' + file.filename, file.destination + '/' + file.originalname, ()=>{});
@@ -45,9 +45,11 @@ module.exports = (express) => {
 				uploadedType && (design.publish = uploadedType);
 
 				design.save(function(e){
-					if(e) throw e;
-				}).then((e)=> {
-					return res.jsonp({ code: 400, service: 'design', function: 'upload', message: 'success', upDate: upDate});
+					if(e){
+						console.log(123123123,e)
+						throw e;
+					}
+					else return res.jsonp({ code: 400, service: 'design', function: 'upload', message: 'success', upDate: upDate});
 				});
 
 			} else {
@@ -69,7 +71,7 @@ module.exports = (express) => {
 				});
 			}
 		});
-		return res.jsonp({ code: 408, service: 'design', function: 'upload', message: 'error2'});
+		return res.jsonp({ code: 408, service: 'design', function: 'upload', message: 'error'});
 	}).all((req, res) => res.jsonp({code: 409, service: 'design', function: 'upload', message: 'unauthorized_method'}));
 
 	return router;
