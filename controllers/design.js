@@ -23,7 +23,7 @@ module.exports = (express) => {
 	    });
 	});
 	
-	router.use(validation([]));
+	router.use(validation(['tags']));
 
 	router.route('/upload').post(profileUpload.array('designimage', 4), (req, res) => {
 		const {signhash} = req.decoded;
@@ -67,6 +67,14 @@ module.exports = (express) => {
 					res.jsonp({ code: 400, service: 'design', function: 'upload', message: 'success', upDate: upDate});
 				});
 			}
+		});
+	}).all((req, res) => res.jsonp({code: 409, service: 'design', function: 'upload', message: 'unauthorized_method'}));
+
+	router.route('/tags').get((req, res) => {
+		const {signhash} = req.decoded;
+		mDesign.find({}, function(err, designs) {
+			if(err) res.jsonp({ code: 408, service: 'design', function: 'upload', message: 'error', error: err});
+			console.log(designs)
 		});
 	}).all((req, res) => res.jsonp({code: 409, service: 'design', function: 'upload', message: 'unauthorized_method'}));
 
