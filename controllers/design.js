@@ -72,7 +72,7 @@ module.exports = (express) => {
 
 	router.route('/tags').get((req, res) => {
 		// const {signhash} = req.decoded;
-		mDesign.find({}, function(err, designs) {
+		mDesign.find({},['tags'], function(err, designs) {
 			if(err) res.jsonp({ code: 408, service: 'design', function: 'tags', message: 'error', error: err});
 			res.jsonp({ code: 400, service: 'design', function: 'tags', message: 'error', designs});
 		});
