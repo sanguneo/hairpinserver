@@ -34,6 +34,7 @@ module.exports = (passRouteMore, passRouteArray) => (req, res, next) => {
 			resolve(decoded);
 		});
 	});
+
 	authPromise
 		.then(decoded => {
 			req.decoded = decoded;
