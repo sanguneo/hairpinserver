@@ -42,11 +42,10 @@ module.exports = (express) => {
 					upDate,
 					publish: uploadedType
 				});
-				design.save().then(() => {
-					return res.jsonp({ code: 400, service: 'design', function: 'upload', message: 'success', upDate: upDate});
-				}).catch((error)=> {
-					return res.jsonp({ code: 408, service: 'design', function: 'upload', message: 'error', error});
+				design.save(function(error) {
+					if (error) return res.jsonp({ code: 408, service: 'design', function: 'upload', message: 'error', error});
 				});
+				return res.jsonp({ code: 400, service: 'design', function: 'upload', message: 'success', upDate: upDate});
 			} else {
 				const newdesign = new mDesign({
 					signhash,
@@ -59,11 +58,10 @@ module.exports = (express) => {
 					upDate,
 					publish: uploadedType
 				});
-				newdesign.save().then(() => {
-					return res.jsonp({ code: 400, service: 'design', function: 'upload', message: 'success', upDate: upDate});
-				}).catch((error)=> {
-					return res.jsonp({ code: 408, service: 'design', function: 'upload', message: 'error', error});
+				newdesign.save(function(error) {
+					if (error) return res.jsonp({ code: 408, service: 'design', function: 'upload', message: 'error', error});
 				});
+				return res.jsonp({ code: 400, service: 'design', function: 'upload', message: 'success', upDate: upDate});
 			}
 		});
 		return res.jsonp({ code: 400, service: 'design', function: 'upload', message: 'success', signhash});
