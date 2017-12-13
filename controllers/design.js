@@ -29,12 +29,24 @@ module.exports = (express) => {
 		const {signhash} = req.decoded;
 		const {designHash, designRegdate, designTitle, designTag, designRecipe, designComment, uploadedType} = req.body;
 		if (!designHash) return res.jsonp({ code: 406, service: 'design', function: 'upload', message: 'unsatisfied_param'});
-
 		mDesign.findOne({signhash, designHash}, function(err, design) {
 			if(err) return res.jsonp({ code: 408, service: 'design', function: 'upload', message: 'error', error: err});
 			const upDate = Date.now();
 			req.files.forEach((file) => fs.renameSync(file.destination + '/' + file.filename, file.destination + '/' + file.originalname));
 			if (design) {
+				Object.assign(design, {
+					title : designTitle,
+					tags: designTag,
+					recipe: designRecipe,
+					comment: designComment,
+					upDate,
+					publish: uploadedType
+				});
+				design.save().then(() => {
+					return res.jsonp({ code: 400, service: 'design', function: 'upload', message: 'success', upDate});
+				}).catch((error)=> {
+					return res.jsonp({ code: 408, service: 'design', function: 'upload', message: 'error', error});
+				});
 			} else {
 				const newdesign = new mDesign({
 					signhash,
