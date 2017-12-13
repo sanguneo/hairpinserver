@@ -35,15 +35,16 @@ module.exports = (express) => {
 			console.log(upDate);
 			req.files.forEach((file) => fs.renameSync(file.destination + '/' + file.filename, file.destination + '/' + file.originalname));
 			if (design) {
-				const moddesign = Object.assign({}, design, {
+				const replace = {
 					title : designTitle,
 					tags: designTag,
 					recipe: designRecipe,
 					comment: designComment,
 					upDate,
 					publish: uploadedType
-				});
-				moddesign.save(function(error) {
+				}
+				for(let key in replace) design[key] = replace[key];
+				design.save(function(error) {
 					if (error) {
 						return res.jsonp({ code: 408, service: 'design', function: 'upload', message: 'error', error});
 					}
