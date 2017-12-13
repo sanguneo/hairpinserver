@@ -46,9 +46,7 @@ module.exports = (express) => {
 					publish: uploadedType
 				}
 				for(let key in replace) design[key] = replace[key];
-				design.save(function(err) {
-					//if(err) throw err;
-				}).then((e)=> {
+				design.save().then((e)=> {
 					return res.jsonp({ code: 400, service: 'design', function: 'upload', message: 'success', upDate: upDate});
 				});
 
@@ -64,9 +62,7 @@ module.exports = (express) => {
 					upDate,
 					publish: uploadedType
 				});
-				newdesign.save(function(err) {
-					//if(err) throw err;
-				}).then((e)=> {
+				newdesign.save().then((e)=> {
 					return res.jsonp({ code: 400, service: 'design', function: 'upload', message: 'success', upDate: upDate});
 				});
 				return res.jsonp({ code: 400, service: 'design', function: 'upload', message: 'success', upDate: upDate});
