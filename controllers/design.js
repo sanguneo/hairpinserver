@@ -74,7 +74,7 @@ module.exports = (express) => {
 	router.route(['/tags', '/tags/:permission']).get((req, res) => {
 		const {permission} = req.params;
 		let query = !permission ? {$or: [{publish: 7}]} : {$or: [{publish: permission}, {publish: 7}]};
-		let myhash;
+		var myhash;
 		if (req.decoded) {
 			myhash = req.decoded.signhash;
 			query.$or.push({signhash: myhash});
