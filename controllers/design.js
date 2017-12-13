@@ -32,34 +32,26 @@ module.exports = (express) => {
 
 		mDesign.findOne({signhash, designHash}, function(err, design) {
 			if(err) return res.jsonp({ code: 408, service: 'design', function: 'upload', message: 'error', error: err});
-			req.files.forEach((file) => {
-				fs.renameSync(file.destination + '/' + file.filename, file.destination + '/' + file.originalname)
-			});
-			console.log({
-				signhash,
-				designHash,
-				title : designTitle,
-				tags: designTag,
-				recipe: designRecipe,
-				comment: designComment,
-				regDate: designRegdate,
-				upDate: Date.now(),
-				publish: uploadedType
-			});
+			const upDate = Date.now();
+			req.files.forEach((file) => fs.renameSync(file.destination + '/' + file.filename, file.destination + '/' + file.originalname));
 			if (design) {
 			} else {
-				// let newdesign = new mDesign({
-				// 	signhash,
-				// 	designHash,
-				// 	title : designTitle,
-				// 	tags: designTag,
-				// 	recipe: designRecipe,
-				// 	comment: designComment,
-				// 	regDate: designRegdate,
-				// 	upDate: Date.now(),
-				// 	publish: uploadedType
-				// });
-				// newdesign.save((err) => { if (err) throw err;});
+				const newdesign = new mDesign({
+					signhash,
+					designHash,
+					title : designTitle,
+					tags: designTag,
+					recipe: designRecipe,
+					comment: designComment,
+					regDate: designRegdate,
+					upDate,
+					publish: uploadedType
+				});
+				newdesign.save().then(() => {
+					return res.jsonp({ code: 400, service: 'design', function: 'upload', message: 'success', upDate});
+				}).catch((error)=> {
+					return res.jsonp({ code: 408, service: 'design', function: 'upload', message: 'error', error});
+				});
 			}
 		});
 		return res.jsonp({ code: 400, service: 'design', function: 'upload', message: 'success', signhash});
