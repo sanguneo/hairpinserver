@@ -60,6 +60,7 @@ module.exports = (express) => {
 					upDate,
 					publish: uploadedType
 				});
+
 				newdesign.save(function(e){
 					if(e) throw e;
 				}).then(()=> {
