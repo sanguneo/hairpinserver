@@ -36,7 +36,6 @@ module.exports = (express) => {
 				fs.rename(file.destination + '/' + file.filename, file.destination + '/' + file.originalname, ()=>{});
 			});
 			if (design) {
-
 				designTitle && (design.title = designTitle);
 				designTag && (design.tags = designTag);
 				designRecipe && (design.recipe = designRecipe);
@@ -49,9 +48,9 @@ module.exports = (express) => {
 						console.log(123123123,e)
 						throw e;
 					}
-					else return res.jsonp({ code: 400, service: 'design', function: 'upload', message: 'success', upDate: upDate});
+					else res.jsonp({ code: 400, service: 'design', function: 'upload', message: 'success', upDate: upDate});
 				});
-
+				res.end();
 			} else {
 				const newdesign = new mDesign({
 					signhash,
@@ -65,10 +64,13 @@ module.exports = (express) => {
 					publish: uploadedType
 				});
 				newdesign.save(function(e){
-					if(e) throw e;
-				}).then(()=> {
-					return res.jsonp({ code: 400, service: 'design', function: 'upload', message: 'success', upDate: upDate});
+					if(e){
+						console.log(123123123,e)
+						throw e;
+					}
+					else res.jsonp({ code: 400, service: 'design', function: 'upload', message: 'success', upDate: upDate});
 				});
+				res.end();
 			}
 		});
 		return res.jsonp({ code: 408, service: 'design', function: 'upload', message: 'error'});
