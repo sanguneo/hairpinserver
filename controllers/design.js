@@ -84,7 +84,7 @@ module.exports = (express) => {
 			const tagList = {};
 			designs.forEach(({signhash, tags, publish}) => {
 				if(publish == 3) mUser.findOne({signhash},['following'],function(error, {following}){
-					(following.indexOf(myhash)>=0) && tags.forEach((tag) => tagList[tag] = (tagList[tag] ? tagList[tag] + 1 : 1))
+					(following.includes(myhash)) && tags.forEach((tag) => tagList[tag] = (tagList[tag] ? tagList[tag] + 1 : 1))
 				});
 				else tags.forEach((tag) => tagList[tag] = (tagList[tag] ? tagList[tag] + 1 : 1));
 			});
