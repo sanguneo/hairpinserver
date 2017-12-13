@@ -23,7 +23,7 @@ module.exports = (express) => {
 	    });
 	});
 	
-	router.use(validation(['/tags']));
+	router.use(validation(['/tags'], ['/tags']));
 
 	router.route('/upload').post(profileUpload.array('designimage', 4), (req, res) => {
 		const {signhash} = req.decoded;
