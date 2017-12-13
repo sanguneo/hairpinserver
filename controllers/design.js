@@ -89,7 +89,7 @@ module.exports = (express) => {
 				else tags.forEach((tag) => tagList[tag] = (tagList[tag] ? tagList[tag] + 1 : 1));
 			});
 			setTimeout(()=> {
-				res.jsonp({ code: 400, service: 'design', function: 'tags', message: 'success', tagList});
+				res.jsonp({ code: 400, service: 'design', function: 'tags', message: 'success', tags: tagList});
 			},500);
 		});
 	}).all((req, res) => res.jsonp({code: 409, service: 'design', function: 'tags', message: 'unauthorized_method'}));
