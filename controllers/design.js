@@ -72,10 +72,12 @@ module.exports = (express) => {
 
 	router.route(['/tags', '/tags/:permission']).get((req, res) => {
 		const {permission} = req.params;
+		let query = !permission ? {publish: 7} : {$or: [{publish: permission}, {publish: 7}]};
 		if (req.decoded) {
 			const signhash = req.decoded.signhash;
+			query.$or[0].signhash = signhash;
 		}
-		mDesign.find({publish: !permission ? 7 : permission},['tags'], function(err, designs) {
+		mDesign.find(query,['tags'], function(err, designs) {
 			if(err) res.jsonp({ code: 408, service: 'design', function: 'tags', message: 'error', error: err});
 			const tagList = {};
 			designs.forEach(({tags}) => tags.forEach((tag) => tagList[tag] = (tagList[tag] ? tagList[tag] + 1 : 1)));
