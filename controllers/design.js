@@ -71,12 +71,12 @@ module.exports = (express) => {
 	}).all((req, res) => res.jsonp({code: 409, service: 'design', function: 'upload', message: 'unauthorized_method'}));
 
 	router.route('/tags').get((req, res) => {
-		const {signhash} = req.decoded;
+		// const {signhash} = req.decoded;
 		mDesign.find({}, function(err, designs) {
-			if(err) res.jsonp({ code: 408, service: 'design', function: 'upload', message: 'error', error: err});
-			res.jsonp({ code: 400, service: 'design', function: 'upload', message: 'error', designs});
+			if(err) res.jsonp({ code: 408, service: 'design', function: 'tags', message: 'error', error: err});
+			res.jsonp({ code: 400, service: 'design', function: 'tags', message: 'error', designs});
 		});
-	}).all((req, res) => res.jsonp({code: 409, service: 'design', function: 'upload', message: 'unauthorized_method'}));
+	}).all((req, res) => res.jsonp({code: 409, service: 'design', function: 'tags', message: 'unauthorized_method'}));
 
 	return router;
 };
