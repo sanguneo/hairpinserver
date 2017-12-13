@@ -10,7 +10,7 @@ module.exports = express => {
 	});
 
 	router.all('/', (req, res) => {
-		res.jsonp({
+		return res.jsonp({
 			name: 'hair.pin notice service API',
 			version: '1.0.0'
 		});
@@ -19,7 +19,7 @@ module.exports = express => {
 	router.route('/write').post((req, res) => {
 			let {noticeType, content, title} = req.body;
 			if (!content || !title) {
-				res.jsonp({code: 306,service: 'notice',function: 'write',message: 'unsatisfied_param'});
+				return res.jsonp({code: 306,service: 'notice',function: 'write',message: 'unsatisfied_param'});
 			}
 			let newnotice = new mNotice({content, title});
 			if (noticeType !== '' && typeof noticeType === 'number')
@@ -40,9 +40,9 @@ module.exports = express => {
 			if (req.query.withoutcontent && req.query.withoutcontent !== '')
 				fields.pop();
 			mNotice.find(query, fields, {sort: {regDate: -1}},(error, notice) => {
-					if (error) res.jsonp({code: 318,service: 'notice',function: 'listup',message: 'error',error});
-					if (!notice) res.jsonp({code: 317,service: 'notice',function: 'listup',message: 'no notice'});
-					res.jsonp({code: 310,service: 'notice',function: 'listup',message: 'success',notice});
+					if (error) return res.jsonp({code: 318,service: 'notice',function: 'listup',message: 'error',error});
+					if (!notice) return res.jsonp({code: 317,service: 'notice',function: 'listup',message: 'no notice'});
+					return res.jsonp({code: 310,service: 'notice',function: 'listup',message: 'success',notice});
 				}
 			);
 		}).all((req, res) =>
@@ -58,9 +58,9 @@ module.exports = express => {
 				fields.pop();
 			mNotice.find({$and: [{$or: [{noticeType: {$exists: false}}, {noticeType: 0}]},query]}, fields,
 				{sort: {regDate: -1}},(error, notice) => {
-					if (error) res.jsonp({code: 328,service: 'notice',function: 'listup',message: 'error',error});
-					if (!notice) res.jsonp({code: 327,service: 'notice',function: 'listup',message: 'no notice'});
-					res.jsonp({code: 320,service: 'notice',function: 'listup',message: 'success',notice});
+					if (error) return res.jsonp({code: 328,service: 'notice',function: 'listup',message: 'error',error});
+					if (!notice) return res.jsonp({code: 327,service: 'notice',function: 'listup',message: 'no notice'});
+					return res.jsonp({code: 320,service: 'notice',function: 'listup',message: 'success',notice});
 				}
 			);
 		})
@@ -74,9 +74,9 @@ module.exports = express => {
 			let fields = ['regDate', 'noticeType', 'title'];
 			if (req.query.withoutcontent && req.query.withoutcontent !== '') fields.pop();
 			mNotice.find({$and: [{noticeType: 0}, query]}, fields, {sort: {regDate: -1}}, (error, notice) => {
-					if (error) res.jsonp({code: 338,service: 'notice',function: 'listup',message: 'error',error});
-					if (!notice) res.jsonp({code: 337,service: 'notice',function: 'listup',message: 'no notice'});
-					res.jsonp({code: 330,service: 'notice',function: 'listup',message: 'success',notice});
+					if (error) return res.jsonp({code: 338,service: 'notice',function: 'listup',message: 'error',error});
+					if (!notice) return res.jsonp({code: 337,service: 'notice',function: 'listup',message: 'no notice'});
+					return res.jsonp({code: 330,service: 'notice',function: 'listup',message: 'success',notice});
 				}
 			);
 		}).all((req, res) =>
@@ -86,13 +86,13 @@ module.exports = express => {
 	router.route('/:_id').get((req, res) => {
 		let {_id} = req.params;
 		if (!_id) {
-			res.jsonp({code: 346,service: 'notice',function: 'specific',message: 'unsatisfied_param'});
+			return res.jsonp({code: 346,service: 'notice',function: 'specific',message: 'unsatisfied_param'});
 		}
 		let fields = ['regDate', 'noticeType', 'title', 'content'];
 		mNotice.findOne({_id}, fields, (error, notice) => {
-				if (error)res.jsonp({code: 348,service: 'notice',function: 'specific',message: 'error',error});
-				if (!notice)res.jsonp({code: 347,service: 'notice',function: 'specific',message: 'no notice'});
-				res.jsonp({code: 340,service: 'notice',function: 'specific',message: 'success',notice});
+				if (error)return res.jsonp({code: 348,service: 'notice',function: 'specific',message: 'error',error});
+				if (!notice)return res.jsonp({code: 347,service: 'notice',function: 'specific',message: 'no notice'});
+				return res.jsonp({code: 340,service: 'notice',function: 'specific',message: 'success',notice});
 			}
 		);
 	}).all((req, res) =>

@@ -17,7 +17,7 @@ module.exports = (express, passport) => {
 	});
 
 	router.all('/', (req, res) => {
-	    res.jsonp({
+	    return res.jsonp({
 	        name: 'hair.pin user service API',
 	        version: '1.0.0',
 	    });
@@ -29,17 +29,17 @@ module.exports = (express, passport) => {
 	router.route('/signup').post(profileUpload.single('profile'), (req, res, next ) => {
 		let {nickname, email, password} = req.body;
 		if (!nickname || !email || !password) {
-			res.jsonp({ code: 206, service: 'user', function: 'signup', message: 'unsatisfied_param'});
+			return res.jsonp({ code: 206, service: 'user', function: 'signup', message: 'unsatisfied_param'});
 		}
 		passport.authenticate('signup', (error, user, info) => {
-			if (error) { res.jsonp( { code: 208, service: 'user', function: 'signup', message: 'error', error }) }
-			if (info) { res.jsonp( { code: 207, service: 'user', function: 'signup', message: info.message}); }
+			if (error) { return res.jsonp( { code: 208, service: 'user', function: 'signup', message: 'error', error }) }
+			if (info) { return res.jsonp( { code: 207, service: 'user', function: 'signup', message: info.message}); }
 			if (req.file && req.file.path) {
 				fs.copyFile(req.file.path, uploadPath + '/' + user.signhash, () => {
 					fs.unlinkSync(req.file.path);
 				});
 			}
-			res.jsonp({ code: 200, service: 'user', function: 'signup', message: 'success', signhash:user.signhash});
+			return res.jsonp({ code: 200, service: 'user', function: 'signup', message: 'success', signhash:user.signhash});
 		})(req, res, next)
 	}).all((req, res) => res.jsonp({code: 209, function: 'signup', message: 'unauthorized_method'}));
 
@@ -47,11 +47,11 @@ module.exports = (express, passport) => {
 	router.route('/modify').post(profileUpload.single('profile'), (req, res, next ) => {
 		let {email, password} = req.body;
 		if (!email || !password) {
-			res.jsonp({ code: 216, service: 'user', function: 'modify', message: 'unsatisfied_param'});
+			return res.jsonp({ code: 216, service: 'user', function: 'modify', message: 'unsatisfied_param'});
 		}
 		passport.authenticate('modify', (error, user, info) =>{
-			if (error) { res.jsonp( { code: 218, service: 'user', function: 'modify', message: 'error', error });}
-			if (info) { res.jsonp( { code: 217, service: 'user', function: 'modify', message: info.message }); }
+			if (error) { return res.jsonp( { code: 218, service: 'user', function: 'modify', message: 'error', error });}
+			if (info) { return res.jsonp( { code: 217, service: 'user', function: 'modify', message: info.message }); }
 			if (req.file && req.file.path) {
 				fs.unlink(uploadPath + '/' + user.signhash, (err) => {
 					if(err) console.log('"' + uploadPath + '/' + user.signhash+'" file are not exist.' );
@@ -60,7 +60,7 @@ module.exports = (express, passport) => {
 					});
 				});
 			}
-			res.jsonp({ code: 210, service: 'user', function: 'modify', message: 'success', signhash:user.signhash });
+			return res.jsonp({ code: 210, service: 'user', function: 'modify', message: 'success', signhash:user.signhash });
 		})(req, res, next)
 	}).all((req, res) => res.jsonp({ code: 219, service: 'user', function: 'modify', message: 'unauthorized_method'}));
 
@@ -68,11 +68,11 @@ module.exports = (express, passport) => {
 	router.route('/login').post((req, res, next ) => {
 		let {email, password} = req.body;
 		if (!email || !password) {
-			res.jsonp({ code: 226, service: 'user', function: 'login', message: 'unsatisfied_param'});
+			return res.jsonp({ code: 226, service: 'user', function: 'login', message: 'unsatisfied_param'});
 		}
 		passport.authenticate('login', (error, user, info) => {
-			if (error) { res.jsonp( { code: 228, service: 'user', function: 'login', message: 'error', error }); }
-			if (info) { res.jsonp( { code: 227, service: 'user', function: 'login', message: info.message }); }
+			if (error) { return res.jsonp( { code: 228, service: 'user', function: 'login', message: 'error', error }); }
+			if (info) { return res.jsonp( { code: 227, service: 'user', function: 'login', message: info.message }); }
 			const ret = {
 				token: user.token,
 				_id:user.user._id,
@@ -83,7 +83,7 @@ module.exports = (express, passport) => {
 				followersize: user.user.follower.length,
 				followingsize: user.user.following.length,
 			}
-			res.jsonp({ code: 220, service: 'user', function: 'login', message: 'success', ...ret});
+			return res.jsonp({ code: 220, service: 'user', function: 'login', message: 'success', ...ret});
 
 		})(req, res, next);
 	}).all((req, res) => res.jsonp({ code: 229, service: 'user', function: 'login', message: 'unauthorized_method'}));
@@ -92,34 +92,34 @@ module.exports = (express, passport) => {
 		let {signhash} = req.body;
 		let myhash = req.decoded.signhash;
 		if (!signhash) {
-			res.jsonp({ code: 236, service: 'user', function: 'follow', message: 'unsatisfied_param'});
+			return res.jsonp({ code: 236, service: 'user', function: 'follow', message: 'unsatisfied_param'});
 		}
 		mUser.findOne({signhash}, ['_id', 'nickname', 'follower'], (error, destuser) => {
 			if(error) {
-				res.jsonp({ code: 238, service: 'user', function: 'follow', message: 'error', error });
+				return res.jsonp({ code: 238, service: 'user', function: 'follow', message: 'error', error });
 			}
 			if(!destuser) {
-				res.jsonp({ code: 237, service: 'user', function: 'follow', message: info.message });
+				return res.jsonp({ code: 237, service: 'user', function: 'follow', message: info.message });
 			}
 			if (!destuser.follower.includes(myhash)){
 				destuser.follower.push(myhash);
 				destuser.save().then(() => {
 					mUser.findOne({signhash: myhash}, ['_id', 'nickname', 'following'], (error, srcuser) => {
-						if(error) res.jsonp({ code: 238, service: 'user', function: 'follow', message: 'error', error });
+						if(error) return res.jsonp({ code: 238, service: 'user', function: 'follow', message: 'error', error });
 						if (!srcuser.following.includes(signhash)){
 							srcuser.following.push(signhash);
 							srcuser.save().then(() => {
-								res.jsonp({ code: 230, service: 'user', function: 'follow', message: 'success', target: destuser.nickname });
+								return res.jsonp({ code: 230, service: 'user', function: 'follow', message: 'success', target: destuser.nickname });
 							}).catch((error)=> {
-								res.jsonp({ code: 238, service: 'user', function: 'follow', message: 'error', error});
+								return res.jsonp({ code: 238, service: 'user', function: 'follow', message: 'error', error});
 							});
 						} else {
-							res.jsonp({ code: 231, service: 'user', function: 'follow', message: 'following', target: srcuser.nickname });
+							return res.jsonp({ code: 231, service: 'user', function: 'follow', message: 'following', target: srcuser.nickname });
 						}
 					});
 				}).catch((error)=> res.jsonp({ code: 238, service: 'user', function: 'follow', message: 'error', error}));
 			} else {
-				res.jsonp({ code: 231, service: 'user', function: 'follow', message: 'following', target: destuser.nickname });
+				return res.jsonp({ code: 231, service: 'user', function: 'follow', message: 'following', target: destuser.nickname });
 			}
 		});
 
@@ -129,29 +129,29 @@ module.exports = (express, passport) => {
 		let {signhash} = req.body;
 		let myhash = req.decoded.signhash;
 		if (!signhash) {
-			res.jsonp({ code: 236, service: 'user', function: 'unfollow', message: 'unsatisfied_param'});
+			return res.jsonp({ code: 236, service: 'user', function: 'unfollow', message: 'unsatisfied_param'});
 		}
 		mUser.findOne({signhash}, ['_id', 'nickname', 'follower'], (error, destuser) => {
-			if(error) res.jsonp({ code: 248, service: 'user', function: 'unfollow', message: 'error', pos: 'dest', error });
-			if(!destuser) res.jsonp({ code: 247, service: 'user', function: 'unfollow', message: 'nouser', pos: 'dest' });
+			if(error) return res.jsonp({ code: 248, service: 'user', function: 'unfollow', message: 'error', pos: 'dest', error });
+			if(!destuser) return res.jsonp({ code: 247, service: 'user', function: 'unfollow', message: 'nouser', pos: 'dest' });
 			let uidx = destuser.follower.indexOf(myhash);
 			if (uidx !== -1){
 				destuser.follower.splice(uidx, 1);
 				destuser.save().then(() => {
 					mUser.findOne({signhash: myhash}, ['_id', 'nickname', 'following'], (error, srcuser) => {
-						if(error) res.jsonp({ code: 248, service: 'user', function: 'unfollow', message: 'error', error });
+						if(error) return res.jsonp({ code: 248, service: 'user', function: 'unfollow', message: 'error', error });
 						let uidx = srcuser.following.indexOf(signhash);
 						if (uidx !== -1){
 							srcuser.following.splice(uidx, 1);
 							srcuser.save().then(() => res.jsonp({ code: 240, service: 'user', function: 'unfollow', message: 'success', target: destuser.nickname }))
 								.catch((error) => res.jsonp({ code: 248, service: 'user', function: 'unfollow', message: 'error', error }));
 						} else {
-							res.jsonp({ code: 241, service: 'user', function: 'unfollow', message: 'unfollowing', target: srcuser.nickname });
+							return res.jsonp({ code: 241, service: 'user', function: 'unfollow', message: 'unfollowing', target: srcuser.nickname });
 						}
 					});
 				}).catch((error)=> res.jsonp({ code: 248, service: 'user', function: 'unfollow', message: 'error', error }));
 			} else {
-				res.jsonp({ code: 241, service: 'user', function: 'unfollow', message: 'unfollowing', target: user.nickname });
+				return res.jsonp({ code: 241, service: 'user', function: 'unfollow', message: 'unfollowing', target: user.nickname });
 			}
 		});
 
@@ -160,9 +160,9 @@ module.exports = (express, passport) => {
 	router.route('/vuser/:signhash').get((req, res) => {
 		let {signhash} = req.params;
 		let myhash = req.decoded.signhash;
-		if (!signhash || !myhash) res.jsonp({ code: 256, service: 'user', function: 'viewuser', message: 'unsatisfied_param'});
+		if (!signhash || !myhash) return res.jsonp({ code: 256, service: 'user', function: 'viewuser', message: 'unsatisfied_param'});
 		mUser.findOne({signhash},['_id', 'signhash', 'email', 'nickname', 'follower', 'following'],(error, user) => {
-			if(error) res.jsonp({ code: 258, service: 'user', function: 'viewuser', message: 'error', error });
+			if(error) return res.jsonp({ code: 258, service: 'user', function: 'viewuser', message: 'error', error });
 			const ret = {
 				_id: user._id,
 				signhash: user.signhash,
@@ -175,15 +175,15 @@ module.exports = (express, passport) => {
 				followingsize: user.following.length,
 				amIfollowing: user.follower.includes(myhash)
 			}
-			res.jsonp({ code: 250, service: 'user', function: 'viewuser', message: 'success', ...ret});
+			return res.jsonp({ code: 250, service: 'user', function: 'viewuser', message: 'success', ...ret});
 		})
 	}).all((req, res) => res.jsonp({ code: 259, service: 'user', function: 'viewuser', message: 'unauthorized_method' }));
 
 	router.route('/userstat').get((req, res) => {
 		let signhash = req.decoded.signhash;
-		if (!signhash) res.jsonp({ code: 266, service: 'user', function: 'userstat', message: 'unsatisfied_param'});
+		if (!signhash) return res.jsonp({ code: 266, service: 'user', function: 'userstat', message: 'unsatisfied_param'});
 		mUser.findOne({signhash},['follower', 'following'],(error, user) => {
-			if(error) res.jsonp({ code: 268, service: 'user', function: 'userstat', message: 'error', error });
+			if(error) return res.jsonp({ code: 268, service: 'user', function: 'userstat', message: 'error', error });
 			const ret = {
 				designs: [],
 				follower: user.follower,
@@ -192,7 +192,7 @@ module.exports = (express, passport) => {
 				followersize: user.follower.length,
 				followingsize: user.following.length,
 			}
-			res.jsonp({ code: 260, service: 'user', function: 'userstat', message: 'success', ...ret});
+			return res.jsonp({ code: 260, service: 'user', function: 'userstat', message: 'success', ...ret});
 		})
 	}).all((req, res) => res.jsonp({ code: 269, service: 'user', function: 'userstat', message: 'unauthorized_method' }));
 
@@ -201,8 +201,8 @@ module.exports = (express, passport) => {
 		let signhash = req.decoded.signhash || 'nosignhash';
 		const query = (!param || param === '') ? {} : {$or: [{nickname: {$regex: '.*' + param +'.*'}}, {email: {$regex: '.*' + param +'.*'}}]};
 		mUser.find(query,['_id', 'signhash', 'nickname', 'email'],(error, user) => {
-			if(error) res.jsonp({ code: 278, service: 'user', function: 'userstat', message: 'error', error });
-			res.jsonp({ code: 270, service: 'user', function: 'userstat', message: 'success', user: user.filter((e) => e.signhash != signhash)});
+			if(error) return res.jsonp({ code: 278, service: 'user', function: 'userstat', message: 'error', error });
+			return res.jsonp({ code: 270, service: 'user', function: 'userstat', message: 'success', user: user.filter((e) => e.signhash != signhash)});
 		})
 	}).all((req, res) => res.jsonp({ code: 279, service: 'user', function: 'userstat', message: 'unauthorized_method' }));
 
@@ -212,8 +212,8 @@ module.exports = (express, passport) => {
 		// if (param && param !== '') query.push({$or: [{nickname: {$regex: '.*' + param +'.*'}}, {email: {$regex: '.*' + param +'.*'}}]});
 		mUser.aggregate(query).exec((error, tagswrap) => {
 			let tags = (param && param !== '') ? tagswrap.filter((e) => e._id.indexOf(param) >= 0) : tagswrap;
-			if(error) res.jsonp({ code: 278, service: 'searchtag', function: 'userstat', message: 'error', error });
-			res.jsonp({ code: 270, service: 'searchtag', function: 'userstat', message: 'success', tags: tags.map((tag) => {return {_id: tag._id, signhash: tag.signhash[0], count: tag.count}})});
+			if(error) return res.jsonp({ code: 278, service: 'searchtag', function: 'userstat', message: 'error', error });
+			return res.jsonp({ code: 270, service: 'searchtag', function: 'userstat', message: 'success', tags: tags.map((tag) => {return {_id: tag._id, signhash: tag.signhash[0], count: tag.count}})});
 		})
 
 
