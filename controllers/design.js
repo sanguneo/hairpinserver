@@ -46,13 +46,13 @@ module.exports = (express) => {
 					publish: uploadedType
 				}
 				for(let key in replace) design[key] = replace[key];
-				try {
-					design.save((error) => { if (error) throw error;});
-				} catch (error) {
-					console.log(error);
-				} finally {
+				design.save(function(err) {
+					if(err) throw err;
+				}).then((e)=> {
+					console.log(e);
 					return res.jsonp({ code: 400, service: 'design', function: 'upload', message: 'success', upDate: upDate});
-				}
+				});
+
 			} else {
 				const newdesign = new mDesign({
 					signhash,
@@ -65,13 +65,12 @@ module.exports = (express) => {
 					upDate,
 					publish: uploadedType
 				});
-				try {
-					newdesign.save((error) => { if (error) throw error;});
-				} catch (error) {
-					console.log(error);
-				} finally {
-					return res.jsonp({ code: 400, service: 'design', function: 'upload', message: 'success', upDate: upDate});
-				}
+				newdesign.save(function(error) {
+					if (error) {
+						return res.jsonp({ code: 408, service: 'design', function: 'upload', message: 'error', error});
+					}
+				});
+				return res.jsonp({ code: 400, service: 'design', function: 'upload', message: 'success', upDate: upDate});
 			}
 		});
 		return res.jsonp({ code: 408, service: 'design', function: 'upload', message: 'error'});
