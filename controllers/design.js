@@ -70,8 +70,10 @@ module.exports = (express) => {
 		});
 	}).all((req, res) => res.jsonp({code: 409, service: 'design', function: 'upload', message: 'unauthorized_method'}));
 
-	router.route('/tags').get((req, res) => {
-		// const {signhash} = req.decoded;
+	router.route(['/tags/:permission', '/tags']).get((req, res) => {
+		const {permission} = req.params;
+		if (req.decoded)
+			const {signhash} = req.decoded;
 		mDesign.find({},['tags'], function(err, designs) {
 			if(err) res.jsonp({ code: 408, service: 'design', function: 'tags', message: 'error', error: err});
 			const tagList = {};
