@@ -74,19 +74,17 @@ module.exports = (express) => {
 	router.route(['/tags', '/tags/:permission']).get((req, res) => {
 		const {permission} = req.params;
 		let query = !permission ? {$or: [{publish: 7}]} : {$or: [{publish: permission}, {publish: 7}]};
+		let myhash;
 		if (req.decoded) {
-			const myhash = req.decoded.signhash;
+			myhash = req.decoded.signhash;
 			query.$or.push({signhash: myhash});
 		}
-		mDesign.find(query,['signhash', 'tags'], function(err, designs) {
+		mDesign.find(query,['signhash', 'tags', 'publish'], function(err, designs) {
 			if(err) res.jsonp({ code: 408, service: 'design', function: 'tags', message: 'error', error: err});
 			const tagList = {};
-			designs.forEach(({signhash, tags}) => {
-				console.log(signhash);
-				mUser.findOne({signhash},function(error, following){
-					console.log(following);
-				});
-				tags.forEach((tag) => tagList[tag] = (tagList[tag] ? tagList[tag] + 1 : 1))
+			designs.forEach(({signhash, tags, publish}) => {
+				if(publish == 3) mUser.findOne({signhash},['following'],function(error, following){ following.includes(myhash) && tags.forEach((tag) => tagList[tag] = (tagList[tag] ? tagList[tag] + 1 : 1))});
+				else tags.forEach((tag) => tagList[tag] = (tagList[tag] ? tagList[tag] + 1 : 1));
 			});
 			res.jsonp({ code: 400, service: 'design', function: 'tags', message: 'success', tagList});
 		});
