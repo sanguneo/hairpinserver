@@ -33,7 +33,9 @@ module.exports = (express) => {
 			if(err) return res.jsonp({ code: 408, service: 'design', function: 'upload', message: 'error', error: err});
 			const upDate = Date.now();
 			console.log(upDate);
-			req.files.forEach((file) => fs.renameSync(file.destination + '/' + file.filename, file.destination + '/' + file.originalname));
+			req.files.forEach((file) => {
+				fs.rename(file.destination + '/' + file.filename, file.destination + '/' + file.originalname, ()=>{});
+			});
 			if (design) {
 				const replace = {
 					title : designTitle,
