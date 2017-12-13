@@ -49,8 +49,8 @@ module.exports = (express) => {
 				design.save(function(err) {
 					if(err) throw err;
 				}).then((e)=> {
-					console.log(e);
-					return res.jsonp({ code: 400, service: 'design', function: 'upload', message: 'success', upDate: upDate});
+					res.jsonp({ code: 400, service: 'design', function: 'upload', message: 'success', upDate: upDate});
+					return res.end();
 				});
 
 			} else {
@@ -65,12 +65,12 @@ module.exports = (express) => {
 					upDate,
 					publish: uploadedType
 				});
-				newdesign.save(function(error) {
-					if (error) {
-						return res.jsonp({ code: 408, service: 'design', function: 'upload', message: 'error', error});
-					}
+				newdesign.save(function(err) {
+					if(err) throw err;
+				}).then((e)=> {
+					res.jsonp({ code: 400, service: 'design', function: 'upload', message: 'success', upDate: upDate});
+					return res.end();
 				});
-				return res.jsonp({ code: 400, service: 'design', function: 'upload', message: 'success', upDate: upDate});
 			}
 		});
 		return res.jsonp({ code: 408, service: 'design', function: 'upload', message: 'error'});
