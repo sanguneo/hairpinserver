@@ -36,13 +36,17 @@ module.exports = (express) => {
 				fs.rename(file.destination + '/' + file.filename, file.destination + '/' + file.originalname, ()=>{});
 			});
 			if (design) {
+
 				designTitle && (design.title = designTitle);
 				designTag && (design.tags = designTag);
 				designRecipe && (design.recipe = designRecipe);
 				designComment && (design.comment = designComment);
 				design.upDate = upDate;
 				uploadedType && (design.publish = uploadedType);
-				design.save().then((e)=> {
+
+				design.save(function(e){
+					if(e) throw e;
+				}).then((e)=> {
 					return res.jsonp({ code: 400, service: 'design', function: 'upload', message: 'success', upDate: upDate});
 				});
 
@@ -58,7 +62,9 @@ module.exports = (express) => {
 					upDate,
 					publish: uploadedType
 				});
-				newdesign.save().then(()=> {
+				newdesign.save(function(e){
+					if(e) throw e;
+				}).then(()=> {
 					return res.jsonp({ code: 400, service: 'design', function: 'upload', message: 'success', upDate: upDate});
 				});
 			}
