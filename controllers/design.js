@@ -37,7 +37,7 @@ module.exports = (express) => {
 			});
 			if (design) {
 				designTitle && (design.title = designTitle);
-				designTag && (design.tags = designTag);
+				designTag && (design.tags = JSON.parse(designTag));
 				designRecipe && (design.recipe = designRecipe);
 				designComment && (design.comment = designComment);
 				design.upDate = upDate;
@@ -53,7 +53,7 @@ module.exports = (express) => {
 					signhash,
 					designHash,
 					title : designTitle,
-					tags: designTag,
+					tags: JSON.parse(designTag),
 					recipe: designRecipe,
 					comment: designComment,
 					regDate: designRegdate,
