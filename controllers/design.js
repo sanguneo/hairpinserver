@@ -90,7 +90,7 @@ module.exports = (express) => {
 			setTimeout(()=> res.jsonp({ code: 400, service: 'design', function: 'tags', message: 'success', tags: tagList, signhash: myhash}),500);
 		});
 	}).all((req, res) => res.jsonp({code: 409, service: 'design', function: 'tags', message: 'unauthorized_method'}));
-/*
+
 	router.route(['/designs', '/designs/:permission']).get((req, res) => {
 		const {permission} = req.params;
 		let query = !permission ? {$or: [{publish: 7}]} : {$or: [{publish: permission}, {publish: 7}]};
@@ -112,6 +112,5 @@ module.exports = (express) => {
 			setTimeout(()=> res.jsonp({ code: 410, service: 'design', function: 'designs', message: 'success', designs: designList, signhash: myhash}),500);
 		});
 	}).all((req, res) => res.jsonp({code: 419, service: 'design', function: 'designs', message: 'unauthorized_method'}));
-*/
 	return router;
 };
