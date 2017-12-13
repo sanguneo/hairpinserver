@@ -35,7 +35,7 @@ module.exports = (express) => {
 			console.log(upDate);
 			req.files.forEach((file) => fs.renameSync(file.destination + '/' + file.filename, file.destination + '/' + file.originalname));
 			if (design) {
-				Object.assign(design, {
+				design = Object.assign({}, design, {
 					title : designTitle,
 					tags: designTag,
 					recipe: designRecipe,
@@ -44,9 +44,12 @@ module.exports = (express) => {
 					publish: uploadedType
 				});
 				design.save(function(error) {
-					if (error) console.log(error);
-				});
-				return res.jsonp({ code: 400, service: 'design', function: 'upload', message: 'success', upDate: upDate});
+					if (error) {
+						return res.jsonp({ code: 408, service: 'design', function: 'upload', message: 'error', error});
+					}
+				}).then(() => {
+					return res.jsonp({ code: 400, service: 'design', function: 'upload', message: 'success', upDate: upDate});
+				})
 			} else {
 				const newdesign = new mDesign({
 					signhash,
@@ -60,9 +63,12 @@ module.exports = (express) => {
 					publish: uploadedType
 				});
 				newdesign.save(function(error) {
-					if (error) console.log(error);
-				});
-				return res.jsonp({ code: 400, service: 'design', function: 'upload', message: 'success', upDate: upDate});
+					if (error) {
+						return res.jsonp({ code: 408, service: 'design', function: 'upload', message: 'error', error});
+					}
+				}).then(() => {
+					return res.jsonp({ code: 400, service: 'design', function: 'upload', message: 'success', upDate: upDate});
+				})
 			}
 		});
 		return res.jsonp({ code: 400, service: 'design', function: 'upload', message: 'success', signhash});
