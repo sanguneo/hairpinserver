@@ -74,7 +74,9 @@ module.exports = (express) => {
 		// const {signhash} = req.decoded;
 		mDesign.find({},['tags'], function(err, designs) {
 			if(err) res.jsonp({ code: 408, service: 'design', function: 'tags', message: 'error', error: err});
-			res.jsonp({ code: 400, service: 'design', function: 'tags', message: 'error', designs});
+			const tagList = {};
+			designs.forEach(({designTags}) => tagList[designTags] = (tagList[designTags] ? tagList[designTags] + 1 : 0));
+			res.jsonp({ code: 400, service: 'design', function: 'tags', message: 'error', tagList});
 		});
 	}).all((req, res) => res.jsonp({code: 409, service: 'design', function: 'tags', message: 'unauthorized_method'}));
 
