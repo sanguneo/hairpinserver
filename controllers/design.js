@@ -83,10 +83,11 @@ module.exports = (express) => {
 			if(err) res.jsonp({ code: 408, service: 'design', function: 'tags', message: 'error', error: err});
 			const tagList = {};
 			designs.forEach(({signhash, tags, publish}) => {
-				if(publish == 3) mUser.findOne({signhash},['following'],(error, {following}) => {
-					(following.includes(myhash)) && tags.forEach((tag) => tagList[tag] = (tagList[tag] ? tagList[tag] + 1 : 1))});
-				else if(signhash == myhash) tags.forEach((tag) => tagList[tag] = (tagList[tag] ? tagList[tag] + 1 : 1));
-				else tags.forEach((tag) => tagList[tag] = (tagList[tag] ? tagList[tag] + 1 : 1));
+				if(signhash === myhash) tags.forEach((tag) => tagList[tag] = (tagList[tag] ? tagList[tag] + 1 : 1));
+				else if (publish === 3) mUser.findOne({signhash},['following'],(error, {following}) => {
+					following.includes(myhash) && tags.forEach((tag) => tagList[tag] = (tagList[tag] ? tagList[tag] + 1 : 1))});
+				else if(publish === 7)tags.forEach((tag) => tagList[tag] = (tagList[tag] ? tagList[tag] + 1 : 1));
+				return;
 			});
 			setTimeout(()=> {
 				res.jsonp({ code: 400, service: 'design', function: 'tags', message: 'success', tags: tagList});
