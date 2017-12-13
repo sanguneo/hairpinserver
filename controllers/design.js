@@ -48,9 +48,8 @@ module.exports = (express) => {
 					if (error) {
 						return res.jsonp({ code: 408, service: 'design', function: 'upload', message: 'error', error});
 					}
-				}).then(() => {
-					return res.jsonp({ code: 400, service: 'design', function: 'upload', message: 'success', upDate: upDate});
-				})
+				});
+				return res.jsonp({ code: 400, service: 'design', function: 'upload', message: 'success', upDate: upDate});
 			} else {
 				const newdesign = new mDesign({
 					signhash,
@@ -67,12 +66,11 @@ module.exports = (express) => {
 					if (error) {
 						return res.jsonp({ code: 408, service: 'design', function: 'upload', message: 'error', error});
 					}
-				}).then(() => {
-					return res.jsonp({ code: 400, service: 'design', function: 'upload', message: 'success', upDate: upDate});
-				})
+				});
+				return res.jsonp({ code: 400, service: 'design', function: 'upload', message: 'success', upDate: upDate});
 			}
 		});
-		return res.jsonp({ code: 400, service: 'design', function: 'upload', message: 'success', signhash});
+		return res.jsonp({ code: 408, service: 'design', function: 'upload', message: 'error'});
 	}).all((req, res) => res.jsonp({code: 409, service: 'design', function: 'upload', message: 'unauthorized_method'}));
 
 	return router;
