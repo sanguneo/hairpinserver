@@ -32,6 +32,7 @@ module.exports = (express) => {
 		mDesign.findOne({signhash, designHash}, function(err, design) {
 			if(err) return res.jsonp({ code: 408, service: 'design', function: 'upload', message: 'error', error: err});
 			const upDate = Date.now();
+			console.log(upDate);
 			req.files.forEach((file) => fs.renameSync(file.destination + '/' + file.filename, file.destination + '/' + file.originalname));
 			if (design) {
 				Object.assign(design, {
