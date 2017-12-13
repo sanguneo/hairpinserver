@@ -72,7 +72,8 @@ module.exports = (express) => {
 				return res.jsonp({ code: 400, service: 'design', function: 'upload', message: 'success', upDate: upDate});
 			}
 		});
-		return res.jsonp({ code: 408, service: 'design', function: 'upload', message: 'error'});
+		res.jsonp({ code: 408, service: 'design', function: 'upload', message: 'error'});
+		return res.end();
 	}).all((req, res) => res.jsonp({code: 409, service: 'design', function: 'upload', message: 'unauthorized_method'}));
 
 	return router;
