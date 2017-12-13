@@ -20,7 +20,7 @@ module.exports = (passRouteMore, passRouteArray) => (req, res, next) => {
 	let secret = req.app.get('secretnipriah');
 	const token = req.headers['nekotnipriah'];
 	if (!token) {
-		res.jsonp({
+		return res.jsonp({
 			code: 294,
 			service: 'user',
 			function: 'common',
