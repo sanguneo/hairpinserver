@@ -35,7 +35,7 @@ module.exports = (express) => {
 			console.log(upDate);
 			req.files.forEach((file) => fs.renameSync(file.destination + '/' + file.filename, file.destination + '/' + file.originalname));
 			if (design) {
-				design = Object.assign({}, design, {
+				const moddesign = Object.assign({}, design, {
 					title : designTitle,
 					tags: designTag,
 					recipe: designRecipe,
@@ -43,7 +43,7 @@ module.exports = (express) => {
 					upDate,
 					publish: uploadedType
 				});
-				design.save(function(error) {
+				moddesign.save(function(error) {
 					if (error) {
 						return res.jsonp({ code: 408, service: 'design', function: 'upload', message: 'error', error});
 					}
