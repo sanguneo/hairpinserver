@@ -75,8 +75,7 @@ module.exports = (express) => {
 		if (req.decoded) {
 			const signhash = req.decoded.signhash;
 		}
-		let query = !permission ? {} : {publish: permission};
-		mDesign.find(query,['tags'], function(err, designs) {
+		mDesign.find({publish: !permission ? 7 : permission},['tags'], function(err, designs) {
 			if(err) res.jsonp({ code: 408, service: 'design', function: 'tags', message: 'error', error: err});
 			const tagList = {};
 			designs.forEach(({tags}) => tags.forEach((tag) => tagList[tag] = (tagList[tag] ? tagList[tag] + 1 : 1)));
