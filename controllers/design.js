@@ -83,18 +83,35 @@ module.exports = (express) => {
 			if(err) res.jsonp({ code: 408, service: 'design', function: 'tags', message: 'error', error: err});
 			const tagList = {};
 			designs.forEach(({signhash, tags, publish}) => {
-				console.log(signhash, myhash);
-				if(signhash === myhash) tags.forEach((tag) => tagList[tag] = (tagList[tag] ? tagList[tag] + 1 : 1));
+				if(signhash === myhash || publish === 7) tags.forEach((tag) => tagList[tag] = (tagList[tag] ? tagList[tag] + 1 : 1));
 				else if (publish === 3) mUser.findOne({signhash},['following'],(error, {following}) => {
 					following.includes(myhash) && tags.forEach((tag) => tagList[tag] = (tagList[tag] ? tagList[tag] + 1 : 1))});
-				else if(publish === 7)tags.forEach((tag) => tagList[tag] = (tagList[tag] ? tagList[tag] + 1 : 1));
-				return;
 			});
-			setTimeout(()=> {
-				res.jsonp({ code: 400, service: 'design', function: 'tags', message: 'success', tags: tagList, signhash: myhash});
-			},2000);
+			setTimeout(()=> res.jsonp({ code: 400, service: 'design', function: 'tags', message: 'success', tags: tagList, signhash: myhash}),500);
 		});
 	}).all((req, res) => res.jsonp({code: 409, service: 'design', function: 'tags', message: 'unauthorized_method'}));
+/*
+	router.route(['/designs', '/designs/:permission']).get((req, res) => {
+		const {permission} = req.params;
+		let query = !permission ? {$or: [{publish: 7}]} : {$or: [{publish: permission}, {publish: 7}]};
+		var myhash;
+		if (req.decoded) {
+			myhash = req.decoded.signhash;
+			query.$or.push({signhash: myhash});
+		}
+		mDesign.find(query,['signhash', 'designHash', 'title', 'regDate'], function(err, designs) {
+			if(err) res.jsonp({ code: 418, service: 'design', function: 'designs', message: 'error', error: err});
+			const designList = [];
+			designs.forEach(({signhash, designHash, publish}) => {
+				mUser.findOne({signhash},['nickname', 'following'],(error, {nickname, following}) => {
+					if(signhash === myhash || publish === 7) designList.push({signhash, designHash, nickname})
+					else if (publish === 3) following.includes(myhash) && designList.push({signhash, designHash, nickname});
+				});
 
+			});
+			setTimeout(()=> res.jsonp({ code: 410, service: 'design', function: 'designs', message: 'success', designs: designList, signhash: myhash}),500);
+		});
+	}).all((req, res) => res.jsonp({code: 419, service: 'design', function: 'designs', message: 'unauthorized_method'}));
+*/
 	return router;
 };
