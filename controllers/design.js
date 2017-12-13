@@ -72,8 +72,9 @@ module.exports = (express) => {
 
 	router.route(['/tags/:permission', '/tags']).get((req, res) => {
 		const {permission} = req.params;
-		if (req.decoded)
-			const {signhash} = req.decoded;
+		if (req.decoded) {
+			const signhash = req.decoded.signhash;
+		}
 		mDesign.find({},['tags'], function(err, designs) {
 			if(err) res.jsonp({ code: 408, service: 'design', function: 'tags', message: 'error', error: err});
 			const tagList = {};
