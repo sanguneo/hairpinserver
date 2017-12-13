@@ -46,9 +46,9 @@ module.exports = (express) => {
 
 				design.save(function(e){
 					if(e) throw e;
+				}).then((e)=> {
 					return res.jsonp({ code: 400, service: 'design', function: 'upload', message: 'success', upDate: upDate});
 				});
-
 
 			} else {
 				const newdesign = new mDesign({
@@ -64,8 +64,9 @@ module.exports = (express) => {
 				});
 				newdesign.save(function(e){
 					if(e) throw e;
+				}).then(()=> {
 					return res.jsonp({ code: 400, service: 'design', function: 'upload', message: 'success', upDate: upDate});
-				})
+				});
 			}
 		});
 		return res.jsonp({ code: 408, service: 'design', function: 'upload', message: 'error'});
