@@ -5,7 +5,8 @@ module.exports = (express) => {
 	
 	const uploadPath = 'upload/designs';
 	const profileUpload	= multer({ dest: uploadPath });
-	
+
+	const mUser = require('../models/user');
 	const mDesign = require('../models/design');
 
 	const validation	= require('./user.validation');
@@ -72,15 +73,20 @@ module.exports = (express) => {
 
 	router.route(['/tags', '/tags/:permission']).get((req, res) => {
 		const {permission} = req.params;
-		let query = !permission ? {publish: 7} : {$or: [{publish: permission}, {publish: 7}]};
+		let query = !permission ? {$or: [{publish: 7}]} : {$or: [{publish: permission}, {publish: 7}]};
 		if (req.decoded) {
-			const signhash = req.decoded.signhash;
-			query.$or[0].signhash = signhash;
+			const myhash = req.decoded.signhash;
+			query.$or.push({signhash: myhash});
 		}
 		mDesign.find(query,['tags'], function(err, designs) {
 			if(err) res.jsonp({ code: 408, service: 'design', function: 'tags', message: 'error', error: err});
 			const tagList = {};
-			designs.forEach(({tags}) => tags.forEach((tag) => tagList[tag] = (tagList[tag] ? tagList[tag] + 1 : 1)));
+			designs.forEach(({signhash, tags}) => {
+				mUser.findOne({signhash}, ['following'] ,(error, followings) => {
+					console.log(followings);
+				});
+				tags.forEach((tag) => tagList[tag] = (tagList[tag] ? tagList[tag] + 1 : 1))
+			});
 			res.jsonp({ code: 400, service: 'design', function: 'tags', message: 'success', tagList});
 		});
 	}).all((req, res) => res.jsonp({code: 409, service: 'design', function: 'tags', message: 'unauthorized_method'}));
