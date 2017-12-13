@@ -70,12 +70,13 @@ module.exports = (express) => {
 		});
 	}).all((req, res) => res.jsonp({code: 409, service: 'design', function: 'upload', message: 'unauthorized_method'}));
 
-	router.route(['/tags/:permission', '/tags']).get((req, res) => {
+	router.route(['/tags', '/tags/:permission']).get((req, res) => {
 		const {permission} = req.params;
 		if (req.decoded) {
 			const signhash = req.decoded.signhash;
 		}
-		mDesign.find({},['tags'], function(err, designs) {
+		let query = !permission ? {} : {publish: permission};
+		mDesign.find(query,['tags'], function(err, designs) {
 			if(err) res.jsonp({ code: 408, service: 'design', function: 'tags', message: 'error', error: err});
 			const tagList = {};
 			designs.forEach(({tags}) => tags.forEach((tag) => tagList[tag] = (tagList[tag] ? tagList[tag] + 1 : 1)));
