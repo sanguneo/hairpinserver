@@ -40,7 +40,7 @@ module.exports = (passRouteMore, passRouteArray) => (req, res, next) => {
 			next();
 		})
 		.catch(error =>
-			res.jsonp({
+			return res.jsonp({
 				code: 295,
 				service: 'user',
 				function: 'common',
