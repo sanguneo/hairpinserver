@@ -82,7 +82,7 @@ module.exports = (express) => {
 			if(err) res.jsonp({ code: 408, service: 'design', function: 'tags', message: 'error', error: err});
 			const tagList = {};
 			designs.forEach(({signhash, tags}) => {
-				mUser.findOne({signhash}, ['following'] ,(error, followings) => {
+				mUser.findOne({signhash},(error, followings) => {
 					console.log(followings);
 				});
 				tags.forEach((tag) => tagList[tag] = (tagList[tag] ? tagList[tag] + 1 : 1))
