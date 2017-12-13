@@ -17,7 +17,7 @@ module.exports = (express) => {
 	});
 
 	router.all('/', (req, res) => {
-	    return res.jsonp({
+	    res.jsonp({
 	        name: 'hair.pin design service API',
 	        version: '1.0.0',
 	    });
@@ -28,7 +28,7 @@ module.exports = (express) => {
 	router.route('/upload').post(profileUpload.array('designimage', 4), (req, res) => {
 		const {signhash} = req.decoded;
 		const {designHash, designRegdate, designTitle, designTag, designRecipe, designComment, uploadedType} = req.body;
-		if (!designHash) return res.jsonp({ code: 406, service: 'design', function: 'upload', message: 'unsatisfied_param'});
+		if (!designHash) res.jsonp({ code: 406, service: 'design', function: 'upload', message: 'unsatisfied_param'});
 		mDesign.findOne({signhash, designHash}, function(err, design) {
 			if(err) res.jsonp({ code: 408, service: 'design', function: 'upload', message: 'error', error: err});
 			const upDate = Date.now();
@@ -46,7 +46,7 @@ module.exports = (express) => {
 				design.save(function(e){
 					if(e) throw e;
 				}).then(()=> {
-					return res.jsonp({ code: 400, service: 'design', function: 'upload', message: 'success', upDate: upDate});
+					res.jsonp({ code: 400, service: 'design', function: 'upload', message: 'success', upDate: upDate});
 				});
 			} else {
 				const newdesign = new mDesign({
@@ -63,11 +63,11 @@ module.exports = (express) => {
 				newdesign.save(function(e){
 					if(e) throw e;
 				}).then(()=> {
-					return res.jsonp({ code: 400, service: 'design', function: 'upload', message: 'success', upDate: upDate});
+					res.jsonp({ code: 400, service: 'design', function: 'upload', message: 'success', upDate: upDate});
 				});
 			}
 		});
-		// return res.jsonp({ code: 408, service: 'design', function: 'upload', message: 'error'});
+		// res.jsonp({ code: 408, service: 'design', function: 'upload', message: 'error'});
 	}).all((req, res) => res.jsonp({code: 409, service: 'design', function: 'upload', message: 'unauthorized_method'}));
 
 	return router;
