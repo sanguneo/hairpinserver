@@ -43,7 +43,7 @@ module.exports = (express) => {
 					publish: uploadedType
 				});
 				design.save(function(error) {
-					if (error) return res.jsonp({ code: 408, service: 'design', function: 'upload', message: 'error', error});
+					if (error) throw error;
 				});
 				return res.jsonp({ code: 400, service: 'design', function: 'upload', message: 'success', upDate: upDate});
 			} else {
@@ -59,7 +59,7 @@ module.exports = (express) => {
 					publish: uploadedType
 				});
 				newdesign.save(function(error) {
-					if (error) return res.jsonp({ code: 408, service: 'design', function: 'upload', message: 'error', error});
+					if (error) throw error;
 				});
 				return res.jsonp({ code: 400, service: 'design', function: 'upload', message: 'success', upDate: upDate});
 			}
