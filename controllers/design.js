@@ -27,24 +27,41 @@ module.exports = (express) => {
 
 	router.route('/upload').post(profileUpload.array('designimage', 4), (req, res) => {
 		const {signhash} = req.decoded;
-		const {designHash} = req.body;
-		if (!designHash) {
-			return res.jsonp({ code: 406, service: 'design', function: 'upload', message: 'unsatisfied_param'});
-		}
-		req.files.forEach((file) => {
-			fs.renameSync(file.destination + '/' + file.filename, file.destination + '/' + file.originalname)
-		})
-		// mDesign.findOne({email: email}, function(err, design) {
-		// 	if(err) {
-		// 		return res.jsonp({ code: 400, service: 'design', function: 'upload', message: 'error', error: err});
-		// 	}
-		// 	if (design) {
-		// 	} else {
-		// 		let newdesign = new mDesign({
-		// 		});
-		// 		newdesign.save((err) => { if (err) throw err;});
-		// 	}
-		// });
+		const {designHash, designRegdate, designTitle, designTag, designRecipe, designComment, uploadedType} = req.body;
+		if (!designHash) return res.jsonp({ code: 406, service: 'design', function: 'upload', message: 'unsatisfied_param'});
+
+		mDesign.findOne({signhash, designHash}, function(err, design) {
+			if(err) return res.jsonp({ code: 408, service: 'design', function: 'upload', message: 'error', error: err});
+			req.files.forEach((file) => {
+				fs.renameSync(file.destination + '/' + file.filename, file.destination + '/' + file.originalname)
+			});
+			console.log({
+				signhash,
+				designHash,
+				title : designTitle,
+				tags: designTag,
+				recipe: designRecipe,
+				comment: designComment,
+				regDate: designRegdate,
+				upDate: Date.now(),
+				publish: uploadedType
+			});
+			if (design) {
+			} else {
+				// let newdesign = new mDesign({
+				// 	signhash,
+				// 	designHash,
+				// 	title : designTitle,
+				// 	tags: designTag,
+				// 	recipe: designRecipe,
+				// 	comment: designComment,
+				// 	regDate: designRegdate,
+				// 	upDate: Date.now(),
+				// 	publish: uploadedType
+				// });
+				// newdesign.save((err) => { if (err) throw err;});
+			}
+		});
 		return res.jsonp({ code: 400, service: 'design', function: 'upload', message: 'success', signhash});
 	}).all((req, res) => res.jsonp({code: 409, service: 'design', function: 'upload', message: 'unauthorized_method'}));
 

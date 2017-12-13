@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const sDesign = mongoose.Schema({
 	signhash: {type: String, required: true},
-	designhash: {type: String, required: true, index: true},
+	designHash: {type: String, required: true, index: true},
 
 	title: {type: String},
 	tags: [String],
