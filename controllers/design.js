@@ -24,7 +24,7 @@ module.exports = (express) => {
 	    });
 	});
 	
-	router.use(validation());
+	router.use(validation([]));
 
 	router.route('/upload').post(profileUpload.array('designimage', 4), (req, res) => {
 		const {signhash} = req.decoded;
