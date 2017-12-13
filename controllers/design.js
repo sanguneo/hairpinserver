@@ -74,7 +74,7 @@ module.exports = (express) => {
 		const {signhash} = req.decoded;
 		mDesign.find({}, function(err, designs) {
 			if(err) res.jsonp({ code: 408, service: 'design', function: 'upload', message: 'error', error: err});
-			console.log(designs)
+			res.jsonp({ code: 400, service: 'design', function: 'upload', message: 'error', designs});
 		});
 	}).all((req, res) => res.jsonp({code: 409, service: 'design', function: 'upload', message: 'unauthorized_method'}));
 
