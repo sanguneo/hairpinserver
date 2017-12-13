@@ -83,9 +83,9 @@ module.exports = (express) => {
 			if(err) res.jsonp({ code: 408, service: 'design', function: 'tags', message: 'error', error: err});
 			const tagList = {};
 			designs.forEach(({signhash, tags, publish}) => {
-				if(publish == 3) mUser.findOne({signhash},['following'],function(error, {following}){
-					(following.includes(myhash)) && tags.forEach((tag) => tagList[tag] = (tagList[tag] ? tagList[tag] + 1 : 1))
-				});
+				if(publish == 3) mUser.findOne({signhash},['following'],(error, {following}) => {
+					(following.includes(myhash)) && tags.forEach((tag) => tagList[tag] = (tagList[tag] ? tagList[tag] + 1 : 1))});
+				else if(signhash == myhash) tags.forEach((tag) => tagList[tag] = (tagList[tag] ? tagList[tag] + 1 : 1));
 				else tags.forEach((tag) => tagList[tag] = (tagList[tag] ? tagList[tag] + 1 : 1));
 			});
 			setTimeout(()=> {
