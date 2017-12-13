@@ -28,6 +28,7 @@ module.exports = (passRouteMore, passRouteArray) => (req, res, next) => {
 			token
 		});
 	}
+
 	const authPromise = new Promise((resolve, reject) => {
 		jwt.verify(token, secret, (err, decoded) => {
 			if (err) reject(err);
