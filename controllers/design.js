@@ -86,7 +86,9 @@ module.exports = (express) => {
 				if(publish == 3) mUser.findOne({signhash},['following'],function(error, following){ following.includes(myhash) && tags.forEach((tag) => tagList[tag] = (tagList[tag] ? tagList[tag] + 1 : 1))});
 				else tags.forEach((tag) => tagList[tag] = (tagList[tag] ? tagList[tag] + 1 : 1));
 			});
-			res.jsonp({ code: 400, service: 'design', function: 'tags', message: 'success', tagList});
+			setTimeout(()=> {
+				res.jsonp({ code: 400, service: 'design', function: 'tags', message: 'success', tagList});
+			},500);
 		});
 	}).all((req, res) => res.jsonp({code: 409, service: 'design', function: 'tags', message: 'unauthorized_method'}));
 
