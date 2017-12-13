@@ -44,13 +44,10 @@ module.exports = (express) => {
 				uploadedType && (design.publish = uploadedType);
 
 				design.save(function(e){
-					if(e){
-						console.log(123123123,e)
-						throw e;
-					}
-					else res.jsonp({ code: 400, service: 'design', function: 'upload', message: 'success', upDate: upDate});
+					if(e) throw e;
+				}).then(()=> {
+					return res.jsonp({ code: 400, service: 'design', function: 'upload', message: 'success', upDate: upDate});
 				});
-				res.end();
 			} else {
 				const newdesign = new mDesign({
 					signhash,
@@ -64,13 +61,10 @@ module.exports = (express) => {
 					publish: uploadedType
 				});
 				newdesign.save(function(e){
-					if(e){
-						console.log(123123123,e)
-						throw e;
-					}
-					else res.jsonp({ code: 400, service: 'design', function: 'upload', message: 'success', upDate: upDate});
+					if(e) throw e;
+				}).then(()=> {
+					return res.jsonp({ code: 400, service: 'design', function: 'upload', message: 'success', upDate: upDate});
 				});
-				res.end();
 			}
 		});
 		return res.jsonp({ code: 408, service: 'design', function: 'upload', message: 'error'});
