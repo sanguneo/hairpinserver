@@ -90,8 +90,8 @@ module.exports = (express) => {
 				return;
 			});
 			setTimeout(()=> {
-				res.jsonp({ code: 400, service: 'design', function: 'tags', message: 'success', tags: tagList});
-			},500);
+				res.jsonp({ code: 400, service: 'design', function: 'tags', message: 'success', tags: tagList, signhash: myhash});
+			},2000);
 		});
 	}).all((req, res) => res.jsonp({code: 409, service: 'design', function: 'tags', message: 'unauthorized_method'}));
 
