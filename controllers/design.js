@@ -99,7 +99,7 @@ module.exports = (express) => {
 			myhash = req.decoded.signhash;
 			query.$or.push({signhash: myhash});
 		}
-		mDesign.find(query,['signhash', 'designHash', 'title', 'regDate', 'publish'], function(err, designs) {
+		mDesign.find(query,['signhash', 'designHash', 'title', 'regDate', 'publish'], {sort: {regDate: -1}}, function(err, designs) {
 			if(err) res.jsonp({ code: 418, service: 'design', function: 'designs', message: 'error', error: err});
 			const designList = [];
 			designs.forEach(({signhash, designHash, title, regDate, publish}) => {
