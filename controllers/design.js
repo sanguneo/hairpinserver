@@ -112,12 +112,12 @@ module.exports = (express) => {
 	router.route(['/getdesign']).post((req, res) => {
 		const {designHash, signhash} = req.body;
 
-		if (req.decoded.signhash || !designHash) res.jsonp({code: 426, service: 'user', function: 'signup', message: 'unsatisfied_param'});
+		if (req.decoded.signhash || !designHash) return res.jsonp({code: 426, service: 'user', function: 'signup', message: 'unsatisfied_param'});
 
 		mDesign.findOne({signhash, designHash}, function(err, design) {
-			if (err) res.jsonp({code: 428, service: 'design', function: 'getdesign', message: 'error', error: err});
-			if (design) res.jsonp({ code: 420, service: 'design', function: 'getdesign', message: 'success', design});
-			else res.jsonp({ code: 427, service: 'design', function: 'getdesign', message: 'design_notexist'});
+			if (err) return res.jsonp({code: 428, service: 'design', function: 'getdesign', message: 'error', error: err});
+			if (design) return res.jsonp({ code: 420, service: 'design', function: 'getdesign', message: 'success', design});
+			else return res.jsonp({ code: 427, service: 'design', function: 'getdesign', message: 'design_notexist'});
 		});
 	}).all((req, res) => res.jsonp({code: 429, service: 'design', function: 'getdesign', message: 'unauthorized_method'}));
 
