@@ -109,7 +109,7 @@ module.exports = (express) => {
 		});
 	}).all((req, res) => res.jsonp({code: 419, service: 'design', function: 'designs', message: 'unauthorized_method'}));
 
-	router.route(['/getdesign']).get((req, res) => {
+	router.route(['/getdesign']).post((req, res) => {
 		const {designHash, signhash} = req.body;
 		if (req.decoded.signhash || !designHash) res.jsonp({code: 426, service: 'user', function: 'signup', message: 'unsatisfied_param'});
 		mDesign.findOne({signhash, designHash}, function(err, design) {
