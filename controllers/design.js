@@ -97,7 +97,7 @@ module.exports = (express) => {
 			query.$or.push({signhash: myhash});
 		}
 		mDesign.find(query,['signhash', 'designHash', 'title', 'regDate', 'publish'], function(err, designs) {
-			if(err) res.jsonp({ code: 418, service: 'design', function: 'designs', message: 'error', error: err});
+			if(err) return res.jsonp({ code: 418, service: 'design', function: 'designs', message: 'error', error: err});
 			const designList = [];
 			designs.forEach(({signhash, designHash, title, regDate, publish}) => {
 				mUser.findOne({signhash},['nickname', 'following'],(error, {nickname, following}) => {
@@ -112,7 +112,7 @@ module.exports = (express) => {
 	router.route(['/getdesign']).post((req, res) => {
 		const {designHash, signhash} = req.body;
 
-		if (req.decoded.signhash || !designHash) return res.jsonp({code: 426, service: 'user', function: 'signup', message: 'unsatisfied_param'});
+		if (signhash || !designHash) return res.jsonp({code: 426, service: 'user', function: 'signup', message: 'unsatisfied_param'});
 
 		mDesign.findOne({signhash, designHash}, function(err, design) {
 			if (err) return res.jsonp({code: 428, service: 'design', function: 'getdesign', message: 'error', error: err});
