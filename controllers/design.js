@@ -99,15 +99,14 @@ module.exports = (express) => {
 			myhash = req.decoded.signhash;
 			query.$or.push({signhash: myhash});
 		}
-		mDesign.find(query,['signhash', 'designHash', 'title', 'regDate'], function(err, designs) {
+		mDesign.find(query,['signhash', 'designHash', 'title', 'regDate', 'publish'], function(err, designs) {
 			if(err) res.jsonp({ code: 418, service: 'design', function: 'designs', message: 'error', error: err});
 			const designList = [];
-			designs.forEach(({signhash, designHash, publish}) => {
+			designs.forEach(({signhash, designHash, title, regDate, publish}) => {
 				mUser.findOne({signhash},['nickname', 'following'],(error, {nickname, following}) => {
-					if(signhash === myhash || publish === 7) designList.push({signhash, designHash, nickname})
-					else if (publish === 3) following.includes(myhash) && designList.push({signhash, designHash, nickname});
+					if(signhash === myhash || publish === 7) designList.push({nickname, signhash, designHash, title, regDate, publish})
+					else if (publish === 3) following.includes(myhash) && designList.push({nickname, signhash, designHash, title, regDate, publish});
 				});
-
 			});
 			setTimeout(()=> res.jsonp({ code: 410, service: 'design', function: 'designs', message: 'success', designs: designList, signhash: myhash}),500);
 		});
