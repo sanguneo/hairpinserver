@@ -112,7 +112,7 @@ module.exports = (express) => {
 	router.route(['/getdesign']).post((req, res) => {
 		const {designHash, signhash} = req.body;
 
-		if (signhash || !designHash) return res.jsonp({code: 426, service: 'user', function: 'signup', message: 'unsatisfied_param'});
+		if (!signhash || !designHash) return res.jsonp({code: 426, service: 'user', function: 'signup', message: 'unsatisfied_param'});
 
 		mDesign.findOne({signhash, designHash}, function(err, design) {
 			if (err) return res.jsonp({code: 428, service: 'design', function: 'getdesign', message: 'error', error: err});
