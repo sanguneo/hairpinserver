@@ -101,13 +101,34 @@ module.exports = (express) => {
 			const designList = [];
 			designs.forEach(({signhash, designHash, title, regDate, publish}) => {
 				mUser.findOne({signhash},['nickname', 'following'],(error, {nickname, following}) => {
-					if(signhash === myhash || publish === 7) designList.unshift({nickname, signhash, designHash, title, regDate, publish})
-					else if (publish === 3) following.includes(myhash) && designList.unshift({nickname, signhash, designHash, title, regDate, publish});
+					if(signhash === myhash || publish === 7) designList.push({nickname, signhash, designHash, title, regDate, publish})
+					else if (publish === 3) following.includes(myhash) && designList.push({nickname, signhash, designHash, title, regDate, publish});
 				});
 			});
-			setTimeout(()=> res.jsonp({ code: 410, service: 'design', function: 'designs', message: 'success', designs: designList, signhash: myhash}),500);
+			setTimeout(()=> res.jsonp({ code: 410, service: 'design', function: 'designs', message: 'success', designs: designList}),500);
 		});
 	}).all((req, res) => res.jsonp({code: 419, service: 'design', function: 'designs', message: 'unauthorized_method'}));
+
+	router.route(['/tagdesigns/:tag', '/tagdesigns/:tag/:permission']).get((req, res) => {
+		const {tag, permission} = req.params;
+		let query = !permission ? {$or: [{publish: 7}]} : {$or: [{publish: permission}, {publish: 7}]};
+		var myhash;
+		if (req.decoded) {
+			myhash = req.decoded.signhash;
+			query.$or.push({signhash: myhash});
+		}
+		mDesign.find(query,['signhash', 'designHash', 'title', 'regDate', 'publish', 'tags'], function(err, designs) {
+			if(err) return res.jsonp({ code: 428, service: 'design', function: 'tagdesigns', message: 'error', error: err});
+			const designList = [];
+			designs.forEach(({signhash, designHash, title, regDate, publish, tags}) => {
+				tags.includes(tag) &&  mUser.findOne({signhash},['nickname', 'following'],(error, {nickname, following}) => {
+					if(signhash === myhash || publish === 7) designList.push({nickname, signhash, designHash, title, regDate, publish})
+					else if (publish === 3) following.includes(myhash) && designList.push({nickname, signhash, designHash, title, regDate, publish});
+				});
+			});
+			setTimeout(()=> res.jsonp({ code: 420, service: 'design', function: 'tagdesigns', message: 'success', designs: designList}),500);
+		});
+	}).all((req, res) => res.jsonp({code: 429, service: 'design', function: 'tagdesigns', message: 'unauthorized_method'}));
 
 	router.route(['/getdesign']).post((req, res) => {
 		const {designHash, signhash} = req.body;
@@ -115,11 +136,11 @@ module.exports = (express) => {
 		if (!signhash || !designHash) return res.jsonp({code: 426, service: 'user', function: 'signup', message: 'unsatisfied_param'});
 
 		mDesign.findOne({signhash, designHash}, function(err, design) {
-			if (err) return res.jsonp({code: 428, service: 'design', function: 'getdesign', message: 'error', error: err});
-			if (design) return res.jsonp({ code: 420, service: 'design', function: 'getdesign', message: 'success', design});
-			else return res.jsonp({ code: 427, service: 'design', function: 'getdesign', message: 'design_notexist'});
+			if (err) return res.jsonp({code: 438, service: 'design', function: 'getdesign', message: 'error', error: err});
+			if (design) return res.jsonp({ code: 430, service: 'design', function: 'getdesign', message: 'success', design});
+			else return res.jsonp({ code: 437, service: 'design', function: 'getdesign', message: 'design_notexist'});
 		});
-	}).all((req, res) => res.jsonp({code: 429, service: 'design', function: 'getdesign', message: 'unauthorized_method'}));
+	}).all((req, res) => res.jsonp({code: 439, service: 'design', function: 'getdesign', message: 'unauthorized_method'}));
 
 	return router;
 };
