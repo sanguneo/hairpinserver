@@ -199,22 +199,20 @@ module.exports = (express, passport) => {
 	router.route('/userstatest').get((req, res) => {
 		let signhash = req.decoded.signhash;
 		if (!signhash) res.jsonp({ code: 266, service: 'user', function: 'userstat', message: 'unsatisfied_param'});
-		mUser.aggregate([
-			{ "$match": { signhash } },
-			{ "$sort": { "_id": 1 } },
-			{
-				"$lookup": {
-					"localField": "sighhash", // 기본 키 ( users의 선수 _id 값 )
-					"from": "design", // join 할 collection명
-					"foreignField": "sighhash", // 외래 키 ( 참조할 goods의 user 값 )
-					"as": "designs" // 결과를 배출할 alias ( 필드명 )
-				}
-			},
-			{ "$unwind" : "designs" }
-		]).exec(function(error, user){
+		mUser.findOne({signhash},['signhash','follower', 'following'])
+			.populate('design')
+			.exec((error, user) => {
 			if(error) res.jsonp({ code: 268, service: 'user', function: 'userstat', message: 'error', error });
-			res.jsonp({ code: 260, service: 'user', function: 'userstat', message: 'success', user: user});
-		});
+			const ret = {
+				designs: [],
+				follower: user.follower,
+				following: user.following,
+				designsize: 0, //user.designsize.length
+				followersize: user.follower.length,
+				followingsize: user.following.length,
+			}
+			res.jsonp({ code: 260, service: 'user', function: 'userstat', message: 'success', ...ret, user: user});
+		})
 
 
 
