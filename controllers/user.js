@@ -182,23 +182,6 @@ module.exports = (express, passport) => {
 	router.route('/userstat').get((req, res) => {
 		let signhash = req.decoded.signhash;
 		if (!signhash) res.jsonp({ code: 266, service: 'user', function: 'userstat', message: 'unsatisfied_param'});
-		mUser.findOne({signhash},['follower', 'following'],(error, user) => {
-			if(error) res.jsonp({ code: 268, service: 'user', function: 'userstat', message: 'error', error });
-			const ret = {
-				designs: [],
-				follower: user.follower,
-				following: user.following,
-				designsize: 0, //user.designsize.length
-				followersize: user.follower.length,
-				followingsize: user.following.length,
-			}
-			res.jsonp({ code: 260, service: 'user', function: 'userstat', message: 'success', ...ret});
-		})
-	}).all((req, res) => res.jsonp({ code: 269, service: 'user', function: 'userstat', message: 'unauthorized_method' }));
-
-	router.route('/userstatest').get((req, res) => {
-		let signhash = req.decoded.signhash;
-		if (!signhash) res.jsonp({ code: 266, service: 'user', function: 'userstat', message: 'unsatisfied_param'});
 		mUser.aggregate([
 			{
 				"$match": {
