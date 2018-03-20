@@ -222,12 +222,12 @@ module.exports = (express, passport) => {
 		]).exec(function(error, user){
 			if(error) res.jsonp({ code: 268, service: 'user', function: 'userstat', message: 'error', error });
 			const ret = {
-				designs: [],
+				/*designs: [],
 				follower: user.follower,
 				following: user.following,
 				designsize: 0, //user.designsize.length
 				followersize: user.follower.length,
-				followingsize: user.following.length,
+				followingsize: user.following.length,*/
 			}
 			res.jsonp({ code: 260, service: 'user', function: 'userstat', message: 'success', ...ret, user: user});
 		});
