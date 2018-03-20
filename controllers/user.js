@@ -222,14 +222,14 @@ module.exports = (express, passport) => {
 			if(error || userArr.length <= 0) res.jsonp({ code: 268, service: 'user', function: 'userstat', message: 'error', error });
 			const user = userArr[0];
 			const ret = {
-				/*designs: [],
+				designs: user.designs,
 				follower: user.follower,
 				following: user.following,
-				designsize: 0, //user.designsize.length
+				designsize: user.designs.length,
 				followersize: user.follower.length,
-				followingsize: user.following.length,*/
+				followingsize: user.following.length,
 			}
-			res.jsonp({ code: 260, service: 'user', function: 'userstat', message: 'success', ...ret, user: user});
+			res.jsonp({ code: 260, service: 'user', function: 'userstat', message: 'success', ...ret});
 		});
 
 
