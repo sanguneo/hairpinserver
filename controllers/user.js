@@ -217,8 +217,7 @@ module.exports = (express, passport) => {
 					"foreignField": "signhash", // 외래 키 ( 참조할 goods의 user 값 )
 					"as": "designs" // 결과를 배출할 alias ( 필드명 )
 				}
-			},
-			{ "$unwind" : "designs" }
+			}
 		]).exec(function(error, user){
 			if(error) res.jsonp({ code: 268, service: 'user', function: 'userstat', message: 'error', error });
 			const ret = {
