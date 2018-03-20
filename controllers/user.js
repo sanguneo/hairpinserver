@@ -200,26 +200,27 @@ module.exports = (express, passport) => {
 		let signhash = req.decoded.signhash;
 		if (!signhash) res.jsonp({ code: 266, service: 'user', function: 'userstat', message: 'unsatisfied_param'});
 		mUser.aggregate([
-			{
-				"$match": {
-					"signhash": signhash
-				}
-			},
-			{
-				"$sort": {
-					"_id": 1
-				}
-			},
+			{"$match": {"signhash": signhash}},
+			{"$sort": {"_id": 1}},
 			{
 				"$lookup": {
 					"localField": "signhash", // 기본 키 ( users의 선수 _id 값 )
 					"from": "designs", // join 할 collection명
 					"foreignField": "signhash", // 외래 키 ( 참조할 goods의 user 값 )
-					"as": "goods" // 결과를 배출할 alias ( 필드명 )
+					"as": "designs" // 결과를 배출할 alias ( 필드명 )
 				}
 			}
-		]).exec(function(err, Result){
-			res.jsonp(Result);
+		]).exec(function(error, user){
+			if(error) res.jsonp({ code: 268, service: 'user', function: 'userstat', message: 'error', error });
+			const ret = {
+				designs: [],
+				follower: user.follower,
+				following: user.following,
+				designsize: 0, //user.designsize.length
+				followersize: user.follower.length,
+				followingsize: user.following.length,
+			}
+			res.jsonp({ code: 260, service: 'user', function: 'userstat', message: 'success', ...ret});
 		});
 
 
