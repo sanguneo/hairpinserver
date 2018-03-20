@@ -213,7 +213,7 @@ module.exports = (express, passport) => {
 			{
 				"$lookup": {
 					"localField": "signhash", // 기본 키 ( users의 선수 _id 값 )
-					"from": "design", // join 할 collection명
+					"from": "designs", // join 할 collection명
 					"foreignField": "signhash", // 외래 키 ( 참조할 goods의 user 값 )
 					"as": "goods" // 결과를 배출할 alias ( 필드명 )
 				}
