@@ -213,7 +213,7 @@ module.exports = (express, passport) => {
 			{ "$unwind" : "designs" }
 		]).exec(function(error, user){
 			if(error) res.jsonp({ code: 268, service: 'user', function: 'userstat', message: 'error', error });
-			res.jsonp({ code: 260, service: 'user', function: 'userstat', message: 'success', ...ret, user: user});
+			res.jsonp({ code: 260, service: 'user', function: 'userstat', message: 'success', user: user});
 		});
 
 
