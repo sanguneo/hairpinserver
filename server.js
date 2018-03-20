@@ -18,6 +18,7 @@ const options = {
 http.createServer(app).listen(port, host, () => {
 	console.log('Server ready at http://' + host + ':' + port);
 });
+
 https.createServer(options, app).listen(portssl, host, () => {
 	console.log('Server ready at https://' + host + ':' + portssl);
 });
