@@ -207,7 +207,7 @@ module.exports = (express, passport) => {
 			},
 			{
 				"$sort": {
-					"_id": 1
+					"signhash": 1
 				}
 			},
 			{
@@ -218,8 +218,9 @@ module.exports = (express, passport) => {
 					"as": "designs" // 결과를 배출할 alias ( 필드명 )
 				}
 			}
-		]).exec(function(error, user){
-			if(error) res.jsonp({ code: 268, service: 'user', function: 'userstat', message: 'error', error });
+		]).exec(function(error, userArr){
+			if(error || userArr.length <= 0) res.jsonp({ code: 268, service: 'user', function: 'userstat', message: 'error', error });
+			const user = userArr[0];
 			const ret = {
 				/*designs: [],
 				follower: user.follower,
