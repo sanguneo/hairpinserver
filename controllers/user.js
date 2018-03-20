@@ -213,10 +213,10 @@ module.exports = (express, passport) => {
 		]).exec(function(error, user){
 			if(error) res.jsonp({ code: 268, service: 'user', function: 'userstat', message: 'error', error });
 			const ret = {
-				designs: [],
+				designs: user.designs,
 				follower: user.follower,
 				following: user.following,
-				designsize: 0, //user.designsize.length
+				designsize: user.designs.length,
 				followersize: user.follower.length,
 				followingsize: user.following.length,
 			}
