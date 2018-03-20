@@ -216,7 +216,7 @@ module.exports = (express, passport) => {
 				designs: user.designs,
 				follower: user.follower,
 				following: user.following,
-				designsize: user.designs,
+				designsize: 0,//user.designs,
 				followersize: user.follower.length,
 				followingsize: user.following.length,
 			}
