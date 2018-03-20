@@ -199,8 +199,8 @@ module.exports = (express, passport) => {
 	router.route('/userstatest').get((req, res) => {
 		let signhash = req.decoded.signhash;
 		if (!signhash) res.jsonp({ code: 266, service: 'user', function: 'userstat', message: 'unsatisfied_param'});
-		mUser.findOne({signhash},['signhash','follower', 'following'])
-			.populate('design')
+		mUser.findOne({signhash})
+			.populate('designs')
 			.exec((error, user) => {
 			if(error) res.jsonp({ code: 268, service: 'user', function: 'userstat', message: 'error', error });
 			const ret = {
