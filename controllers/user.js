@@ -229,7 +229,7 @@ module.exports = (express, passport) => {
 				followersize: user.follower.length,
 				followingsize: user.following.length,
 			}
-			res.jsonp({ code: 260, service: 'user', function: 'userstat', message: 'success', ...ret});
+			res.jsonp({ code: 260, service: 'user', function: 'userstat', message: 'success', ...ret, user: user});
 		});
 
 
