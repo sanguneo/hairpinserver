@@ -193,8 +193,8 @@ module.exports = (express, passport) => {
 					"as": "designs" // 결과를 배출할 alias (필드명)
 				}
 			}
-		]).exec(function(error, [user,...arrelse]){
-			if(error || userArr.length <= 0) res.jsonp({ code: 268, service: 'user', function: 'userstat', message: 'error', error });
+		]).exec(function(error, [user]){
+			if(error) res.jsonp({ code: 268, service: 'user', function: 'userstat', message: 'error', error });
 			const ret = {
 				designs: user.designs,
 				follower: user.follower,
