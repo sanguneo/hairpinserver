@@ -71,7 +71,7 @@ module.exports = (express, passport) => {
 			res.jsonp({ code: 226, service: 'user', function: 'login', message: 'unsatisfied_param'});
 		}
 		passport.authenticate('login', (error, user, info) => {
-			if (error) { res.jsonp( { code: 228, service: 'user', function: 'login', message: 'error', error }); }
+			if (error||!user.user._id) { res.jsonp( { code: 228, service: 'user', function: 'login', message: 'error', error }); }
 			if (info) { res.jsonp( { code: 227, service: 'user', function: 'login', message: info.message }); }
 			const ret = {
 				token: user.token,
@@ -162,7 +162,7 @@ module.exports = (express, passport) => {
 		let myhash = req.decoded.signhash;
 		if (!signhash || !myhash) res.jsonp({ code: 256, service: 'user', function: 'viewuser', message: 'unsatisfied_param'});
 		mUser.findOne({signhash},['_id', 'signhash', 'email', 'nickname', 'follower', 'following'],(error, user) => {
-			if(error) res.jsonp({ code: 258, service: 'user', function: 'viewuser', message: 'error', error });
+			if(error||!user._id) res.jsonp({ code: 258, service: 'user', function: 'viewuser', message: 'error', error });
 			const ret = {
 				_id: user._id,
 				signhash: user.signhash,
@@ -193,7 +193,7 @@ module.exports = (express, passport) => {
 					"as": "designs" // 결과를 배출할 alias (필드명)
 				}
 			}
-		]).exec(function(error, [user]){
+		]).exec(function(error, [user,...arrelse]){
 			if(error) res.jsonp({ code: 268, service: 'user', function: 'userstat', message: 'error', error });
 			const ret = {
 				designs: user.designs,
@@ -205,12 +205,6 @@ module.exports = (express, passport) => {
 			}
 			res.jsonp({ code: 260, service: 'user', function: 'userstat', message: 'success', ...ret});
 		});
-
-
-
-
-
-
 	}).all((req, res) => res.jsonp({ code: 269, service: 'user', function: 'userstat', message: 'unauthorized_method' }));
 
 	router.route(['/searchuser/:param', '/searchuser/']).get((req, res) => {
